@@ -8,6 +8,7 @@ const hbs          = require('hbs');
 const mongoose     = require('mongoose');
 const logger       = require('morgan');
 const path         = require('path');
+const cors = require('cors');
 
 
 mongoose
@@ -26,10 +27,16 @@ const app = express();
 
 // Middleware Setup
 app.use(logger('dev'));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json({ limit: '50mb', type: '*/*', strict: false }));
+app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 app.use(cookieParser());
-
+// Enable writing between servers
+app.use(
+    cors({
+        credentials: true,
+        origin: ['http://localhost:3000'], ///<-- Where the frontend is
+    })
+);
 // Express View engine setup
 
 app.use(require('node-sass-middleware')({
