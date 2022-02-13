@@ -1,11 +1,11 @@
 var axios = require('axios');
 var qs = require('qs');
-// var data = qs.stringify({});
+var data = '';
 var config = {
     method: 'post',
-    url: 'http://localhost:3030/test-db/update?update=clear all',
+    url: 'http://localhost:3030/ny-db/update?update=clear all',
     headers: {},
-    // data: data,
+    data: data,
 };
 
 axios(config)
