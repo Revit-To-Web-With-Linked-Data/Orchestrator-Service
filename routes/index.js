@@ -5,14 +5,11 @@ const axios = require('axios');
 /* GET home page */
 router.get('/', (req, res, next) => {
     axios
-        .get(
-            'http://localhost:3030/test-db/query?query=prefix fso: <https://w3id.org/fso%23> \nconstruct from fso:data\nWHERE { ?p ?a ?n } ',
-            {
-                headers: {
-                    Accept: 'application/ld+json',
-                },
-            }
-        )
+        .get('http://localhost:3030/ny-db/query?query=\nconstruct \nWHERE { ?p ?a ?n } ', {
+            headers: {
+                Accept: 'application/ld+json',
+            },
+        })
         .then((response) => {
             res.send(response.data);
         })
