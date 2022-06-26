@@ -63,7 +63,7 @@ var data = `@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 
 var config = {
     method: 'post',
-    url: 'http://localhost:3030/test-db/shacl?graph=https://w3id.org/fso%23data',
+    url: 'http://localhost:3030/ny-db/shacl?graph=default',
     headers: {
         'Content-Type': 'text/turtle',
         Accept: 'application/ld+json',
@@ -73,7 +73,7 @@ var config = {
 
 axios(config)
     .then(function (response) {
-        console.log(JSON.stringify(response.data.@id));
+        console.log(JSON.stringify(response.data));
     })
     .catch(function (error) {
         console.log(error);

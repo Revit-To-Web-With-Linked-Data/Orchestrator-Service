@@ -27,8 +27,8 @@ const app = express();
 
 // Middleware Setup
 app.use(logger('dev'));
-app.use(bodyParser.json({ limit: '50mb', type: '*/*', strict: false }));
-app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
+app.use(bodyParser.json({ limit: '50000000mb', type: '*/*', strict: false }));
+app.use(bodyParser.urlencoded({ limit: '50000000mb', extended: true }));
 app.use(cookieParser());
 // Enable writing between servers
 app.use(
@@ -55,7 +55,6 @@ app.use(favicon(path.join(__dirname, 'public', 'images', 'favicon.ico')));
 
 // default value for title local
 app.locals.title = 'Express - Generated with IronGenerator';
-
 
 
 const index = require('./routes/index');
