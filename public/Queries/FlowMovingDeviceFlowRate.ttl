@@ -7,30 +7,44 @@ PREFIX fpo: <http://w3id.org/fpo#>
 PREFIX fso: <http://w3id.org/fso#>
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 PREFIX inst: <https://example.com/inst#> 
-SELECT ?flowMovingDeviceType ?flowMovingDevice (SUM(?flowRateValue) AS ?totalFlow)
-    WHERE{
+
+select ?flowMovingDeviceType ?flowMovingDevice (SUM(?flowRateValue) AS ?totalFlow)
+
+WHERE{
   {
-  ?flowMovingDevice a fpo:Fan .
-  ?flowMovingDevice a ?flowMovingDeviceType .
-  ?system fso:hasComponent ?flowMovingDevice .
-  {?flowMovingDevice ^fso:feedsFluidTo+ ?terminal .}
-  union
-  { ?flowMovingDevice fso:feedsFluidTo+ ?terminal .}
-  	?terminal a fpo:AirTerminal .
-    ?terminal fso:hasPort ?returnPort .
-  	?returnPort fpo:flowRate ?flowRate .  
+  	#SupplyFans
+  	?flowMovingDevice a fpo:Fan .
+    ?flowMovingDevice a ?flowMovingDeviceType .
+    ?terminal a fpo:AirTerminal .
+  	?system fso:hasComponent ?terminal, ?flowMovingDevice .
+    ?flowMovingDevice fso:feedsFluidTo+ ?terminal  .
+    ?terminal fso:hasPort ?port .
+  	?port fpo:flowRate ?flowRate .  
   	?flowRate fpo:value ?flowRateValue .
-    }
+  }
+  union
+   {
+  	#ReturnFans
+  	?flowMovingDevice a fpo:Fan .
+    ?flowMovingDevice a ?flowMovingDeviceType .
+    ?terminal a fpo:AirTerminal .
+  	?system fso:hasComponent ?terminal, ?flowMovingDevice .
+    ?terminal  fso:feedsFluidTo+ ?flowMovingDevice  .
+    ?terminal fso:hasPort ?port .
+  	?port fpo:flowRate ?flowRate .  
+  	?flowRate fpo:value ?flowRateValue .
+  }
   union
   {
-    ?flowMovingDevice a fpo:Pump .
+    #SupplyPumps
+  	?flowMovingDevice a fpo:Pump .
     ?flowMovingDevice a ?flowMovingDeviceType .
     ?flowMovingDevice fso:feedsFluidTo+ ?terminal .
-    VALUES ?type {fpo:HeatExchanger fpo:SpaceHeater} ?terminal a ?type .
+    VALUES ?type {fpo:SpaceHeater fpo:HeatExchanger} ?terminal a ?type .
+    ?system fso:hasComponent ?terminal, ?flowMovingDevice .
     ?terminal fso:hasPort ?supplyPort .
   	?supplyPort fso:returnsFluidTo ?anotherComponent .
   	?supplyPort fpo:flowRate ?flowRate .  
   	?flowRate fpo:value ?flowRateValue .
   }
-    } group by ?flowMovingDevice ?flowMovingDeviceType
-   
+  } group by ?flowMovingDevice ?flowMovingDeviceType 

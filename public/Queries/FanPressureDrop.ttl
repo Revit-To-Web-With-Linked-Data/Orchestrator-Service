@@ -9,50 +9,52 @@ PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 PREFIX inst: <https://example.com/inst#> 
 select ?fan (Max(?sumOfPressureDrop)*0.00010199773339984 as ?head)
 where{
-{
-  select ?fan ?terminal ( sum(?supplyValue)  as ?sumOfPressureDrop) 
+  
+  {#Supply Fan
+ select ?fan ?terminal( sum(?returnValue)  as ?sumOfPressureDrop) 
 where {
-  ?fan a fpo:Fan .
+   ?fan a fpo:Fan .
   VALUES ?terminalType {fpo:AirTerminal}
   ?terminal a ?terminalType .  
-  ?supplySystem fso:hasComponent ?fan .
-  ?supplyComponent fso:feedsFluidTo+ ?terminal . 
-  ?supplySystem fso:hasComponent ?supplyComponent .
-  ?supplySystem a fso:SupplySystem .
+  ?system fso:hasComponent ?fan .
+  ?component fso:feedsFluidTo+ ?terminal . 
+  ?system fso:hasComponent ?component .
+  ?system fso:hasComponent ?fan, ?terminal .
   
   #Get the pressuredrop value of each component
-  ?supplyComponent fso:hasPort ?supplyPort .
-  ?supplyPort fpo:flowDirection ?flowDirection .
+  ?component fso:hasPort ?port .
+  ?port fpo:flowDirection ?flowDirection .
   ?flowDirection fpo:value "Out" .
-  ?supplyPort fpo:pressureDrop ex:UUIDPressureDropValue .  
-  ex:UUIDPressureDropValue fpo:value ?supplyValue .
+  ?port fpo:pressureDrop ?pressureDrop .  
+  ?pressureDrop fpo:value ?returnValue .
   
   #Select only port that is part of that system
   filter not exists {
-  ?supplyPort fso:suppliesFluidTo ?connectedPort .
+  ?port fso:suppliesFluidTo ?connectedPort .
   ?connectedComponent fso:hasPort ?connectedPort .
   ?connectedComponent fso:feedsFluidTo+ ?terminal .
   ?connectedComponent a fpo:Tee .
   }
-    } group by ?fan ?terminal}
+  } group by ?fan ?terminal}
   union
-  {
-    select ?fan ?terminal( sum(?returnValue)  as ?sumOfPressureDrop) 
+{
+#Return Fan
+ select ?fan ?terminal( sum(?returnValue)  as ?sumOfPressureDrop) 
 where {
   ?fan a fpo:Fan .
   VALUES ?terminalType {fpo:AirTerminal}
   ?terminal a ?terminalType .  
-  ?supplySystem fso:hasComponent ?fan .
-  ?returnComponent ^fso:feedsFluidTo+ ?terminal . 
-  ?returnSystem fso:hasComponent ?returnComponent .
-  ?returnSystem a fso:ReturnSystem .
+  ?system fso:hasComponent ?fan .
+  ?component ^fso:feedsFluidTo+ ?terminal . 
+  ?system fso:hasComponent ?component .
+  ?system fso:hasComponent ?fan, ?terminal .
   
   #Get the pressuredrop value of each component
-  ?returnComponent fso:hasPort ?returnPort .
-  ?returnPort fpo:flowDirection ?flowDirection .
+  ?component fso:hasPort ?port .
+  ?port fpo:flowDirection ?flowDirection .
   ?flowDirection fpo:value "Out" .
-  ?returnPort fpo:pressureDrop ex:UUIDPressureDropValue .  
-  ex:UUIDPressureDropValue fpo:value ?returnValue .
-  } group by ?fan ?terminal
-} 
-} group by ?fan 
+  ?port fpo:pressureDrop ?pressureDrop .  
+  ?pressureDrop fpo:value ?returnValue .
+    } group by ?fan ?terminal
+  }
+  }group by ?fan 

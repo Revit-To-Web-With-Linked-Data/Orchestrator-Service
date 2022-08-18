@@ -2,10 +2,18 @@ const express = require('express');
 const router = express.Router();
 const axios = require('axios');
 const fs = require('fs');
+var qs = require('qs');
+const { clear } = require('console');
 
 let AllShapes = fs.readFileSync('./public/ShaclShapes/AllShapes.ttl', 'utf8');
 
 let baseUrl = 'http://localhost:3030/ny-db/query?query=';
+let baseUpdateURL = 'http://localhost:3030/ny-db/update';
+
+// Clear graph
+let clearData = qs.stringify({
+    update: 'clear default',
+});
 
 let FlowMovingDeviceFlowRateQuery =
     baseUrl + encodeURIComponent(fs.readFileSync('./public/Queries/FlowMovingDeviceFlowRate.ttl'));
@@ -81,19 +89,170 @@ router.get('/validationGraph', (req, res) => {
             },
         })
         .then((response) => {
-            let shaclObject = []; // console.log(typeof response.data);
+            let shaclObject = {
+                HeatExchanger: [],
+                Tee: [],
+                Transition: [],
+                Pipe: [],
+                Duct: [],
+                Elbow: [],
+                Pump: [],
+                Fan: [],
+                Port: [],
+                Flow: [],
+                Property: [],
+                System: [],
+                SpaceHeater: [],
+                AirTerminal: [],
+                Valve: [],
+                Damper: [],
+                Total: [],
+            }; //
+            console.log(response.data['@graph']);
             //res.send(response.data)
             let counter = Object.keys(response.data['@graph']).length;
             for (let index in response.data['@graph']) {
                 if (response.data['@graph'][index].resultMessage != null) {
-                    shaclObject.push({
+                    if (response.data['@graph'][index].resultMessage[0] == 'HeatExchanger')
+                        shaclObject.HeatExchanger.push({
+                            id: `${response.data['@graph'][index].focusNode}`,
+                            constrainType: `${response.data['@graph'][index].sourceConstraintComponent}`,
+                            description: `${response.data['@graph'][index].resultMessage[1]}`,
+                        });
+                }
+                if (response.data['@graph'][index].resultMessage != null) {
+                    if (response.data['@graph'][index].resultMessage[0] == 'Transition')
+                        shaclObject.Transition.push({
+                            id: `${response.data['@graph'][index].focusNode}`,
+                            constrainType: `${response.data['@graph'][index].sourceConstraintComponent}`,
+                            description: `${response.data['@graph'][index].resultMessage[1]}`,
+                        });
+                }
+                if (response.data['@graph'][index].resultMessage != null) {
+                    if (response.data['@graph'][index].resultMessage[0] == 'Tee')
+                        shaclObject.Tee.push({
+                            id: `${response.data['@graph'][index].focusNode}`,
+                            constrainType: `${response.data['@graph'][index].sourceConstraintComponent}`,
+                            description: `${response.data['@graph'][index].resultMessage[1]}`,
+                        });
+                }
+                if (response.data['@graph'][index].resultMessage != null) {
+                    if (response.data['@graph'][index].resultMessage[0] == 'Pipe')
+                        shaclObject.Pipe.push({
+                            id: `${response.data['@graph'][index].focusNode}`,
+                            constrainType: `${response.data['@graph'][index].sourceConstraintComponent}`,
+                            description: `${response.data['@graph'][index].resultMessage[1]}`,
+                        });
+                }
+                if (response.data['@graph'][index].resultMessage != null) {
+                    if (response.data['@graph'][index].resultMessage[0] == 'Duct')
+                        shaclObject.Duct.push({
+                            id: `${response.data['@graph'][index].focusNode}`,
+                            constrainType: `${response.data['@graph'][index].sourceConstraintComponent}`,
+                            description: `${response.data['@graph'][index].resultMessage[1]}`,
+                        });
+                }
+                if (response.data['@graph'][index].resultMessage != null) {
+                    if (response.data['@graph'][index].resultMessage[0] == 'Elbow')
+                        shaclObject.Elbow.push({
+                            id: `${response.data['@graph'][index].focusNode}`,
+                            constrainType: `${response.data['@graph'][index].sourceConstraintComponent}`,
+                            description: `${response.data['@graph'][index].resultMessage[1]}`,
+                        });
+                }
+                if (response.data['@graph'][index].resultMessage != null) {
+                    if (response.data['@graph'][index].resultMessage[0] == 'Pump')
+                        shaclObject.Pump.push({
+                            id: `${response.data['@graph'][index].focusNode}`,
+                            constrainType: `${response.data['@graph'][index].sourceConstraintComponent}`,
+                            description: `${response.data['@graph'][index].resultMessage[1]}`,
+                        });
+                }
+                if (response.data['@graph'][index].resultMessage != null) {
+                    if (response.data['@graph'][index].resultMessage[0] == 'Fan')
+                        shaclObject.Fan.push({
+                            id: `${response.data['@graph'][index].focusNode}`,
+                            constrainType: `${response.data['@graph'][index].sourceConstraintComponent}`,
+                            description: `${response.data['@graph'][index].resultMessage[1]}`,
+                        });
+                }
+                if (response.data['@graph'][index].resultMessage != null) {
+                    if (response.data['@graph'][index].resultMessage[0] == 'Port')
+                        shaclObject.Port.push({
+                            id: `${response.data['@graph'][index].focusNode}`,
+                            constrainType: `${response.data['@graph'][index].sourceConstraintComponent}`,
+                            description: `${response.data['@graph'][index].resultMessage[1]}`,
+                        });
+                }
+                if (response.data['@graph'][index].resultMessage != null) {
+                    if (response.data['@graph'][index].resultMessage[0] == 'Flow')
+                        shaclObject.Flow.push({
+                            id: `${response.data['@graph'][index].focusNode}`,
+                            constrainType: `${response.data['@graph'][index].sourceConstraintComponent}`,
+                            description: `${response.data['@graph'][index].resultMessage[1]}`,
+                        });
+                }
+                if (response.data['@graph'][index].resultMessage != null) {
+                    if (response.data['@graph'][index].resultMessage[0] == 'Property')
+                        shaclObject.Property.push({
+                            id: `${response.data['@graph'][index].focusNode}`,
+                            constrainType: `${response.data['@graph'][index].sourceConstraintComponent}`,
+                            description: `${response.data['@graph'][index].resultMessage[1]}`,
+                        });
+                }
+                if (response.data['@graph'][index].resultMessage != null) {
+                    if (response.data['@graph'][index].resultMessage[0] == 'System')
+                        shaclObject.System.push({
+                            id: `${response.data['@graph'][index].focusNode}`,
+                            constrainType: `${response.data['@graph'][index].sourceConstraintComponent}`,
+                            description: `${response.data['@graph'][index].resultMessage[1]}`,
+                        });
+                }
+                if (response.data['@graph'][index].resultMessage != null) {
+                    if (response.data['@graph'][index].resultMessage[0] == 'SpaceHeater')
+                        shaclObject.SpaceHeater.push({
+                            id: `${response.data['@graph'][index].focusNode}`,
+                            constrainType: `${response.data['@graph'][index].sourceConstraintComponent}`,
+                            description: `${response.data['@graph'][index].resultMessage[1]}`,
+                        });
+                }
+                if (response.data['@graph'][index].resultMessage != null) {
+                    if (
+                        response.data['@graph'][index].resultMessage[0] == 'MotorizedValve' ||
+                        response.data['@graph'][index].resultMessage[0] == 'BalancingValve'
+                    )
+                        shaclObject.Valve.push({
+                            id: `${response.data['@graph'][index].focusNode}`,
+                            constrainType: `${response.data['@graph'][index].sourceConstraintComponent}`,
+                            description: `${response.data['@graph'][index].resultMessage[1]}`,
+                        });
+                }
+                if (response.data['@graph'][index].resultMessage != null) {
+                    if (
+                        response.data['@graph'][index].resultMessage[0] == 'MotorizedDamper' ||
+                        response.data['@graph'][index].resultMessage[0] == 'BalancingDamper'
+                    )
+                        shaclObject.Damper.push({
+                            id: `${response.data['@graph'][index].focusNode}`,
+                            constrainType: `${response.data['@graph'][index].sourceConstraintComponent}`,
+                            description: `${response.data['@graph'][index].resultMessage[1]}`,
+                        });
+                }
+                if (response.data['@graph'][index].resultMessage != null) {
+                    if (response.data['@graph'][index].resultMessage[0] == 'AirTerminal')
+                        shaclObject.AirTerminal.push({
+                            id: `${response.data['@graph'][index].focusNode}`,
+                            constrainType: `${response.data['@graph'][index].sourceConstraintComponent}`,
+                            description: `${response.data['@graph'][index].resultMessage[1]}`,
+                        });
+                    if (response.data['@graph'][index].resultMessage != null) {
+                        shaclObject.Total.push({
                         id: `${response.data['@graph'][index].focusNode}`,
                         constrainType: `${response.data['@graph'][index].sourceConstraintComponent}`,
                         description: `${response.data['@graph'][index].resultMessage[1]}`,
-                    });
+                    }); }
                 }
             }
-            console.log(counter);
             shaclObjects = { shaclObject };
             res.send(shaclObjects);
         })
@@ -112,8 +271,9 @@ router.get('/validationOverviewGraph', (req, res) => {
         })
         .then((response) => {
             //res.send(response.data)
-            let total =0;
-            let HeatExchangerCounter = 0;
+            let total = 0;
+            let HeatExchanger = 0;
+            let Tee = 0;
             let Transition = 0;
             let Pipe = 0;
             let Duct = 0;
@@ -125,11 +285,8 @@ router.get('/validationOverviewGraph', (req, res) => {
             let Property = 0;
             let System = 0;
             let SpaceHeater = 0;
-            let BalancingValve = 0;
-            let BalancingDamper = 0;
-            let MotorizedValve = 0;
-            let MotorizedDamper = 0;
-            let Tee = 0;
+            let Valve = 0;
+            let Damper = 0;
             let AirTerminal = 0;
 
             for (let index in response.data['@graph']) {
@@ -170,17 +327,17 @@ router.get('/validationOverviewGraph', (req, res) => {
                     if (response.data['@graph'][index].resultMessage[0] == 'SpaceHeater') {
                         SpaceHeater++;
                     }
-                    if (response.data['@graph'][index].resultMessage[0] == 'BalancingValve') {
-                        BalancingValve++;
+                    if (
+                        response.data['@graph'][index].resultMessage[0] == 'BalancingValve' ||
+                        response.data['@graph'][index].resultMessage[0] == 'MotorizedValve'
+                    ) {
+                        Valve++;
                     }
-                    if (response.data['@graph'][index].resultMessage[0] == 'BalancingDamper') {
-                        BalancingDamper++;
-                    }
-                    if (response.data['@graph'][index].resultMessage[0] == 'MotorizedValve') {
-                        MotorizedValve++;
-                    }
-                    if (response.data['@graph'][index].resultMessage[0] == 'MotorizedDamper') {
-                        MotorizedDamper++;
+                    if (
+                        response.data['@graph'][index].resultMessage[0] == 'BalancingDamper' ||
+                        response.data['@graph'][index].resultMessage[0] == 'MotorizedDamper'
+                    ) {
+                        Damper++;
                     }
                     if (response.data['@graph'][index].resultMessage[0] == 'Tee') {
                         Tee++;
@@ -188,30 +345,28 @@ router.get('/validationOverviewGraph', (req, res) => {
                     if (response.data['@graph'][index].resultMessage[0] == 'AirTerminal') {
                         AirTerminal++;
                     }
-                    total++
+                    total++;
                 }
             }
 
             let shaclObjects = {
                 result: [
-                    { type: 'HeatExchangerCounter', amount: HeatExchangerCounter },
+                    { type: 'HeatExchanger', amount: HeatExchanger },
                     { type: 'Transition', amount: Transition },
+                    { type: 'Tee', amount: Tee },
+                    { type: 'Elbow', amount: Elbow },
                     { type: 'Pipe', amount: Pipe },
                     { type: 'Duct', amount: Duct },
-                    { type: 'Elbow', amount: Elbow },
                     { type: 'Pump', amount: Pump },
                     { type: 'Fan', amount: Fan },
+                    { type: 'SpaceHeater', amount: SpaceHeater },
+                    { type: 'AirTerminal', amount: AirTerminal },
+                    { type: 'Valve', amount: Valve },
+                    { type: 'Damper', amount: Damper },
                     { type: 'Port', amount: Port },
                     { type: 'Flow', amount: Flow },
                     { type: 'Property', amount: Property },
                     { type: 'System', amount: System },
-                    { type: 'SpaceHeater', amount: SpaceHeater },
-                    { type: 'BalancingValve', amount: BalancingValve },
-                    { type: 'BalancingDamper', amount: BalancingDamper },
-                    { type: 'MotorizedValve', amount: MotorizedValve },
-                    { type: 'MotorizedDamper', amount: MotorizedDamper },
-                    { type: 'Tee', amount: Tee },
-                    { type: 'AirTerminal', amount: AirTerminal },
                     { type: 'Total', amount: total },
                 ],
             };
@@ -256,25 +411,21 @@ router.post('/Bot', (req, res, next) => {
         .catch(function (error) {
             console.log(error);
         });
-    // var data =
-    //     '@prefix ex: <https://example.com/ex#> .\r\n@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\r\n\r\n\r\nex:Alice\r\n\ta ex:Person ;\r\n\tex:ssn "987-65-432A" .\r\n  \r\nex:Bob\r\n\ta ex:Person ;\r\n\tex:ssn "123-45-6789" ;\r\n\tex:ssn "124-35-6789" .\r\n  \r\nex:Calvin\r\n\ta ex:Person ;\r\n\tex:birthDate "1971-07-07"^^xsd:date ;\r\n\tex:worksFor ex:UntypedCompany .';
+});
 
-    // var config = {
-    //     method: 'post',
-    //     url: 'http://localhost:3030/ny-db/data',
-    //     headers: {
-    //         'Content-Type': 'text/turtle',
-    //     },
-    //     data: data,
-    // };
-
-    // axios(config)
-    //     .then(function (response) {
-    //         console.log(JSON.stringify(response.data));
-    //     })
-    //     .catch(function (error) {
-    //         console.log(error);
-    //     });
+router.post('/clearGraph', (req, res) => {
+    axios
+        .post('http://localhost:3030/ny-db/update', clearData, {
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+        })
+        .then(function (response) {
+            console.log(JSON.stringify(response.data));
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
 });
 
 module.exports = router;

@@ -25,8 +25,8 @@ where{
       ?supplyComponent fso:hasPort ?supplyPort .
       ?supplyPort fpo:flowDirection ?flowDirection .
       ?flowDirection fpo:value "Out" .
-      ?supplyPort fpo:pressureDrop ex:UUIDPressureDropValue .
-      ex:UUIDPressureDropValue fpo:value ?supplyValue .
+      ?supplyPort fpo:pressureDrop ?pressureDrop .
+      ?pressureDrop fpo:value ?supplyValue .
   
       #Select only port that is part of that system
       filter not exists {
@@ -42,8 +42,8 @@ where{
     where{
       ?terminal fso:hasPort ?port .
       ?port fso:returnsFluidTo ?anotherPort .
-      ?port fpo:pressureDrop ex:UUIDPressureDropValue .
-      ex:UUIDPressureDropValue fpo:value ?terminalPressureDropValue .  
+      ?port fpo:pressureDrop ?pressureDrop .
+      ?pressureDrop fpo:value ?terminalPressureDropValue .  
       {
         select ?pump ?terminal ( sum(?returnValue)  as ?sumOfReturnPressureDrop)
         where {
@@ -60,8 +60,8 @@ where{
             ?returnComponent fso:hasPort ?returnPort .
             ?returnPort fpo:flowDirection ?flowDirection .
             ?flowDirection fpo:value "Out" .
-            ?returnPort fpo:pressureDrop ex:UUIDPressureDropValue .
-            ex:UUIDPressureDropValue fpo:value ?returnValue . 
+            ?returnPort fpo:pressureDrop ?pressureDrop .
+            ?pressureDrop fpo:value ?returnValue . 
           }
         } group by ?pump ?terminal 
       } 

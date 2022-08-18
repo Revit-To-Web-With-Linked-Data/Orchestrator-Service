@@ -172,6 +172,32 @@
         sh:deactivated false
     ] .
 
+    
+#The pressure drop of a pipe
+    ex:PipePressureDrop
+    a sh:NodeShape;
+    sh:nodeKind sh:IRI ;
+    sh:targetClass fpo:Pipe ;
+    sh:message "Pipe";
+    sh:message "The pressure drop of a pipe shall not exceed 100 Pa/m";
+    sh:sparql  [
+        a sh:sh:SPARQLConstraint  ;
+        sh:prefixes (fpo: fso: inst:) ;
+        sh:select """PREFIX fso: <http://w3id.org/fso#> PREFIX fpo: <http://w3id.org/fpo#> PREFIX inst: <https://example.com/inst#>
+        SELECT ?this ?value
+        WHERE {
+            ?this a fpo:Pipe . 
+            ?this fpo:length ?length .
+            ?length fpo:value ?lengthvalue .
+            ?this fso:hasPort ?port .
+            ?port fpo:flowDirection ?flowDirection .
+            ?flowDirection fpo:value "Out" .
+            ?port fpo:pressureDrop ?pressureDrop .
+            ?pressureDrop fpo:value ?pressureDropValue .
+            bind ((?pressureDropValue / ?lengthvalue) as ?value) .
+            filter (?value > 100)} """ ; 
+  ] .
+
     #Duct validation
     ex:Duct
     a sh:NodeShape;
@@ -465,7 +491,7 @@
         sh:maxCount 1;
         sh:message "Port";
         sh:message "A port must have minimum/maximum one flow";
-        sh:deactivated true
+        sh:deactivated false
     ] ; 
     sh:property [
         sh:path fpo:flowDirection ;
@@ -474,7 +500,7 @@
         sh:maxCount 1;
         sh:message "Port";
         sh:message "A port must have minimum/maximum one flow direction";
-        sh:deactivated true
+        sh:deactivated false
     ] .
 
 
@@ -496,7 +522,7 @@ sh:target [
         sh:maxCount 1;
         sh:message "Port";
         sh:message "Minimum/maximum one property of pressure drop must be present for an outlet port";
-        sh:deactivated true
+        sh:deactivated false
     ] ;    
     sh:property [
         sh:path fpo:flowRate ;
@@ -505,7 +531,7 @@ sh:target [
         sh:maxCount 1;
         sh:message "Port";
         sh:message "Minimum/maximum one property of flow rate must be present for an outlet port";
-        sh:deactivated true
+        sh:deactivated false
     ] ; 
     sh:property [
         sh:path fpo:velocity ;
@@ -514,7 +540,7 @@ sh:target [
         sh:maxCount 1;
         sh:message "Port";
         sh:message "Minimum/maximum one property of flow velocity must be present for an outlet port";
-        sh:deactivated true
+        sh:deactivated false
     ].
 
 #Flow validation
@@ -529,7 +555,7 @@ sh:target [
         sh:maxCount 1;
         sh:message "Flow";
         sh:message "A flow must have a temperature";
-        sh:deactivated true
+        sh:deactivated false
     ] .
 
 
@@ -546,7 +572,7 @@ sh:target [
         sh:hasValue "Pascal"^^xsd:string ;
         sh:message "Property";
         sh:message "The property pressure drop must have minimum/maximum one unit and its unit must be in Pascal";
-        sh:deactivated true 
+        sh:deactivated false 
     ] ;
     sh:property [
         sh:path fpo:value ;
@@ -574,7 +600,7 @@ sh:target [
         sh:hasValue "Meters per second"^^xsd:string ;
         sh:message "Property";
         sh:message "The property velocity must have minimum/maximum one unit and its unit must be in meters per second";
-        sh:deactivated true 
+        sh:deactivated false 
     ] ;
     sh:property [
         sh:path fpo:value ;
@@ -584,7 +610,7 @@ sh:target [
         sh:dataType xsd:double ;
         sh:message "Property";
         sh:message "The property velocity must have minimum/maximum one value and its value must be above 0.001";
-        sh:deactivated true 
+        sh:deactivated false 
     ]; .
 
 
@@ -601,7 +627,7 @@ sh:target [
         sh:hasValue "Liters per second"^^xsd:string ;
         sh:message "Property";
         sh:message "The property flow rate must have minimum/maximum one unit and its unit must be in liters per second";
-        sh:deactivated true 
+        sh:deactivated false 
     ] ;
     sh:property [
         sh:path fpo:value ;
@@ -611,7 +637,7 @@ sh:target [
         sh:dataType xsd:double ;
         sh:message "Property";
         sh:message "The property flow rate must have minimum/maximum one value and its value must be above 0.001";
-        sh:deactivated true 
+        sh:deactivated false 
     ]; .
 
     #OuterDiameter validation
@@ -627,7 +653,7 @@ sh:target [
         sh:hasValue "Meter"^^xsd:string ;
         sh:message "Property";
         sh:message "The property flow rate must have minimum/maximum one unit and its unit must be in meter";
-        sh:deactivated true 
+        sh:deactivated false 
     ] ;
     sh:property [
         sh:path fpo:value ;
@@ -637,7 +663,7 @@ sh:target [
         sh:dataType xsd:double ;
         sh:message "Property";
         sh:message "The property outer diameter must have minimum/maximum one value and its value must be above 0.001";
-        sh:deactivated true 
+        sh:deactivated false 
     ]; .
 
     #Width validation
@@ -653,7 +679,7 @@ sh:target [
         sh:hasValue "Meter"^^xsd:string ;
         sh:message "Property";
         sh:message "The property width must have minimum/maximum one unit and its unit must be in meter";
-        sh:deactivated true 
+        sh:deactivated false 
     ] ;
     sh:property [
         sh:path fpo:value ;
@@ -663,7 +689,7 @@ sh:target [
         sh:dataType xsd:double ;
         sh:message "Property";
         sh:message "The property width must have minimum/maximum one value and its value must be above 0.001";
-        sh:deactivated true 
+        sh:deactivated false 
     ]; .
 
      #Heigth validation
@@ -679,7 +705,7 @@ sh:target [
         sh:hasValue "Meter"^^xsd:string ;
         sh:message "Property";
         sh:message "The property heigth must have minimum/maximum one unit and its unit must be in meter";
-        sh:deactivated true 
+        sh:deactivated false 
     ] ;
     sh:property [
         sh:path fpo:value ;
@@ -689,7 +715,7 @@ sh:target [
         sh:dataType xsd:double ;
         sh:message "Property";
         sh:message "The property heigth must have minimum/maximum one value and its value must be above 0.001";
-        sh:deactivated true 
+        sh:deactivated false 
     ]; .
 
     #Roughness validation
@@ -705,7 +731,7 @@ sh:target [
         sh:hasValue "Meter"^^xsd:string ;
         sh:message "Property";
         sh:message "The property roughness must have minimum/maximum one unit and its unit must be in meter";
-        sh:deactivated true 
+        sh:deactivated false 
     ] ;
     sh:property [
         sh:path fpo:value ;
@@ -715,7 +741,7 @@ sh:target [
         sh:dataType xsd:double ;
         sh:message "Property";
         sh:message "The property roughness must have minimum/maximum one value and its value must be above 0.001";
-        sh:deactivated true 
+        sh:deactivated false 
     ]; .
 
       #Angle validation
@@ -731,7 +757,7 @@ sh:target [
         sh:hasValue "Degree"^^xsd:string ;
         sh:message "Property";
         sh:message "The property angle must have minimum/maximum one unit and its unit must be in degree";
-        sh:deactivated true
+        sh:deactivated false
     ] ;
     sh:property [
         sh:path fpo:value ;
@@ -741,7 +767,7 @@ sh:target [
         sh:dataType xsd:double ;
         sh:message "Property";
         sh:message "The property angle must have minimum/maximum one value and its value must be above 0.001";
-        sh:deactivated true
+        sh:deactivated false
     ]; .
 
       #Kv validation
@@ -757,7 +783,7 @@ sh:target [
         sh:dataType xsd:double ;
         sh:message "Property";
         sh:message "The property kv or kvs must have minimum/maximum one value and its value must be above 0.001";
-        sh:deactivated true
+        sh:deactivated false
     ]; .
 
     #Curves validation
@@ -769,11 +795,10 @@ sh:target [
         sh:path fpo:curve ;
         sh:minCount 1;
         sh:maxCount 1;
-        sh:hasValue true;
         sh:dataType xsd:string ;
         sh:message "Property";
         sh:message "The property power curve or pressure curve must have minimum/maximum one value and it must have a value";
-        sh:deactivated true
+        sh:deactivated false
     ]; .
 
 
@@ -790,7 +815,7 @@ sh:target [
         sh:dataType xsd:string ;
         sh:message "Property";
         sh:message "The property airterminal type must have minimum/maximum one value and its value must be above 0.001";
-        sh:deactivated true
+        sh:deactivated false
     ]; .
 
 
@@ -805,7 +830,7 @@ sh:target [
         sh:minCount 1;
         sh:message "System";
         sh:message "A supplySystem must have at least one component";
-        sh:deactivated true
+        sh:deactivated false
     ]; 
     sh:property [
         sh:path fso:hasFlow ;
@@ -814,7 +839,7 @@ sh:target [
         sh:maxCount 1;
         sh:message "System";
         sh:message "A supplySystem must have a flow";
-        sh:deactivated true
+        sh:deactivated false
     ] .
 
 #ReturnSystem validation
@@ -828,7 +853,7 @@ sh:target [
         sh:minCount 1;
         sh:message "System";
         sh:message "A ReturnSystem must have at least one component";
-        sh:deactivated true
+        sh:deactivated false
     ]; 
     sh:property [
         sh:path fso:hasFlow ;
@@ -837,7 +862,7 @@ sh:target [
         sh:maxCount 1;
         sh:message "System";
         sh:message "A ReturnSystem must have a flow";
-        sh:deactivated true
+        sh:deactivated false
     ] .
 
 
@@ -853,7 +878,7 @@ sh:target [
         sh:maxCount 2;
         sh:message "SpaceHeater";
         sh:message "A spaceheater must have minimum/maximum two flow ports";
-        sh:deactivated true
+        sh:deactivated false
     ]; 
     sh:property [
         sh:path fso:feedsFluidTo ;
@@ -862,7 +887,7 @@ sh:target [
         sh:maxCount 1;
         sh:message "SpaceHeater";
         sh:message "A spaceheater must feed fluid to minimum/maximum one component";
-        sh:deactivated true
+        sh:deactivated false
     ] ;
     sh:property [
         sh:path [sh:inversePath fso:feedsFluidTo] ;
@@ -871,7 +896,7 @@ sh:target [
         sh:maxCount 1;
         sh:message "SpaceHeater";
         sh:message "A spaceheater must be fed with fluid by minimum/maximum one component";
-        sh:deactivated true
+        sh:deactivated false
     ] ;
      sh:property [
         sh:path [sh:inversePath fso:hasComponent] ;
@@ -880,7 +905,7 @@ sh:target [
         sh:maxCount 2;
         sh:message "SpaceHeater";
         sh:message "A spaceheater must be connected to minimum/maximum one system";
-        sh:deactivated true
+        sh:deactivated false
     ] ; 
     sh:property [
         sh:path fpo:designHeatingPower ;
@@ -889,7 +914,7 @@ sh:target [
         sh:maxCount 1;
         sh:message "SpaceHeater";
         sh:message "Minimum/maximum one property of pressure curve must be present for a spaceheater";
-        sh:deactivated true
+        sh:deactivated false
     ] ;
      sh:property [
         sh:path fso:transfersHeatTo ;
@@ -898,7 +923,7 @@ sh:target [
         sh:maxCount 1;
         sh:message "SpaceHeater";
         sh:message "Minimum/maximum one property of transfers heat to must be present for a spaceheater";
-        sh:deactivated true
+        sh:deactivated false
     ].
 
     #BalacingValve validation
@@ -913,7 +938,7 @@ sh:target [
         sh:maxCount 2;
         sh:message "BalancingValve";
         sh:message "A balancing valve must have minimum/maximum two flow ports";
-        sh:deactivated true
+        sh:deactivated false
     ]; 
     sh:property [
         sh:path fso:feedsFluidTo ;
@@ -922,7 +947,7 @@ sh:target [
         sh:maxCount 1;
         sh:message "BalancingValve";
         sh:message "A balancing valve must feed fluid to minimum/maximum one component";
-        sh:deactivated true
+        sh:deactivated false
     ] ;
     sh:property [
         sh:path [sh:inversePath fso:feedsFluidTo] ;
@@ -931,7 +956,7 @@ sh:target [
         sh:maxCount 1;
         sh:message "BalancingValve";
         sh:message "A balancing valve must be fed with fluid by minimum/maximum one component";
-        sh:deactivated true
+        sh:deactivated false
     ] ;
      sh:property [
         sh:path [sh:inversePath fso:hasComponent] ;
@@ -940,7 +965,7 @@ sh:target [
         sh:maxCount 1;
         sh:message "BalancingValve";
         sh:message "A balancing valve must be connected to minimum/maximum one system";
-        sh:deactivated true
+        sh:deactivated false
     ] ; 
     sh:property [
         sh:path fpo:kv ;
@@ -949,7 +974,7 @@ sh:target [
         sh:maxCount 1;
         sh:message "BalancingValve";
         sh:message "Minimum/maximum one property of kv type must be present for a balancing valve";
-        sh:deactivated true
+        sh:deactivated false
     ] ;
      sh:property [
         sh:path fpo:kvs ;
@@ -958,7 +983,7 @@ sh:target [
         sh:maxCount 1;
         sh:message "BalancingValve";
         sh:message "Minimum/maximum one property of kvs must be present for a balancing valve";
-        sh:deactivated true
+        sh:deactivated false
     ].
 
     #BalacingDamper validation
@@ -973,7 +998,7 @@ sh:target [
         sh:maxCount 2;
         sh:message "BalancingDamper";
         sh:message "A balancing damper must have minimum/maximum two flow ports";
-        sh:deactivated true
+        sh:deactivated false
     ]; 
     sh:property [
         sh:path fso:feedsFluidTo ;
@@ -982,7 +1007,7 @@ sh:target [
         sh:maxCount 1;
         sh:message "BalancingDamper";
         sh:message "A balancing damper must feed fluid to minimum/maximum one component";
-        sh:deactivated true
+        sh:deactivated false
     ] ;
     sh:property [
         sh:path [sh:inversePath fso:feedsFluidTo] ;
@@ -991,7 +1016,7 @@ sh:target [
         sh:maxCount 1;
         sh:message "BalancingDamper";
         sh:message "A balancing damper must be fed with fluid by minimum/maximum one component";
-        sh:deactivated true
+        sh:deactivated false
     ] ;
      sh:property [
         sh:path [sh:inversePath fso:hasComponent] ;
@@ -1000,7 +1025,7 @@ sh:target [
         sh:maxCount 1;
         sh:message "BalancingDamper";
         sh:message "A balancing damper must be connected to minimum/maximum one system";
-        sh:deactivated true
+        sh:deactivated false
     ] ; 
     sh:property [
         sh:path fpo:kv ;
@@ -1009,7 +1034,7 @@ sh:target [
         sh:maxCount 1;
         sh:message "BalancingDamper";
         sh:message "Minimum/maximum one property of kv type must be present for a balancing damper";
-        sh:deactivated true
+        sh:deactivated false
     ] ;
      sh:property [
         sh:path fpo:kvs ;
@@ -1018,7 +1043,7 @@ sh:target [
         sh:maxCount 1;
         sh:message "BalancingDamper";
         sh:message "Minimum/maximum one property of kvs must be present for a balancing damper";
-        sh:deactivated true
+        sh:deactivated false
     ].
 
     #MotorizedValve validation
@@ -1033,7 +1058,7 @@ sh:target [
         sh:maxCount 2;
         sh:message "MotorizedValve";
         sh:message "A motorized valve must have minimum/maximum two flow ports";
-        sh:deactivated true
+        sh:deactivated false
     ]; 
     sh:property [
         sh:path fso:feedsFluidTo ;
@@ -1042,7 +1067,7 @@ sh:target [
         sh:maxCount 1;
         sh:message "MotorizedValve";
         sh:message "A motorized valve must feed fluid to minimum/maximum one component";
-        sh:deactivated true
+        sh:deactivated false
     ] ;
     sh:property [
         sh:path [sh:inversePath fso:feedsFluidTo] ;
@@ -1051,7 +1076,7 @@ sh:target [
         sh:maxCount 1;
         sh:message "MotorizedValve";
         sh:message "A motorized valve must be fed with fluid by minimum/maximum one component";
-        sh:deactivated true
+        sh:deactivated false
     ] ;
      sh:property [
         sh:path [sh:inversePath fso:hasComponent] ;
@@ -1060,7 +1085,7 @@ sh:target [
         sh:maxCount 1;
         sh:message "MotorizedValve";
         sh:message "A motorized valve must be connected to minimum/maximum one system";
-        sh:deactivated true
+        sh:deactivated false
     ] ; 
     sh:property [
         sh:path fpo:kv ;
@@ -1069,7 +1094,7 @@ sh:target [
         sh:maxCount 1;
         sh:message "MotorizedValve";
         sh:message "Minimum/maximum one property of kv type must be present for a motorized valve";
-        sh:deactivated true
+        sh:deactivated false
     ] ;
      sh:property [
         sh:path fpo:kvs ;
@@ -1078,7 +1103,7 @@ sh:target [
         sh:maxCount 1;
         sh:message "MotorizedValve";
         sh:message "Minimum/maximum one property of kvs must be present for a motorized valve";
-        sh:deactivated true
+        sh:deactivated false
     ].
 
     #MotorizedDamper validation
@@ -1093,7 +1118,7 @@ sh:target [
         sh:maxCount 2;
         sh:message "MotorizedDamper";
         sh:message "A motorized damper must have minimum/maximum two flow ports";
-        sh:deactivated true
+        sh:deactivated false
     ]; 
     sh:property [
         sh:path fso:feedsFluidTo ;
@@ -1102,7 +1127,7 @@ sh:target [
         sh:maxCount 1;
         sh:message "MotorizedDamper";
         sh:message "A motorized damper must feed fluid to minimum/maximum one component";
-        sh:deactivated true
+        sh:deactivated false
     ] ;
     sh:property [
         sh:path [sh:inversePath fso:feedsFluidTo] ;
@@ -1111,7 +1136,7 @@ sh:target [
         sh:maxCount 1;
         sh:message "MotorizedDamper";
         sh:message "A motorized damper must be fed with fluid by minimum/maximum one component";
-        sh:deactivated true
+        sh:deactivated false
     ] ;
      sh:property [
         sh:path [sh:inversePath fso:hasComponent] ;
@@ -1120,7 +1145,7 @@ sh:target [
         sh:maxCount 1;
         sh:message "MotorizedDamper";
         sh:message "A motorized damper must be connected to minimum/maximum one system";
-        sh:deactivated true
+        sh:deactivated false
     ] ; 
     sh:property [
         sh:path fpo:kv ;
@@ -1129,7 +1154,7 @@ sh:target [
         sh:maxCount 1;
         sh:message "MotorizedDamper";
         sh:message "Minimum/maximum one property of kv type must be present for a motorized damper";
-        sh:deactivated true
+        sh:deactivated false
     ] ;
      sh:property [
         sh:path fpo:kvs ;
@@ -1138,7 +1163,7 @@ sh:target [
         sh:maxCount 1;
         sh:message "MotorizedDamper";
         sh:message "Minimum/maximum one property of kvs must be present for a motorized damper";
-        sh:deactivated true
+        sh:deactivated false
     ].
 
 
@@ -1159,7 +1184,7 @@ sh:target [
         sh:maxCount 3;
         sh:message "Tee";
         sh:message "A tee must have minimum/maximum three flow ports";
-        sh:deactivated true
+        sh:deactivated false
     ]; 
     sh:property [
         sh:path fso:feedsFluidTo ;
@@ -1168,7 +1193,7 @@ sh:target [
         sh:maxCount 2;
         sh:message "Tee";
         sh:message "A tee must feed fluid to minimum/maximum two components";
-        sh:deactivated true
+        sh:deactivated false
     ] ;
      sh:property [
         sh:path [sh:inversePath fso:hasComponent] ;
@@ -1177,7 +1202,7 @@ sh:target [
         sh:maxCount 1;
         sh:message "Tee";
         sh:message "A tee must be connected to minimum/maximum one system";
-        sh:deactivated true
+        sh:deactivated false
     ] ; 
     sh:property [
         sh:path fpo:materialType ;
@@ -1186,7 +1211,7 @@ sh:target [
         sh:maxCount 1;
         sh:message "Tee";
         sh:message "Minimum/maximum one property of material type must be present for a tee";
-        sh:deactivated true
+        sh:deactivated false
     ] ;
      .
 
@@ -1207,7 +1232,7 @@ sh:target [
         sh:maxCount 3;
         sh:message "Tee";
         sh:message "A tee must have minimum/maximum three flow ports";
-        sh:deactivated true
+        sh:deactivated false
     ]; 
     sh:property [
         sh:path fso:feedsFluidTo ;
@@ -1216,7 +1241,7 @@ sh:target [
         sh:maxCount 1;
         sh:message "Tee";
         sh:message "A tee must feed fluid to minimum/maximum two components";
-        sh:deactivated true
+        sh:deactivated false
     ] ;
     sh:property [
         sh:path [sh:inversePath fso:feedsFluidTo] ;
@@ -1224,7 +1249,7 @@ sh:target [
         sh:minCount 2;
         sh:message "Tee";
         sh:message "A tee must be fed with fluid by minimum/maximum two components";
-        sh:deactivated true
+        sh:deactivated false
     ] ;
      sh:property [
         sh:path [sh:inversePath fso:hasComponent] ;
@@ -1233,7 +1258,7 @@ sh:target [
         sh:maxCount 1;
         sh:message "Tee";
         sh:message "A tee must be connected to minimum/maximum one system";
-        sh:deactivated true
+        sh:deactivated false
     ] ; 
     sh:property [
         sh:path fpo:materialType ;
@@ -1242,7 +1267,7 @@ sh:target [
         sh:maxCount 1;
         sh:message "Tee";
         sh:message "Minimum/maximum one property of material type must be present for a tee";
-        sh:deactivated true
+        sh:deactivated false
     ] ;
      .
 
@@ -1262,7 +1287,7 @@ sh:target [
         sh:maxCount 2;
         sh:message "AirTerminal";
         sh:message "An airterminal must have minimum/maximum one flow port";
-        sh:deactivated true
+        sh:deactivated false
     ]; 
     sh:property [
         sh:path [sh:inversePath fso:feedsFluidTo] ;
@@ -1271,7 +1296,7 @@ sh:target [
         sh:maxCount 1;
         sh:message "AirTerminal";
         sh:message "An airterminal must be fed with fluid by minimum/maximum one component";
-        sh:deactivated true
+        sh:deactivated false
     ] ;
      sh:property [
         sh:path [sh:inversePath fso:hasComponent] ;
@@ -1280,7 +1305,7 @@ sh:target [
         sh:maxCount 1;
         sh:message "AirTerminal";
         sh:message "An airterminal must be connected to minimum/maximum one system";
-        sh:deactivated true
+        sh:deactivated false
     ] ; 
     sh:property [
         sh:path fpo:airTerminalType ;
@@ -1289,7 +1314,7 @@ sh:target [
         sh:maxCount 1;
         sh:message "AirTerminal";
         sh:message "Minimum/maximum one property of airterminal type must be present for an airterminal";
-        sh:deactivated true
+        sh:deactivated false
     ]
      .
 
@@ -1311,7 +1336,7 @@ sh:target [
         sh:maxCount 2;
         sh:message "AirTerminal";
         sh:message "An airterminal must have minimum/maximum one flow port";
-        sh:deactivated true
+        sh:deactivated false
     ]; 
     sh:property [
         sh:path fso:feedsFluidTo ;
@@ -1320,7 +1345,7 @@ sh:target [
         sh:maxCount 1;
         sh:message "AirTerminal";
         sh:message "An airterminal must feed fluid to minimum/maximum one component";
-        sh:deactivated true
+        sh:deactivated false
     ] ;
      sh:property [
         sh:path [sh:inversePath fso:hasComponent] ;
@@ -1329,7 +1354,7 @@ sh:target [
         sh:maxCount 1;
         sh:message "AirTerminal";
         sh:message "An airterminal must be connected to minimum/maximum one system";
-        sh:deactivated true
+        sh:deactivated false
     ] ; 
     sh:property [
         sh:path fpo:airTerminalType ;
@@ -1338,6 +1363,6 @@ sh:target [
         sh:maxCount 1;
         sh:message "AirTerminal";
         sh:message "Minimum/maximum one property of airterminal type must be present for an airterminal";
-        sh:deactivated true
+        sh:deactivated false
     ]
      .
