@@ -28,13 +28,10 @@ where {
   ?port fpo:pressureDrop ?pressureDrop .  
   ?pressureDrop fpo:value ?returnValue .
   
-  #Select only port that is part of that system
-  filter not exists {
   ?port fso:suppliesFluidTo ?connectedPort .
-  ?connectedComponent fso:hasPort ?connectedPort .
-  ?connectedComponent fso:feedsFluidTo+ ?terminal .
-  ?connectedComponent a fpo:Tee .
-  }
+  ?connectedComponent fso:hasPort ?connectedPort .    
+  ?system fso:hasComponent ?connectedComponent .
+      
   } group by ?fan ?terminal}
   union
 {
@@ -57,4 +54,4 @@ where {
   ?pressureDrop fpo:value ?returnValue .
     } group by ?fan ?terminal
   }
-  }group by ?fan 
+  } group by ?fan 

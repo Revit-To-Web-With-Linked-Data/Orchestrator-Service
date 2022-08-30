@@ -393,39 +393,39 @@ router.get('/validationOverviewGraph', (req, res) => {
 //         });
 // });
 
-router.post('/Bot', (req, res, next) => {
-    console.log(typeof req.body);
-    const Bot = req.body;
-    // var data ='@prefix ex: <https://example.com/ex#> .\r\n@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\r\n\r\n\r\nex:Alice\r\n\ta ex:Person ;\r\n\tex:ssn "987-65-432A" .\r\n  \r\nex:Bob\r\n\ta ex:Person ;\r\n\tex:ssn "123-45-6789" ;\r\n\tex:ssn "124-35-6789" .\r\n  \r\nex:Calvin\r\n\ta ex:Person ;\r\n\tex:birthDate "1971-07-07"^^xsd:date ;\r\n\tex:worksFor ex:UntypedCompany .';
-    axios
-        .post('http://localhost:3030/ny-db/data', Bot, {
-            headers: {
-                'Content-Type': 'text/turtle',
-            },
-            maxContentLength: Infinity,
-            maxBodyLength: Infinity,
-        })
-        .then(function (response) {
-            console.log(JSON.stringify(response.data));
-        })
-        .catch(function (error) {
-            console.log(error);
-        });
-});
+// router.post('/Bot', (req, res, next) => {
+//     console.log(typeof req.body);
+//     const Bot = req.body;
+//     // var data ='@prefix ex: <https://example.com/ex#> .\r\n@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\r\n\r\n\r\nex:Alice\r\n\ta ex:Person ;\r\n\tex:ssn "987-65-432A" .\r\n  \r\nex:Bob\r\n\ta ex:Person ;\r\n\tex:ssn "123-45-6789" ;\r\n\tex:ssn "124-35-6789" .\r\n  \r\nex:Calvin\r\n\ta ex:Person ;\r\n\tex:birthDate "1971-07-07"^^xsd:date ;\r\n\tex:worksFor ex:UntypedCompany .';
+//     axios
+//         .post('http://localhost:3030/ny-db/data', Bot, {
+//             headers: {
+//                 'Content-Type': 'text/turtle',
+//             },
+//             maxContentLength: Infinity,
+//             maxBodyLength: Infinity,
+//         })
+//         .then(function (response) {
+//             console.log(JSON.stringify(response.data));
+//         })
+//         .catch(function (error) {
+//             console.log(error);
+//         });
+// });
 
-router.post('/clearGraph', (req, res) => {
-    axios
-        .post('http://localhost:3030/ny-db/update', clearData, {
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
-        })
-        .then(function (response) {
-            console.log(JSON.stringify(response.data));
-        })
-        .catch(function (error) {
-            console.log(error);
-        });
-});
+// router.post('/clearGraph', (req, res) => {
+//     axios
+//         .post('http://localhost:3030/ny-db/update', clearData, {
+//             headers: {
+//                 'Content-Type': 'application/x-www-form-urlencoded',
+//             },
+//         })
+//         .then(function (response) {
+//             console.log(JSON.stringify(response.data));
+//         })
+//         .catch(function (error) {
+//             console.log(error);
+//         });
+// });
 
 module.exports = router;
