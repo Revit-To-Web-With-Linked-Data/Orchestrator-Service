@@ -6,9 +6,11 @@ var qs = require('qs');
 const { clear } = require('console');
 
 let AllShapes = fs.readFileSync('./public/ShaclShapes/AllShapes.ttl', 'utf8');
+let HydraulicShapes = fs.readFileSync('./public/ShaclShapes/HydraulicShapes.ttl', 'utf8');
 
 let baseUrl = 'http://localhost:3030/ny-db/query?query=';
 let baseUpdateURL = 'http://localhost:3030/ny-db/update';
+let baseDataURL = 'http://localhost:3030/ny-db/data';
 
 // Clear graph
 let clearData = qs.stringify({
@@ -21,7 +23,160 @@ let FlowMovingDeviceFlowRateQuery =
 let FanPressureDrop = baseUrl + encodeURIComponent(fs.readFileSync('./public/Queries/FanPressureDrop.ttl'));
 let PumpPressureDrop = baseUrl + encodeURIComponent(fs.readFileSync('./public/Queries/PumpPressureDrop.ttl'));
 
-//Get all rooms at /
+let TeeConstruct = baseUrl + encodeURIComponent(fs.readFileSync('./public/Queries/TeeConstruct.ttl'));
+
+let TeeDistributionComponents =
+    baseDataURL + encodeURIComponent(fs.readFileSync('./public/jsonld/distributionComponents.json'));
+
+router.get('/hydraulicCalculation', (req, res) => {
+    //Get all Tee components and their meta-data from the database
+    axios
+        .get(TeeConstruct, {
+            headers: {
+                Accept: 'application/ld+json',
+            },
+        })
+        .then((response) => {
+            //Send tee components to hydraulic service. Perform hydraulic calculation and get the pressure drop as result.
+            axios
+                .post('http://localhost:8000/pipes', response.data)
+                .then((response) => {
+                    //Send hydraulic results to database
+                    let data = JSON.parse(response.data);
+                    axios
+                        .post('http://localhost:3030/ny-db/data', data, {
+                            headers: {
+                                'Content-Type': 'application/ld+json',
+                            },
+                        })
+                        .then((response) => {
+                            //console.log(JSON.stringify(response.data));
+                            axios
+                                .post('http://localhost:3030/ny-db/shacl?graph=default', HydraulicShapes, {
+                                    headers: {
+                                        'Content-Type': 'text/turtle',
+                                        Accept: 'application/ld+json',
+                                    },
+                                })
+                                .then((response) => {
+                                    //res.send(response.data)
+                                    let total = 0;
+                                    let HeatExchanger = 0;
+                                    let Tee = 0;
+                                    let Transition = 0;
+                                    let Pipe = 0;
+                                    let Duct = 0;
+                                    let Elbow = 0;
+                                    let Pump = 0;
+                                    let Fan = 0;
+                                    let Port = 0;
+                                    let Flow = 0;
+                                    let Property = 0;
+                                    let System = 0;
+                                    let SpaceHeater = 0;
+                                    let Valve = 0;
+                                    let Damper = 0;
+                                    let AirTerminal = 0;
+
+                                    for (let index in response.data['@graph']) {
+                                        if (response.data['@graph'][index].resultMessage != null) {
+                                            if (response.data['@graph'][index].resultMessage[0] == 'HeatExchanger') {
+                                                HeatExchangerCounter++;
+                                            }
+                                            if (response.data['@graph'][index].resultMessage[0] == 'Transition') {
+                                                Transition++;
+                                            }
+                                            if (response.data['@graph'][index].resultMessage[0] == 'Pipe') {
+                                                Pipe++;
+                                            }
+                                            if (response.data['@graph'][index].resultMessage[0] == 'Duct') {
+                                                Duct++;
+                                            }
+                                            if (response.data['@graph'][index].resultMessage[0] == 'Elbow') {
+                                                Elbow++;
+                                            }
+                                            if (response.data['@graph'][index].resultMessage[0] == 'Pump') {
+                                                Pump++;
+                                            }
+                                            if (response.data['@graph'][index].resultMessage[0] == 'Fan') {
+                                                Fan++;
+                                            }
+                                            if (response.data['@graph'][index].resultMessage[0] == 'Port') {
+                                                Port++;
+                                            }
+                                            if (response.data['@graph'][index].resultMessage[0] == 'Flow') {
+                                                Flow++;
+                                            }
+                                            if (response.data['@graph'][index].resultMessage[0] == 'Property') {
+                                                Property++;
+                                            }
+                                            if (response.data['@graph'][index].resultMessage[0] == 'System') {
+                                                System++;
+                                            }
+                                            if (response.data['@graph'][index].resultMessage[0] == 'SpaceHeater') {
+                                                SpaceHeater++;
+                                            }
+                                            if (
+                                                response.data['@graph'][index].resultMessage[0] == 'BalancingValve' ||
+                                                response.data['@graph'][index].resultMessage[0] == 'MotorizedValve'
+                                            ) {
+                                                Valve++;
+                                            }
+                                            if (
+                                                response.data['@graph'][index].resultMessage[0] == 'BalancingDamper' ||
+                                                response.data['@graph'][index].resultMessage[0] == 'MotorizedDamper'
+                                            ) {
+                                                Damper++;
+                                            }
+                                            if (response.data['@graph'][index].resultMessage[0] == 'Tee') {
+                                                Tee++;
+                                            }
+                                            if (response.data['@graph'][index].resultMessage[0] == 'AirTerminal') {
+                                                AirTerminal++;
+                                            }
+                                            total++;
+                                        }
+                                    }
+
+                                    let shaclObjects = {
+                                        result: [
+                                            { type: 'HeatExchanger', amount: HeatExchanger },
+                                            { type: 'Transition', amount: Transition },
+                                            { type: 'Tee', amount: Tee },
+                                            { type: 'Elbow', amount: Elbow },
+                                            { type: 'Pipe', amount: Pipe },
+                                            { type: 'Duct', amount: Duct },
+                                            { type: 'Pump', amount: Pump },
+                                            { type: 'Fan', amount: Fan },
+                                            { type: 'SpaceHeater', amount: SpaceHeater },
+                                            { type: 'AirTerminal', amount: AirTerminal },
+                                            { type: 'Valve', amount: Valve },
+                                            { type: 'Damper', amount: Damper },
+                                            { type: 'Port', amount: Port },
+                                            { type: 'Flow', amount: Flow },
+                                            { type: 'Property', amount: Property },
+                                            { type: 'System', amount: System },
+                                            { type: 'Total', amount: total },
+                                        ],
+                                    };
+                                    res.send(shaclObjects);
+                                })
+                                .catch((error) => {
+                                    console.log(error);
+                                });
+                        })
+                        .catch((error) => {
+                            console.log(error);
+                        });
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+        })
+        .catch((error) => {
+            console.log(error);
+        });
+});
 router.get('/flowHeadTable', (req, res, next) => {
     axios
         .all([
@@ -109,7 +264,6 @@ router.get('/validationGraph', (req, res) => {
                 Total: [],
             }; //
             console.log(response.data['@graph']);
-            //res.send(response.data)
             let counter = Object.keys(response.data['@graph']).length;
             for (let index in response.data['@graph']) {
                 if (response.data['@graph'][index].resultMessage != null) {
@@ -247,10 +401,11 @@ router.get('/validationGraph', (req, res) => {
                         });
                     if (response.data['@graph'][index].resultMessage != null) {
                         shaclObject.Total.push({
-                        id: `${response.data['@graph'][index].focusNode}`,
-                        constrainType: `${response.data['@graph'][index].sourceConstraintComponent}`,
-                        description: `${response.data['@graph'][index].resultMessage[1]}`,
-                    }); }
+                            id: `${response.data['@graph'][index].focusNode}`,
+                            constrainType: `${response.data['@graph'][index].sourceConstraintComponent}`,
+                            description: `${response.data['@graph'][index].resultMessage[1]}`,
+                        });
+                    }
                 }
             }
             shaclObjects = { shaclObject };
@@ -377,41 +532,38 @@ router.get('/validationOverviewGraph', (req, res) => {
         });
 });
 
-//Add Data from Revit to Database
+// // Add Data from Revit to Database
 // router.post('/Bot', (req, res, next) => {
-//     console.log(typeof req.body);
-//   const Bot = JSON.stringify(req.body);
-//   const test ="@prefix ex: <https://example.com/ex#> ."
-//     axios
-//         .post('http://localhost:3030/ny-db/data', {
-//             headers: {
-//                 'Content-Type': 'text/turtle',
-//             },data:test
-//         })
-//         .catch((err) => {
-//             console.log(err.response.data);
-//         });
+//     console.log(req.body);
+//     // axios
+//     //     .post('http://localhost:3030/ny-db/data', {
+//     //         headers: {
+//     //             'Content-Type': 'text/turtle',
+//     //         },data:res.body
+//     //     })
+//     //     .catch((err) => {
+//     //         console.log(err.response.data);
+//     //     });
 // });
 
-// router.post('/Bot', (req, res, next) => {
-//     console.log(typeof req.body);
-//     const Bot = req.body;
-//     // var data ='@prefix ex: <https://example.com/ex#> .\r\n@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\r\n\r\n\r\nex:Alice\r\n\ta ex:Person ;\r\n\tex:ssn "987-65-432A" .\r\n  \r\nex:Bob\r\n\ta ex:Person ;\r\n\tex:ssn "123-45-6789" ;\r\n\tex:ssn "124-35-6789" .\r\n  \r\nex:Calvin\r\n\ta ex:Person ;\r\n\tex:birthDate "1971-07-07"^^xsd:date ;\r\n\tex:worksFor ex:UntypedCompany .';
-//     axios
-//         .post('http://localhost:3030/ny-db/data', Bot, {
-//             headers: {
-//                 'Content-Type': 'text/turtle',
-//             },
-//             maxContentLength: Infinity,
-//             maxBodyLength: Infinity,
-//         })
-//         .then(function (response) {
-//             console.log(JSON.stringify(response.data));
-//         })
-//         .catch(function (error) {
-//             console.log(error);
-//         });
-// });
+router.post('/Bot', (req, res, next) => {
+    console.log(typeof req.body);
+    const Bot = req.body;
+    axios
+        .post('http://localhost:3030/ny-db/data', Bot, {
+            headers: {
+                'Content-Type': 'text/turtle',
+            },
+            maxContentLength: Infinity,
+            maxBodyLength: Infinity,
+        })
+        .then(function (response) {
+            console.log(JSON.stringify(response.data));
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+});
 
 // router.post('/clearGraph', (req, res) => {
 //     axios
