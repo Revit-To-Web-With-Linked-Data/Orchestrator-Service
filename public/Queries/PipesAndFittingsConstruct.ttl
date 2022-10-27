@@ -1,0 +1,57 @@
+PREFIX ex: <https://example.com/ex#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX fso: <http://w3id.org/fso#> 
+PREFIX fpo: <http://w3id.org/fpo#>
+PREFIX fo: <http://www.w3.org/1999/XSL/Format#>
+PREFIX ec: <http://eulergui.sourceforge.net/contacts.owl.n3#>
+construct{?port 
+    fpo:flowType ?fluidType;
+    fpo:temperature ?temperature ;
+    a ?type ;
+    fpo:velocity ?velocity;
+    fpo:roughness ?roughness;
+    fpo:flowRate ?flowRate;
+    fpo:length	?length ;
+  	fpo:outerDiameter ?outerDiameter ;
+  	fpo:angle ?angle ;
+    fso:hasSystem ?systemType ;
+    fpo:innerDiameter ?inletOuterDiameter ;
+   	ex:RevitID ?RevitID ;
+  	fpo:outerDiameter ?RectOuterDiameter
+} WHERE {
+  ?system fso:hasFlow ?fluid .
+  ?system a ?systemType .
+  ?fluid fpo:flowType/fpo:value ?fluidType .
+  ?fluid fpo:temperature/fpo:value ?temperature .
+  ?system fso:hasComponent ?component .
+  VALUES ?componentTypes {fso:Pipe fso:Duct fso:Elbow fso:Transition} ?component a ?componentTypes .
+  ?component a ?type .
+  optional {?component fpo:roughness/fpo:value ?roughness .}
+  ?component ex:RevitID ?RevitID .
+  ?component fso:hasPort ?port . 
+  ?port	fpo:flowDirection/fpo:value "Out" .
+  optional {?port fpo:outerDiameter/fpo:value ?outerDiameter .}
+  optional {
+   	?port fpo:height/fpo:value ?nheight .
+    ?port fpo:width/fpo:value ?nwidth .
+    BIND((2*?nheight*?nwidth)/(?nheight+?nwidth) as ?outerDiameter)
+  }
+  ?port fpo:flowRate/fpo:value ?flowRate .
+  ?port fpo:velocity/fpo:value ?velocity .
+  optional{?component fpo:length/fpo:value ?length .}
+  optional{?component fpo:angle/fpo:value ?angle .}
+  optional {
+    ?component fso:hasPort ?inletPort . 
+    ?inletPort fpo:flowDirection/fpo:value "In" .
+    ?inletPort fpo:outerDiameter/fpo:value ?inletOuterDiameter .
+    FILTER ( ?componentTypes = fso:Transition ) 
+  }
+  optional {
+    ?component fso:hasPort ?inletPort . 
+    ?inletPort fpo:flowDirection/fpo:value "In" .
+   	?inletPort fpo:height/fpo:value ?height .
+    ?inletPort fpo:width/fpo:value ?width .
+    BIND((2*?height*?width)/(?height+?width) as ?inletOuterDiameter)
+  }
+}

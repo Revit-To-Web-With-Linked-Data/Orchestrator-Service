@@ -31,7 +31,6 @@ WHERE {
   VALUES ?componentType {fso:Tee} ?component a ?componentType .
   ?component fso:hasPort ?port . 
   ?port	fpo:flowDirection/fpo:value ?flowDirection.
-  optional {?port fpo:pressureDrop ?pressureDrop .}
   ?port fpo:flowRate/fpo:value ?flowRate .
   ?port fpo:velocity/fpo:value ?velocity .
   optional {?port ex:hasFlowDirectionVectorZ/fpo:value ?flowDirectionVectorZ.}

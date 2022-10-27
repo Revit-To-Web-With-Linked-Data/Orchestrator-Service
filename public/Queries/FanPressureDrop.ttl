@@ -1,25 +1,25 @@
+PREFIX ex: <https://example.com/ex#>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX ex: <https://example.com/ex#>
-PREFIX fo: <http://purl.org/ontology/fo/>
-PREFIX bot: <https://w3id.org/bot#>
+PREFIX fso: <http://w3id.org/fso#> 
 PREFIX fpo: <http://w3id.org/fpo#>
-PREFIX fso: <http://w3id.org/fso#>
+PREFIX fo: <http://www.w3.org/1999/XSL/Format#>
+PREFIX ec: <http://eulergui.sourceforge.net/contacts.owl.n3#>
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-PREFIX inst: <https://example.com/inst#> 
+PREFIX inst: <https://example.com/inst#>
+
 select ?fan (Max(?sumOfPressureDrop)*0.00010199773339984 as ?head)
 where{
   
   {#Supply Fan
  select ?fan ?terminal( sum(?returnValue)  as ?sumOfPressureDrop) 
 where {
-   ?fan a fpo:Fan .
-  VALUES ?terminalType {fpo:AirTerminal}
+   ?fan a fso:Fan .
+  VALUES ?terminalType {fso:AirTerminal}
   ?terminal a ?terminalType .  
   ?system fso:hasComponent ?fan .
   ?component fso:feedsFluidTo+ ?terminal . 
-  ?system fso:hasComponent ?component .
-  ?system fso:hasComponent ?fan, ?terminal .
+  ?system fso:hasComponent ?fan, ?terminal, ?component .
   
   #Get the pressuredrop value of each component
   ?component fso:hasPort ?port .
@@ -35,16 +35,15 @@ where {
   } group by ?fan ?terminal}
   union
 {
-#Return Fan
- select ?fan ?terminal( sum(?returnValue)  as ?sumOfPressureDrop) 
+#Return Fan do not have heat exchanger in revit for simplicity thats why we have added 5220 as value 
+ select ?fan ?terminal( sum(?returnValue)+5220  as ?sumOfPressureDrop) 
 where {
-  ?fan a fpo:Fan .
-  VALUES ?terminalType {fpo:AirTerminal}
+  ?fan a fso:Fan .
+  VALUES ?terminalType {fso:AirTerminal}
   ?terminal a ?terminalType .  
   ?system fso:hasComponent ?fan .
   ?component ^fso:feedsFluidTo+ ?terminal . 
-  ?system fso:hasComponent ?component .
-  ?system fso:hasComponent ?fan, ?terminal .
+  ?system fso:hasComponent ?fan, ?terminal, ?component .
   
   #Get the pressuredrop value of each component
   ?component fso:hasPort ?port .

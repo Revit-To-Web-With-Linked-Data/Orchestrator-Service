@@ -1,0 +1,17 @@
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX ex: <https://example.com/ex#>
+PREFIX bot: <https://w3id.org/bot#>
+PREFIX fpo: <http://w3id.org/fpo#>
+PREFIX fso: <http://w3id.org/fso#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX inst: <https://example.com/inst#> 
+PREFIX fo: <http://www.w3.org/1999/XSL/Format#>
+delete {?a fpo:value ?value }
+insert {?a fpo:value "1"^^xsd:double}
+where
+{
+  ?a a fpo:Kv .
+  ?a fpo:value ?value
+  filter (?value <=0)
+};

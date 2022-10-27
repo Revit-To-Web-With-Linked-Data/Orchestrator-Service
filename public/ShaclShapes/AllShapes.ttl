@@ -12,7 +12,7 @@
     fsosh:HeatExchanger
     a sh:NodeShape;
     sh:nodeKind sh:IRI ;
-    sh:targetClass fpo:HeatExchanger ;
+    sh:targetClass fso:HeatExchanger ;
     sh:property[
         sh:path fso:hasPort ;
         sh:dataType xsd:anyURI;
@@ -59,7 +59,7 @@
     fsosh:Transition
     a sh:NodeShape;
     sh:nodeKind sh:IRI ;
-    sh:targetClass fpo:Transition ;
+    sh:targetClass fso:Transition ;
     sh:property[
         sh:path fso:hasPort ;
         sh:dataType xsd:anyURI;
@@ -173,37 +173,11 @@
         sh:deactivated false
     ] .
 
-    
-#The pressure drop of a pipe
-    fsosh:PipePressureDrop
-    a sh:NodeShape;
-    sh:nodeKind sh:IRI ;
-    sh:targetClass fpo:Pipe ;
-    sh:message "Pipe";
-    sh:message "The pressure drop of a pipe shall not exceed 100 Pa/m";
-    sh:sparql  [
-        a sh:sh:SPARQLConstraint  ;
-        sh:prefixes (fpo: fso: inst:) ;
-        sh:select """PREFIX fso: <http://w3id.org/fso#> PREFIX fpo: <http://w3id.org/fpo#> PREFIX inst: <https://example.com/inst#>
-        SELECT ?this ?value
-        WHERE {
-            ?this a fpo:Pipe . 
-            ?this fpo:length ?length .
-            ?length fpo:value ?lengthvalue .
-            ?this fso:hasPort ?port .
-            ?port fpo:flowDirection ?flowDirection .
-            ?flowDirection fpo:value "Out" .
-            ?port fpo:pressureDrop ?pressureDrop .
-            ?pressureDrop fpo:value ?pressureDropValue .
-            bind ((?pressureDropValue / ?lengthvalue) as ?value) .
-            filter (?value > 100)} """ ; 
-  ] .
-
     #Duct validation
     fsosh:Duct
     a sh:NodeShape;
     sh:nodeKind sh:IRI ;
-    sh:targetClass fpo:Duct ;
+    sh:targetClass fso:Duct ;
     sh:property[
         sh:path fso:hasPort ;
         sh:dataType xsd:anyURI;
@@ -271,7 +245,7 @@
     fsosh:Elbow
     a sh:NodeShape;
     sh:nodeKind sh:IRI ;
-    sh:targetClass fpo:Elbow ;
+    sh:targetClass fso:Elbow ;
     sh:property[
         sh:path fso:hasPort ;
         sh:dataType xsd:anyURI;
@@ -332,7 +306,7 @@
     fsosh:Pump
     a sh:NodeShape;
     sh:nodeKind sh:IRI ;
-    sh:targetClass fpo:Pump ;
+    sh:targetClass fso:Pump ;
     sh:property[
         sh:path fso:hasPort ;
         sh:dataType xsd:anyURI;
@@ -392,7 +366,7 @@
     fsosh:Fan
     a sh:NodeShape;
     sh:nodeKind sh:IRI ;
-    sh:targetClass fpo:Fan ;
+    sh:targetClass fso:Fan ;
     sh:property[
         sh:path fso:hasPort ;
         sh:dataType xsd:anyURI;
@@ -523,7 +497,7 @@ sh:target [
         sh:maxCount 1;
         sh:message "Port";
         sh:message "Exactly one property of pressure drop must be present for an outlet port";
-        sh:deactivated false
+        sh:deactivated true
     ] ;    
     sh:property [
         sh:path fpo:flowRate ;
@@ -532,7 +506,7 @@ sh:target [
         sh:maxCount 1;
         sh:message "Port";
         sh:message "Exactly one property of flow rate must be present for an outlet port";
-        sh:deactivated false
+        sh:deactivated true
     ] ; 
     sh:property [
         sh:path fpo:velocity ;
@@ -541,7 +515,7 @@ sh:target [
         sh:maxCount 1;
         sh:message "Port";
         sh:message "Exactly one property of flow velocity must be present for an outlet port";
-        sh:deactivated false
+        sh:deactivated true
     ].
 
 #Flow validation
@@ -573,7 +547,7 @@ sh:target [
         sh:hasValue "Pascal"^^xsd:string ;
         sh:message "Property";
         sh:message "The property pressure drop must have exactly one unit and its unit must be in Pascal";
-        sh:deactivated false 
+        sh:deactivated true 
     ] ;
     sh:property [
         sh:path fpo:value ;
@@ -601,7 +575,7 @@ sh:target [
         sh:hasValue "Meters per second"^^xsd:string ;
         sh:message "Property";
         sh:message "The property velocity must have exactly one unit and its unit must be in meters per second";
-        sh:deactivated false 
+        sh:deactivated true 
     ] ;
     sh:property [
         sh:path fpo:value ;
@@ -611,7 +585,7 @@ sh:target [
         sh:dataType xsd:double ;
         sh:message "Property";
         sh:message "The property velocity must have exactly one value and its value must be above 0.001";
-        sh:deactivated false 
+        sh:deactivated true 
     ]; .
 
 
@@ -628,7 +602,7 @@ sh:target [
         sh:hasValue "Liters per second"^^xsd:string ;
         sh:message "Property";
         sh:message "The property flow rate must have exactly one unit and its unit must be in liters per second";
-        sh:deactivated false 
+        sh:deactivated true 
     ] ;
     sh:property [
         sh:path fpo:value ;
@@ -638,7 +612,7 @@ sh:target [
         sh:dataType xsd:double ;
         sh:message "Property";
         sh:message "The property flow rate must have exactly one value and its value must be above 0.001";
-        sh:deactivated false 
+        sh:deactivated true 
     ]; .
 
     #OuterDiameter validation
@@ -807,7 +781,7 @@ sh:target [
     fsosh:AirTerminalType
     a sh:NodeShape;
     sh:nodeKind sh:IRI ;
-    sh:targetClass fpo:AirTerminalType ;
+    sh:targetClass fso:AirTerminalType ;
     sh:property [
         sh:path fpo:value ;
         sh:minCount 1;
@@ -871,7 +845,7 @@ sh:target [
     fsosh:SpaceHeater
     a sh:NodeShape;
     sh:nodeKind sh:IRI ;
-    sh:targetClass fpo:SpaceHeater ;
+    sh:targetClass fso:SpaceHeater ;
     sh:property[
         sh:path fso:hasPort ;
         sh:dataType xsd:anyURI;
@@ -931,7 +905,7 @@ sh:target [
     fsosh:BalancingValve
     a sh:NodeShape;
     sh:nodeKind sh:IRI ;
-    sh:targetClass fpo:BalancingValve ;
+    sh:targetClass fso:BalancingValve ;
     sh:property[
         sh:path fso:hasPort ;
         sh:dataType xsd:anyURI;
@@ -991,7 +965,7 @@ sh:target [
     fsosh:BalacingDamper
     a sh:NodeShape;
     sh:nodeKind sh:IRI ;
-    sh:targetClass fpo:BalancingDamper ;
+    sh:targetClass fso:BalancingDamper ;
     sh:property[
         sh:path fso:hasPort ;
         sh:dataType xsd:anyURI;
@@ -1051,7 +1025,7 @@ sh:target [
     fsosh:MotorizedValve
     a sh:NodeShape;
     sh:nodeKind sh:IRI ;
-    sh:targetClass fpo:MotorizedValve ;
+    sh:targetClass fso:MotorizedValve ;
     sh:property[
         sh:path fso:hasPort ;
         sh:dataType xsd:anyURI;
@@ -1111,7 +1085,7 @@ sh:target [
     fsosh:MotorizedDamper
     a sh:NodeShape;
     sh:nodeKind sh:IRI ;
-    sh:targetClass fpo:MotorizedDamper ;
+    sh:targetClass fso:MotorizedDamper ;
     sh:property[
         sh:path fso:hasPort ;
         sh:dataType xsd:anyURI;
@@ -1176,7 +1150,7 @@ sh:target [
         a sh:SPARQLTarget ;
         sh:prefixes (fpo: fso: ex:) ;
         sh:select """PREFIX fso: <http://w3id.org/fso#> PREFIX fpo: <http://w3id.org/fpo#> prefix ex: <https://example.com/ex#> 
-        SELECT ?this WHERE {?system a fso:SupplySystem .?system fso:hasComponent ?this .?this a fpo:Tee} """ ;
+        SELECT ?this WHERE {?system a fso:SupplySystem .?system fso:hasComponent ?this .?this a fso:Tee} """ ;
   ];
    sh:property[
         sh:path fso:hasPort ;
@@ -1224,7 +1198,7 @@ sh:target [
         a sh:SPARQLTarget ;
         sh:prefixes (fpo: fso: ex:) ;
         sh:select """PREFIX fso: <http://w3id.org/fso#> PREFIX fpo: <http://w3id.org/fpo#> prefix ex: <https://example.com/ex#> 
-        SELECT ?this WHERE {?system a fso:ReturnSystem .?system fso:hasComponent ?this .?this a fpo:Tee} """ ;
+        SELECT ?this WHERE {?system a fso:ReturnSystem .?system fso:hasComponent ?this .?this a fso:Tee} """ ;
   ];
    sh:property[
         sh:path fso:hasPort ;
@@ -1280,7 +1254,7 @@ sh:target [
         a sh:SPARQLTarget ;
         sh:prefixes (fpo: fso: ex:) ;
         sh:select """PREFIX fso: <http://w3id.org/fso#> PREFIX fpo: <http://w3id.org/fpo#> prefix ex: <https://example.com/ex#> 
-        SELECT ?this WHERE {?system a fso:SupplySystem .?system fso:hasComponent ?this .?this a fpo:AirTerminal} """ ;
+        SELECT ?this WHERE {?system a fso:SupplySystem .?system fso:hasComponent ?this .?this a fso:AirTerminal} """ ;
   ];sh:property[
         sh:path fso:hasPort ;
         sh:dataType xsd:anyURI;
@@ -1329,7 +1303,7 @@ sh:target [
         a sh:SPARQLTarget ;
         sh:prefixes (fpo: fso: ex:) ;
         sh:select """PREFIX fso: <http://w3id.org/fso#> PREFIX fpo: <http://w3id.org/fpo#> prefix ex: <https://example.com/ex#> 
-        SELECT ?this WHERE {?system a fso:ReturnSystem .?system fso:hasComponent ?this .?this a fpo:AirTerminal} """ ;
+        SELECT ?this WHERE {?system a fso:ReturnSystem .?system fso:hasComponent ?this .?this a fso:AirTerminal} """ ;
   ];sh:property[
         sh:path fso:hasPort ;
         sh:dataType xsd:anyURI;

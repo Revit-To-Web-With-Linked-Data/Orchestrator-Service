@@ -1,0 +1,28 @@
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX fpo: <http://w3id.org/fpo#>
+PREFIX fso: <http://w3id.org/fso#>
+PREFIX ex: <https://example.com/ex#>
+PREFIX bot: <https://w3id.org/bot#>
+prefix inst: <https://example.com/inst#> 
+insert {
+inst:4fc7f11d-944c-45d6-9e1f-409b3be068c0-00198fd0 fso:transfersHeatTo ?space .  
+} 
+where {
+  ?space a bot:Space .
+  ?space rdfs:label "Space-M.1.41"
+};
+insert {
+inst:0f1ba719-f4b2-443e-b675-a3143693d51b-001988f9 fso:transfersHeatTo ?space .  
+} 
+where {
+  ?space a bot:Space .
+  ?space rdfs:label "Space-M.1.101"
+};
+insert {
+inst:0f1ba719-f4b2-443e-b675-a3143693d51b-00195061 fso:transfersHeatTo ?space .  
+} 
+where {
+  ?space a bot:Space .
+  ?space rdfs:label "Space-M.1.63"
+};

@@ -1,0 +1,69 @@
+PREFIX ex: <https://example.com/ex#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX fso: <http://w3id.org/fso#> 
+PREFIX fpo: <http://w3id.org/fpo#>
+PREFIX fo: <http://www.w3.org/1999/XSL/Format#>
+PREFIX ec: <http://eulergui.sourceforge.net/contacts.owl.n3#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+delete {
+  ?diameter fpo:value ?diameterValue .
+}
+insert{
+   ?diameter fpo:value ?newSizeWithIRI .
+}
+where {
+{
+select ?this ?value ?outerDiameter ?outerDiameterValue ?pressureDropValue ?pressureDrop ?outletPort
+WHERE {
+?this a fso:Pipe . 
+?outletPort fpo:outerDiameter ?outerDiameter .
+?outerDiameter fpo:value ?outerDiameterValue .
+?this fpo:length ?length .
+?length fpo:value ?lengthvalue .
+?this fso:hasPort ?outletPort .
+?outletPort fpo:flowDirection ?flowDirection .
+?flowDirection fpo:value "Out" .
+?outletPort fpo:pressureDrop ?pressureDrop .
+?pressureDrop fpo:value ?pressureDropValue .
+bind ((?pressureDropValue / ?lengthvalue) as ?value) .
+filter (?value > 100)}
+}
+
+
+  ?this fso:hasPort ?port .
+  ?port fpo:outerDiameter ?diameter .
+  ?diameter fpo:value ?diameterValue .
+  BIND ( 
+    IF(?diameterValue = 0.012, 0.015,
+      IF(?diameterValue = 0.015, 0.018,
+        IF(?diameterValue = 0.018, 0.020,
+          IF(?diameterValue = 0.020, 0.022, 
+            IF(?diameterValue = 0.022, 0.028,
+              IF(?diameterValue = 0.028, 0.032,
+                IF(?diameterValue = 0.032, 0.040,
+                  IF(?diameterValue = 0.040, 0.050, ?diameterValue)
+                )
+              )
+            )
+          )
+        ) 
+      )
+    )
+    AS ?newSize
+  )
+	BIND(STRDT(STR(?newSize), xsd:double) AS ?newSizeWithIRI)
+};
+
+delete {
+  ?port fpo:pressureDrop ?pressureDrop .
+  ?pressureDrop fpo:value ?pressureDropValue
+}
+where {
+  values ?componentType {fso:Pipe fso:Elbow fso:Transition fso:Tee} ?component a ?componentType .
+  ?component fso:hasPort ?port .
+  ?port fpo:pressureDrop ?pressureDrop .
+  ?pressureDrop fpo:value ?pressureDropValue
+}
+
+

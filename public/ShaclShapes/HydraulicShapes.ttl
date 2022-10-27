@@ -12,7 +12,7 @@
     fsosh:PipePressureDrop
     a sh:NodeShape;
     sh:nodeKind sh:IRI ;
-    sh:targetClass fpo:Pipe ;
+    sh:targetClass fso:Pipe ;
     sh:message "Pipe";
     sh:message "The pressure drop of a pipe shall not exceed 100 Pa/m";
     sh:sparql  [
@@ -21,7 +21,7 @@
         sh:select """PREFIX fso: <http://w3id.org/fso#> PREFIX fpo: <http://w3id.org/fpo#> PREFIX inst: <https://example.com/inst#>
         SELECT ?this ?value
         WHERE {
-            ?this a fpo:Pipe . 
+            ?this a fso:Pipe . 
             ?this fpo:length ?length .
             ?length fpo:value ?lengthvalue .
             ?this fso:hasPort ?port .
@@ -32,6 +32,33 @@
             bind ((?pressureDropValue / ?lengthvalue) as ?value) .
             filter (?value > 100)} """ ; 
   ] .
+
+
+#The pressure drop of a pipe
+    fsosh:DuctPressureDrop
+    a sh:NodeShape;
+    sh:nodeKind sh:IRI ;
+    sh:targetClass fso:Duct ;
+    sh:message "Duct";
+    sh:message "The pressure drop of a duct shall not exceed 1 Pa/m";
+    sh:deactivated true ;
+    sh:sparql  [
+        a sh:sh:SPARQLConstraint  ;
+        sh:prefixes (fpo: fso: inst:) ;
+        sh:select """PREFIX fso: <http://w3id.org/fso#> PREFIX fpo: <http://w3id.org/fpo#> PREFIX inst: <https://example.com/inst#>
+        SELECT ?this ?value
+        WHERE {
+            ?this a fso:Duct . 
+            ?this fpo:length ?length .
+            ?length fpo:value ?lengthvalue .
+            ?this fso:hasPort ?port .
+            ?port fpo:flowDirection ?flowDirection .
+            ?flowDirection fpo:value "Out" .
+            ?port fpo:pressureDrop ?pressureDrop .
+            ?pressureDrop fpo:value ?pressureDropValue .
+            bind ((?pressureDropValue / ?lengthvalue) as ?value) .
+            filter (?value > 1)} """ ; 
+  ].
 
 #PressureDrop validation
     fsosh:PressureDrop

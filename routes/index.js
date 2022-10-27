@@ -5,11 +5,17 @@ const fs = require('fs');
 var qs = require('qs');
 const { clear } = require('console');
 
+function runAsyncWrapper(callback) {
+    return function (req, res, next) {
+        callback(req, res, next).catch(next);
+    };
+}
+
 let AllShapes = fs.readFileSync('./public/ShaclShapes/AllShapes.ttl', 'utf8');
 let HydraulicShapes = fs.readFileSync('./public/ShaclShapes/HydraulicShapes.ttl', 'utf8');
 
 let baseUrl = 'http://localhost:3030/ny-db/query?query=';
-let baseUpdateURL = 'http://localhost:3030/ny-db/update';
+let baseUpdateURL = 'http://localhost:3030/ny-db/update?update=';
 let baseDataURL = 'http://localhost:3030/ny-db/data';
 
 // Clear graph
@@ -24,13 +30,65 @@ let FanPressureDrop = baseUrl + encodeURIComponent(fs.readFileSync('./public/Que
 let PumpPressureDrop = baseUrl + encodeURIComponent(fs.readFileSync('./public/Queries/PumpPressureDrop.ttl'));
 
 let TeeConstruct = baseUrl + encodeURIComponent(fs.readFileSync('./public/Queries/TeeConstruct.ttl'));
+let RestConstruct = baseUrl + encodeURIComponent(fs.readFileSync('./public/Queries/PipesAndFittingsConstruct.ttl'));
 
 let TeeDistributionComponents =
     baseDataURL + encodeURIComponent(fs.readFileSync('./public/jsonld/distributionComponents.json'));
 
-router.get('/hydraulicCalculation', (req, res) => {
-    //Get all Tee components and their meta-data from the database
+//Queries to solve violations to in the first validation
+let deleteSystems =
+    baseUpdateURL + encodeURIComponent(fs.readFileSync('./public/Queries/deleteSystemsWithoutComponents.ttl'));
+
+let insertEndCap = baseUpdateURL + encodeURIComponent(fs.readFileSync('./public/Queries/insertEndCap.ttl'));
+
+let insertSpaceHeaterConnection =
+    baseUpdateURL +
+    encodeURIComponent(fs.readFileSync('./public/Queries/insertMissingConnectionBetweenSpaceheaterAndSpace.ttl'));
+
+let insertDiameter =
+    baseUpdateURL + encodeURIComponent(fs.readFileSync('./public/Queries/insertMissingDiameterAirTerminals.ttl'));
+
+let insertKV = baseUpdateURL + encodeURIComponent(fs.readFileSync('./public/Queries/insertKV.ttl'));
+
+let insertRoughness =
+    baseUpdateURL + encodeURIComponent(fs.readFileSync('./public/Queries/insertRoughnessWaterbasedElbows.ttl'));
+
+let insertVelocity = baseUpdateURL + encodeURIComponent(fs.readFileSync('./public/Queries/insertVelocityAll.ttl'));
+
+let autoSizePipes = baseUpdateURL + encodeURIComponent(fs.readFileSync('./public/Queries/autoSize.ttl'));
+
+router.post('/solveSecondValidation', (req, res, next) => {
     axios
+        .all([axios.post(autoSizePipes)])
+        .then(axios.spread((response1) => {}))
+        .catch((err) => {
+            console.log(err);
+        });
+});
+
+router.post('/solveFirstValidation', (req, res, next) => {
+    axios
+        .all([
+            axios.post(deleteSystems),
+            axios.post(insertEndCap),
+            axios.post(insertSpaceHeaterConnection),
+            axios.post(insertDiameter),
+            axios.post(insertKV),
+            axios.post(insertRoughness),
+            axios.post(insertVelocity),
+        ])
+        .then(
+            axios.spread((response1) => {
+                //console.log(JSON.stringify(response1.data));
+            })
+        )
+        .catch((err) => {
+            console.log(err);
+        });
+});
+
+let sendTeesToDatabase = async () => {
+    return await axios
         .get(TeeConstruct, {
             headers: {
                 Accept: 'application/ld+json',
@@ -39,7 +97,7 @@ router.get('/hydraulicCalculation', (req, res) => {
         .then((response) => {
             //Send tee components to hydraulic service. Perform hydraulic calculation and get the pressure drop as result.
             axios
-                .post('http://localhost:8000/pipes', response.data)
+                .post('http://localhost:8000/pressureDropTees', response.data)
                 .then((response) => {
                     //Send hydraulic results to database
                     let data = JSON.parse(response.data);
@@ -50,7 +108,43 @@ router.get('/hydraulicCalculation', (req, res) => {
                             },
                         })
                         .then((response) => {
-                            //console.log(JSON.stringify(response.data));
+                            console.log(JSON.stringify(response.data));
+                        })
+                        .catch((error) => {
+                            console.log(error);
+                        });
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+        })
+        .catch((error) => {
+            console.log(error);
+        });
+};
+
+let sendRestToDatabase = async (res) => {
+    return await axios
+        .get(RestConstruct, {
+            headers: {
+                Accept: 'application/ld+json',
+            },
+        })
+        .then((response) => {
+            //Send tee components to hydraulic service. Perform hydraulic calculation and get the pressure drop as result.
+            axios
+                .post('http://localhost:8000/pressureDropRest', response.data)
+                .then((response) => {
+                    //Send hydraulic results to database
+                    let data = JSON.parse(response.data);
+                    axios
+                        .post('http://localhost:3030/ny-db/data', data, {
+                            headers: {
+                                'Content-Type': 'application/ld+json',
+                            },
+                        })
+                        .then((response) => {
+                            console.log(JSON.stringify(response.data));
                             axios
                                 .post('http://localhost:3030/ny-db/shacl?graph=default', HydraulicShapes, {
                                     headers: {
@@ -176,6 +270,202 @@ router.get('/hydraulicCalculation', (req, res) => {
         .catch((error) => {
             console.log(error);
         });
+};
+
+let secondValidation = (res) => {
+    axios
+        .post('http://localhost:3030/ny-db/shacl?graph=default', HydraulicShapes, {
+            headers: {
+                'Content-Type': 'text/turtle',
+                Accept: 'application/ld+json',
+            },
+        })
+        .then((response) => {
+            let shaclObject = {
+                HeatExchanger: [],
+                Tee: [],
+                Transition: [],
+                Pipe: [],
+                Duct: [],
+                Elbow: [],
+                Pump: [],
+                Fan: [],
+                Port: [],
+                Flow: [],
+                Property: [],
+                System: [],
+                SpaceHeater: [],
+                AirTerminal: [],
+                Valve: [],
+                Damper: [],
+                Total: [],
+            }; //
+            console.log(response.data['@graph']);
+            let counter = Object.keys(response.data['@graph']).length;
+            for (let index in response.data['@graph']) {
+                if (response.data['@graph'][index].resultMessage != null) {
+                    if (response.data['@graph'][index].resultMessage[0] == 'HeatExchanger')
+                        shaclObject.HeatExchanger.push({
+                            id: `${response.data['@graph'][index].focusNode}`,
+                            constrainType: `${response.data['@graph'][index].sourceConstraintComponent}`,
+                            description: `${response.data['@graph'][index].resultMessage[1]}`,
+                        });
+                }
+                if (response.data['@graph'][index].resultMessage != null) {
+                    if (response.data['@graph'][index].resultMessage[0] == 'Transition')
+                        shaclObject.Transition.push({
+                            id: `${response.data['@graph'][index].focusNode}`,
+                            constrainType: `${response.data['@graph'][index].sourceConstraintComponent}`,
+                            description: `${response.data['@graph'][index].resultMessage[1]}`,
+                        });
+                }
+                if (response.data['@graph'][index].resultMessage != null) {
+                    if (response.data['@graph'][index].resultMessage[0] == 'Tee')
+                        shaclObject.Tee.push({
+                            id: `${response.data['@graph'][index].focusNode}`,
+                            constrainType: `${response.data['@graph'][index].sourceConstraintComponent}`,
+                            description: `${response.data['@graph'][index].resultMessage[1]}`,
+                        });
+                }
+                if (response.data['@graph'][index].resultMessage != null) {
+                    if (response.data['@graph'][index].resultMessage[0] == 'Pipe')
+                        shaclObject.Pipe.push({
+                            id: `${response.data['@graph'][index].focusNode}`,
+                            constrainType: `${response.data['@graph'][index].sourceConstraintComponent}`,
+                            description: `${response.data['@graph'][index].resultMessage[1]}`,
+                        });
+                }
+                if (response.data['@graph'][index].resultMessage != null) {
+                    if (response.data['@graph'][index].resultMessage[0] == 'Duct')
+                        shaclObject.Duct.push({
+                            id: `${response.data['@graph'][index].focusNode}`,
+                            constrainType: `${response.data['@graph'][index].sourceConstraintComponent}`,
+                            description: `${response.data['@graph'][index].resultMessage[1]}`,
+                        });
+                }
+                if (response.data['@graph'][index].resultMessage != null) {
+                    if (response.data['@graph'][index].resultMessage[0] == 'Elbow')
+                        shaclObject.Elbow.push({
+                            id: `${response.data['@graph'][index].focusNode}`,
+                            constrainType: `${response.data['@graph'][index].sourceConstraintComponent}`,
+                            description: `${response.data['@graph'][index].resultMessage[1]}`,
+                        });
+                }
+                if (response.data['@graph'][index].resultMessage != null) {
+                    if (response.data['@graph'][index].resultMessage[0] == 'Pump')
+                        shaclObject.Pump.push({
+                            id: `${response.data['@graph'][index].focusNode}`,
+                            constrainType: `${response.data['@graph'][index].sourceConstraintComponent}`,
+                            description: `${response.data['@graph'][index].resultMessage[1]}`,
+                        });
+                }
+                if (response.data['@graph'][index].resultMessage != null) {
+                    if (response.data['@graph'][index].resultMessage[0] == 'Fan')
+                        shaclObject.Fan.push({
+                            id: `${response.data['@graph'][index].focusNode}`,
+                            constrainType: `${response.data['@graph'][index].sourceConstraintComponent}`,
+                            description: `${response.data['@graph'][index].resultMessage[1]}`,
+                        });
+                }
+                if (response.data['@graph'][index].resultMessage != null) {
+                    if (response.data['@graph'][index].resultMessage[0] == 'Port')
+                        shaclObject.Port.push({
+                            id: `${response.data['@graph'][index].focusNode}`,
+                            constrainType: `${response.data['@graph'][index].sourceConstraintComponent}`,
+                            description: `${response.data['@graph'][index].resultMessage[1]}`,
+                        });
+                }
+                if (response.data['@graph'][index].resultMessage != null) {
+                    if (response.data['@graph'][index].resultMessage[0] == 'Flow')
+                        shaclObject.Flow.push({
+                            id: `${response.data['@graph'][index].focusNode}`,
+                            constrainType: `${response.data['@graph'][index].sourceConstraintComponent}`,
+                            description: `${response.data['@graph'][index].resultMessage[1]}`,
+                        });
+                }
+                if (response.data['@graph'][index].resultMessage != null) {
+                    if (response.data['@graph'][index].resultMessage[0] == 'Property')
+                        shaclObject.Property.push({
+                            id: `${response.data['@graph'][index].focusNode}`,
+                            constrainType: `${response.data['@graph'][index].sourceConstraintComponent}`,
+                            description: `${response.data['@graph'][index].resultMessage[1]}`,
+                        });
+                }
+                if (response.data['@graph'][index].resultMessage != null) {
+                    if (response.data['@graph'][index].resultMessage[0] == 'System')
+                        shaclObject.System.push({
+                            id: `${response.data['@graph'][index].focusNode}`,
+                            constrainType: `${response.data['@graph'][index].sourceConstraintComponent}`,
+                            description: `${response.data['@graph'][index].resultMessage[1]}`,
+                        });
+                }
+                if (response.data['@graph'][index].resultMessage != null) {
+                    if (response.data['@graph'][index].resultMessage[0] == 'SpaceHeater')
+                        shaclObject.SpaceHeater.push({
+                            id: `${response.data['@graph'][index].focusNode}`,
+                            constrainType: `${response.data['@graph'][index].sourceConstraintComponent}`,
+                            description: `${response.data['@graph'][index].resultMessage[1]}`,
+                        });
+                }
+                if (response.data['@graph'][index].resultMessage != null) {
+                    if (
+                        response.data['@graph'][index].resultMessage[0] == 'MotorizedValve' ||
+                        response.data['@graph'][index].resultMessage[0] == 'BalancingValve'
+                    )
+                        shaclObject.Valve.push({
+                            id: `${response.data['@graph'][index].focusNode}`,
+                            constrainType: `${response.data['@graph'][index].sourceConstraintComponent}`,
+                            description: `${response.data['@graph'][index].resultMessage[1]}`,
+                        });
+                }
+                if (response.data['@graph'][index].resultMessage != null) {
+                    if (
+                        response.data['@graph'][index].resultMessage[0] == 'MotorizedDamper' ||
+                        response.data['@graph'][index].resultMessage[0] == 'BalancingDamper'
+                    )
+                        shaclObject.Damper.push({
+                            id: `${response.data['@graph'][index].focusNode}`,
+                            constrainType: `${response.data['@graph'][index].sourceConstraintComponent}`,
+                            description: `${response.data['@graph'][index].resultMessage[1]}`,
+                        });
+                }
+                if (response.data['@graph'][index].resultMessage != null) {
+                    if (response.data['@graph'][index].resultMessage[0] == 'AirTerminal')
+                        shaclObject.AirTerminal.push({
+                            id: `${response.data['@graph'][index].focusNode}`,
+                            constrainType: `${response.data['@graph'][index].sourceConstraintComponent}`,
+                            description: `${response.data['@graph'][index].resultMessage[1]}`,
+                        });
+                    if (response.data['@graph'][index].resultMessage != null) {
+                        shaclObject.Total.push({
+                            id: `${response.data['@graph'][index].focusNode}`,
+                            constrainType: `${response.data['@graph'][index].sourceConstraintComponent}`,
+                            description: `${response.data['@graph'][index].resultMessage[1]}`,
+                        });
+                    }
+                }
+            }
+            shaclObjects = { shaclObject };
+            res.send(shaclObjects);
+        })
+        .catch((error) => {
+            console.log(error);
+        });
+};
+
+router.get('/hydraulicValidation', (req, res) => {
+    secondValidation(res);
+});
+
+router.get('/hydraulicCalculation', async (req, res) => {
+    //Get all Tee components and their meta-data from the database
+    try {
+        await sendTeesToDatabase();
+        await sendRestToDatabase(res);
+    } catch (err) {
+        // Handle Error Here
+        console.error(err);
+    }
 });
 router.get('/flowHeadTable', (req, res, next) => {
     axios
