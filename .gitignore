@@ -8,5 +8,5 @@ npm-debug.log
 .env
 
 #fuseki
-fuseki/apache-jena-fuseki-4.2.0
+fuseki
 apache-jena-fuseki-4.4.0
