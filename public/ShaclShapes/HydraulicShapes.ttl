@@ -2,8 +2,8 @@
 @prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix ex:      <https://ex/> .
-@prefix fso:     <http://w3id.org/fso#> .
-@prefix fpo:     <http://w3id.org/fpo#> .
+@prefix fso:     <https://w3id.org/fso#> .
+@prefix fpo:     <https://w3id.org/fpo#> .
 @prefix xsd:      <http://www.w3.org/2001/XMLSchema#> .
 @prefix inst:    <https://example.com/inst#> .
 @prefix fsosh:     <http://w3id.org/fsosh#> .
@@ -18,17 +18,17 @@
     sh:sparql  [
         a sh:sh:SPARQLConstraint  ;
         sh:prefixes (fpo: fso: inst:) ;
-        sh:select """PREFIX fso: <http://w3id.org/fso#> PREFIX fpo: <http://w3id.org/fpo#> PREFIX inst: <https://example.com/inst#>
+        sh:select """PREFIX fso: <https://w3id.org/fso#> PREFIX fpo: <https://w3id.org/fpo#> PREFIX inst: <https://example.com/inst#>
         SELECT ?this ?value
         WHERE {
             ?this a fso:Pipe . 
-            ?this fpo:length ?length .
-            ?length fpo:value ?lengthvalue .
+            ?this fpo:hasLength ?length .
+            ?length fpo:hasValue ?lengthvalue .
             ?this fso:hasPort ?port .
-            ?port fpo:flowDirection ?flowDirection .
-            ?flowDirection fpo:value "Out" .
-            ?port fpo:pressureDrop ?pressureDrop .
-            ?pressureDrop fpo:value ?pressureDropValue .
+            ?port fpo:hasFlowDirection ?flowDirection .
+            ?flowDirection fpo:hasValue "Out" .
+            ?port fpo:hasPressureDrop ?pressureDrop .
+            ?pressureDrop fpo:hasValue ?pressureDropValue .
             bind ((?pressureDropValue / ?lengthvalue) as ?value) .
             filter (?value > 100)} """ ; 
   ] .
@@ -45,17 +45,17 @@
     sh:sparql  [
         a sh:sh:SPARQLConstraint  ;
         sh:prefixes (fpo: fso: inst:) ;
-        sh:select """PREFIX fso: <http://w3id.org/fso#> PREFIX fpo: <http://w3id.org/fpo#> PREFIX inst: <https://example.com/inst#>
+        sh:select """PREFIX fso: <https://w3id.org/fso#> PREFIX fpo: <https://w3id.org/fpo#> PREFIX inst: <https://example.com/inst#>
         SELECT ?this ?value
         WHERE {
             ?this a fso:Duct . 
-            ?this fpo:length ?length .
-            ?length fpo:value ?lengthvalue .
+            ?this fpo:hasLength ?length .
+            ?length fpo:hasValue ?lengthvalue .
             ?this fso:hasPort ?port .
-            ?port fpo:flowDirection ?flowDirection .
-            ?flowDirection fpo:value "Out" .
-            ?port fpo:pressureDrop ?pressureDrop .
-            ?pressureDrop fpo:value ?pressureDropValue .
+            ?port fpo:hasFlowDirection ?flowDirection .
+            ?flowDirection fpo:hasValue "Out" .
+            ?port fpo:hasPressureDrop ?pressureDrop .
+            ?pressureDrop fpo:hasValue ?pressureDropValue .
             bind ((?pressureDropValue / ?lengthvalue) as ?value) .
             filter (?value > 1)} """ ; 
   ].
@@ -66,7 +66,7 @@
     sh:nodeKind sh:IRI ;
     sh:targetClass fpo:PressureDrop ;
     sh:property[
-        sh:path fpo:unit ;
+        sh:path fpo:hasUnit ;
         sh:dataType xsd:string;
         sh:minCount 1;
         sh:maxCount 1;
@@ -76,7 +76,7 @@
         sh:deactivated false 
     ] ;
     sh:property [
-        sh:path fpo:value ;
+        sh:path fpo:hasValue ;
         sh:minCount 1;
         sh:maxCount 1;
         sh:minInclusive 0.001;
@@ -93,7 +93,7 @@
     sh:nodeKind sh:IRI ;
     sh:targetClass fpo:Velocity ;
     sh:property[
-        sh:path fpo:unit ;
+        sh:path fpo:hasUnit ;
         sh:dataType xsd:string;
         sh:minCount 1;
         sh:maxCount 1;
@@ -103,7 +103,7 @@
         sh:deactivated false 
     ] ;
     sh:property [
-        sh:path fpo:value ;
+        sh:path fpo:hasValue ;
         sh:minCount 1;
         sh:maxCount 1;
         sh:minInclusive 0.001;
@@ -119,7 +119,7 @@
     sh:nodeKind sh:IRI ;
     sh:targetClass fpo:FlowRate ;
     sh:property[
-        sh:path fpo:unit ;
+        sh:path fpo:hasUnit ;
         sh:dataType xsd:string;
         sh:minCount 1;
         sh:maxCount 1;
@@ -129,7 +129,7 @@
         sh:deactivated false 
     ] ;
     sh:property [
-        sh:path fpo:value ;
+        sh:path fpo:hasValue ;
         sh:minCount 1;
         sh:maxCount 1;
         sh:minInclusive 0.001;

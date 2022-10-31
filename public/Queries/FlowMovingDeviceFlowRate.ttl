@@ -1,8 +1,8 @@
 PREFIX ex: <https://example.com/ex#>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX fso: <http://w3id.org/fso#> 
-PREFIX fpo: <http://w3id.org/fpo#>
+PREFIX fso: <https://w3id.org/fso#> 
+PREFIX fpo: <https://w3id.org/fpo#>
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 PREFIX inst: <https://example.com/inst#>
 
@@ -17,8 +17,8 @@ WHERE{
   	?system fso:hasComponent ?terminal, ?flowMovingDevice .
     ?flowMovingDevice fso:feedsFluidTo+ ?terminal  .
     ?terminal fso:hasPort ?port .
-  	?port fpo:flowRate ?flowRate .  
-  	?flowRate fpo:value ?flowRateValue .
+  	?port fpo:hasFlowRate ?flowRate .  
+  	?flowRate fpo:hasValue ?flowRateValue .
   }
   union
    {
@@ -29,8 +29,8 @@ WHERE{
   	?system fso:hasComponent ?terminal, ?flowMovingDevice .
     ?terminal fso:feedsFluidTo+ ?flowMovingDevice  .
     ?terminal fso:hasPort ?port .
-  	?port fpo:flowRate ?flowRate .  
-  	?flowRate fpo:value ?flowRateValue .
+  	?port fpo:hasFlowRate ?flowRate .  
+  	?flowRate fpo:hasValue ?flowRateValue .
   }
   union
   {
@@ -42,7 +42,7 @@ WHERE{
     ?system fso:hasComponent ?terminal, ?flowMovingDevice .
     ?terminal fso:hasPort ?supplyPort .
   	?supplyPort fso:returnsFluidTo ?anotherComponent .
-  	?supplyPort fpo:flowRate ?flowRate .  
-  	?flowRate fpo:value ?flowRateValue .
+  	?supplyPort fpo:hasFlowRate ?flowRate .  
+  	?flowRate fpo:hasValue ?flowRateValue .
   }
   } group by ?flowMovingDevice ?flowMovingDeviceType 

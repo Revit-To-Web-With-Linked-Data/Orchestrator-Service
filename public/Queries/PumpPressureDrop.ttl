@@ -1,8 +1,8 @@
 PREFIX ex: <https://example.com/ex#>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX fso: <http://w3id.org/fso#> 
-PREFIX fpo: <http://w3id.org/fpo#>
+PREFIX fso: <https://w3id.org/fso#> 
+PREFIX fpo: <https://w3id.org/fpo#>
 PREFIX fo: <http://www.w3.org/1999/XSL/Format#>
 PREFIX ec: <http://eulergui.sourceforge.net/contacts.owl.n3#>
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
@@ -23,10 +23,10 @@ where{
       
       #Get the pressuredrop value of each component
       ?supplyComponent fso:hasPort ?supplyPort .
-      ?supplyPort fpo:flowDirection ?flowDirection .
-      ?flowDirection fpo:value "Out" .
-      ?supplyPort fpo:pressureDrop ?pressureDrop .
-      ?pressureDrop fpo:value ?supplyValue .
+      ?supplyPort fpo:hasFlowDirection ?flowDirection .
+      ?flowDirection fpo:hasValue "Out" .
+      ?supplyPort fpo:hasPressureDrop ?pressureDrop .
+      ?pressureDrop fpo:hasValue ?supplyValue .
   
       #Select only port that is part of that system
       filter not exists {
@@ -42,8 +42,8 @@ where{
     where{
       ?terminal fso:hasPort ?port .
       ?port fso:returnsFluidTo ?anotherPort .
-      ?port fpo:pressureDrop ?pressureDrop .
-      ?pressureDrop fpo:value ?terminalPressureDropValue .  
+      ?port fpo:hasPressureDrop ?pressureDrop .
+      ?pressureDrop fpo:hasValue ?terminalPressureDropValue .  
       {
         select ?pump ?terminal ( sum(?returnValue)  as ?sumOfReturnPressureDrop)
         where {
@@ -58,10 +58,10 @@ where{
             
             #Get the pressuredrop value of each component
             ?returnComponent fso:hasPort ?returnPort .
-            ?returnPort fpo:flowDirection ?flowDirection .
-            ?flowDirection fpo:value "Out" .
-            ?returnPort fpo:pressureDrop ?pressureDrop .
-            ?pressureDrop fpo:value ?returnValue . 
+            ?returnPort fpo:hasFlowDirection ?flowDirection .
+            ?flowDirection fpo:hasValue "Out" .
+            ?returnPort fpo:hasPressureDrop ?pressureDrop .
+            ?pressureDrop fpo:hasValue ?returnValue . 
           }
         } group by ?pump ?terminal 
       } 

@@ -1,7 +1,7 @@
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX fpo: <http://w3id.org/fpo#>
-PREFIX fso: <http://w3id.org/fso#>
+PREFIX fpo: <https://w3id.org/fpo#>
+PREFIX fso: <https://w3id.org/fso#>
 insert {
   ?component fso:feedsFluidTo ?fictivCapComponentID . 
   ?fictivCapComponentID a fso:Cap .} 

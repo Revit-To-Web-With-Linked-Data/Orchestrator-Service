@@ -2,11 +2,12 @@
 @prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix ex:      <https://ex/> .
-@prefix fso:     <http://w3id.org/fso#> .
-@prefix fpo:     <http://w3id.org/fpo#> .
+@prefix fso:     <https://w3id.org/fso#> .
+@prefix fpo:     <https://w3id.org/fpo#> .
 @prefix xsd:      <http://www.w3.org/2001/XMLSchema#> .
 @prefix inst:    <https://example.com/inst#> .
 @prefix fsosh:     <http://w3id.org/fsosh#> .
+@prefix bot: <https://w3id.org/bot#>
 
 #HeatExchanger validation
     fsosh:HeatExchanger
@@ -46,7 +47,7 @@
         sh:deactivated false
     ] ; 
     sh:property [
-        sh:path fpo:designHeatingPower ;
+        sh:path fpo:hasDesignHeatingPower ;
         sh:dataType xsd:anyURI;
         sh:minCount 1;
         sh:maxCount 1;
@@ -96,7 +97,7 @@
         sh:deactivated false
     ] ; 
     sh:property [
-        sh:path fpo:materialType ;
+        sh:path fpo:hasMaterialType ;
         sh:dataType xsd:anyURI;
         sh:minCount 1;
         sh:maxCount 1;
@@ -136,7 +137,7 @@
         sh:message "A pipe must be fed with fluid by exactly one component";
         sh:deactivated false
     ] ;
-     sh:property [
+    sh:property [
         sh:path [sh:inversePath fso:hasComponent] ;
         sh:dataType xsd:anyURI;
         sh:minCount 1;
@@ -146,7 +147,7 @@
         sh:deactivated false
     ] ; 
     sh:property [
-        sh:path fpo:materialType ;
+        sh:path fpo:hasMaterialType ;
         sh:dataType xsd:anyURI;
         sh:minCount 1;
         sh:maxCount 1;
@@ -155,7 +156,7 @@
         sh:deactivated false
     ] ; 
     sh:property [
-        sh:path fpo:length ;
+        sh:path fpo:hasLength ;
         sh:dataType xsd:anyURI;
         sh:minCount 1;
         sh:maxCount 1;
@@ -164,7 +165,7 @@
         sh:deactivated false
     ]; 
     sh:property [
-        sh:path fpo:roughness ;
+        sh:path fpo:hasRoughness ;
         sh:dataType xsd:anyURI;
         sh:minCount 1;
         sh:maxCount 1;
@@ -172,6 +173,33 @@
         sh:message "Exactly one property of roughness type must be present for a pipe";
         sh:deactivated false
     ] .
+
+    #The pressure drop of a pipe
+    fsosh:PipePressureDrop
+    a sh:NodeShape;
+    sh:nodeKind sh:IRI ;
+    sh:targetClass fso:Pipe ;
+    sh:message "Pipe";
+    sh:message "The pressure drop of a pipe shall not exceed 100 Pa/m";
+    sh:deactivated true ;
+    sh:sparql  [
+        a sh:sh:SPARQLConstraint  ;
+        sh:prefixes (fpo: fso: inst:) ;
+        sh:select """PREFIX fso: <https://w3id.org/fso#> PREFIX fpo: <https://w3id.org/fpo#> PREFIX inst: <https://example.com/inst#>
+        SELECT ?this ?value
+        WHERE {
+            ?this a fso:Pipe . 
+            ?this fpo:hasLength ?length .
+            ?length fpo:hasValue ?lengthvalue .
+            ?this fso:hasPort ?port .
+            ?port fpo:hasFlowDirection ?flowDirection .
+            ?flowDirection fpo:hasValue "Out" .
+            ?port fpo:hasPressureDrop ?pressureDrop .
+            ?pressureDrop fpo:hasValue ?pressureDropValue .
+            bind ((?pressureDropValue / ?lengthvalue) as ?value) .
+            filter (?value > 100)} """ ; 
+    ] .
+
 
     #Duct validation
     fsosh:Duct
@@ -214,7 +242,7 @@
         sh:deactivated false
     ] ; 
     sh:property [
-        sh:path fpo:materialType ;
+        sh:path fpo:hasMaterialType ;
         sh:dataType xsd:anyURI;
         sh:minCount 1;
         sh:maxCount 1;
@@ -223,7 +251,7 @@
         sh:deactivated false
     ] ; 
     sh:property [
-        sh:path fpo:length ;
+        sh:path fpo:hasLength ;
         sh:dataType xsd:anyURI;
         sh:minCount 1;
         sh:maxCount 1;
@@ -232,7 +260,7 @@
         sh:deactivated false
     ]; 
     sh:property [
-        sh:path fpo:roughness ;
+        sh:path fpo:hasRoughness ;
         sh:dataType xsd:anyURI;
         sh:minCount 1;
         sh:maxCount 1;
@@ -240,6 +268,33 @@
         sh:message "Exactly one property of roughness must be present for a duct";
         sh:deactivated false
     ] .
+
+    #The pressure drop of a pipe
+    fsosh:DuctPressureDrop
+    a sh:NodeShape;
+    sh:nodeKind sh:IRI ;
+    sh:targetClass fso:Duct ;
+    sh:message "Duct";
+    sh:message "The pressure drop of a duct shall not exceed 1 Pa/m";
+    sh:deactivated true ;
+    sh:sparql  [
+        a sh:sh:SPARQLConstraint  ;
+        sh:prefixes (fpo: fso: inst:) ;
+        sh:select """PREFIX fso: <https://w3id.org/fso#> PREFIX fpo: <https://w3id.org/fpo#> PREFIX inst: <https://example.com/inst#>
+        SELECT ?this ?value
+        WHERE {
+            ?this a fso:Duct . 
+            ?this fpo:hasLength ?length .
+            ?length fpo:hasValue ?lengthvalue .
+            ?this fso:hasPort ?port .
+            ?port fpo:hasFlowDirection ?flowDirection .
+            ?flowDirection fpo:hasValue "Out" .
+            ?port fpo:hasPressureDrop ?pressureDrop .
+            ?pressureDrop fpo:hasValue ?pressureDropValue .
+            bind ((?pressureDropValue / ?lengthvalue) as ?value) .
+            filter (?value > 1)} """ ; 
+    ].
+
 
     #Transition validation
     fsosh:Elbow
@@ -283,7 +338,7 @@
         sh:deactivated false
     ] ; 
     sh:property [
-        sh:path fpo:materialType ;
+        sh:path fpo:hasMaterialType ;
         sh:dataType xsd:anyURI;
         sh:minCount 1;
         sh:maxCount 1;
@@ -292,7 +347,7 @@
         sh:deactivated false
     ] ;
      sh:property [
-        sh:path fpo:angle ;
+        sh:path fpo:hasAngle ;
         sh:dataType xsd:anyURI;
         sh:minCount 1;
         sh:maxCount 1;
@@ -344,7 +399,7 @@
         sh:deactivated false
     ] ; 
     sh:property [
-        sh:path fpo:pressureCurve ;
+        sh:path fpo:hasPressureCurve ;
         sh:dataType xsd:anyURI;
         sh:minCount 1;
         sh:maxCount 1;
@@ -353,7 +408,7 @@
         sh:deactivated false
     ] ;
      sh:property [
-        sh:path fpo:powerCurve ;
+        sh:path fpo:hasPowerCurve ;
         sh:dataType xsd:anyURI;
         sh:minCount 1;
         sh:maxCount 1;
@@ -404,7 +459,7 @@
         sh:deactivated false
     ] ; 
     sh:property [
-        sh:path fpo:pressureCurve ;
+        sh:path fpo:hasPressureCurve ;
         sh:dataType xsd:anyURI;
         sh:minCount 1;
         sh:maxCount 1;
@@ -413,7 +468,7 @@
         sh:deactivated false
     ] ;
      sh:property [
-        sh:path fpo:powerCurve ;
+        sh:path fpo:hasPowerCurve ;
         sh:dataType xsd:anyURI;
         sh:minCount 1;
         sh:maxCount 1;
@@ -434,12 +489,12 @@
          [
             sh:and 
             (
-            [sh:path     fpo:height ;
+            [sh:path     fpo:hasHeight ;
             sh:dataType xsd:anyURI ;
             sh:minCount 1 ;
             sh:maxCount 1 ;
             ]
-            [sh:path     fpo:width ;
+            [sh:path     fpo:hasWidth ;
             sh:dataType xsd:anyURI ;
             sh:minCount 1 ;
             sh:maxCount 1 ;
@@ -447,7 +502,7 @@
             );
          ]
          [  
-            sh:path     fpo:outerDiameter ;
+            sh:path     fpo:hasOuterDiameter ;
             sh:dataType xsd:anyURI ;
             sh:minCount 1 ;
             sh:maxCount 1 ;
@@ -460,23 +515,14 @@
     sh:nodeKind sh:IRI ;
     sh:targetClass fso:Port ;
     sh:property [
-        sh:path fpo:flowDirection ;
+        sh:path fpo:hasFlowDirection ;
         sh:dataType xsd:anyURI;
         sh:minCount 1;
         sh:maxCount 1;
         sh:message "Port";
         sh:message "A port must have exactly one flow";
         sh:deactivated false
-    ] ; 
-    sh:property [
-        sh:path fpo:flowDirection ;
-        sh:dataType xsd:anyURI;
-        sh:minCount 1;
-        sh:maxCount 1;
-        sh:message "Port";
-        sh:message "A port must have exactly one flow direction";
-        sh:deactivated false
-    ] .
+    ]  .
 
 
 
@@ -488,10 +534,10 @@ sh:target [
         a sh:SPARQLTarget ;
         sh:prefixes (fpo: fso: ex:) ;
         sh:select """PREFIX fso: <https://w3id.org/fso#> PREFIX fpo: <https://w3id.org/fpo#> prefix ex: <http://example.org/> 
-        SELECT ?this WHERE {?this a fso:Port .?this fpo:flowDirection ?flowDirection .?flowDirection fpo:value "Out"} """ ;
+        SELECT ?this WHERE {?this a fso:Port .?this fpo:hasFlowDirection ?flowDirection .?flowDirection fpo:hasValue "Out"} """ ;
   ];    
     sh:property [
-        sh:path fpo:pressureDrop ;
+        sh:path fpo:hasPressureDrop ;
         sh:dataType xsd:anyURI;
         sh:minCount 1;
         sh:maxCount 1;
@@ -500,7 +546,7 @@ sh:target [
         sh:deactivated true
     ] ;    
     sh:property [
-        sh:path fpo:flowRate ;
+        sh:path fpo:hasFlowRate ;
         sh:dataType xsd:anyURI;
         sh:minCount 1;
         sh:maxCount 1;
@@ -509,7 +555,7 @@ sh:target [
         sh:deactivated true
     ] ; 
     sh:property [
-        sh:path fpo:velocity ;
+        sh:path fpo:hasVelocity ;
         sh:dataType xsd:anyURI;
         sh:minCount 1;
         sh:maxCount 1;
@@ -524,7 +570,7 @@ sh:target [
     sh:nodeKind sh:IRI ;
     sh:targetClass fso:Flow ;
     sh:property[
-        sh:path fpo:temperature ;
+        sh:path fpo:hasTemperature ;
         sh:dataType xsd:anyURI;
         sh:minCount 1;
         sh:maxCount 1;
@@ -540,7 +586,7 @@ sh:target [
     sh:nodeKind sh:IRI ;
     sh:targetClass fpo:PressureDrop ;
     sh:property[
-        sh:path fpo:unit ;
+        sh:path fpo:hasUnit ;
         sh:dataType xsd:string;
         sh:minCount 1;
         sh:maxCount 1;
@@ -550,7 +596,7 @@ sh:target [
         sh:deactivated true 
     ] ;
     sh:property [
-        sh:path fpo:value ;
+        sh:path fpo:hasValue ;
         sh:minCount 1;
         sh:maxCount 1;
         sh:minInclusive 0.001;
@@ -568,7 +614,7 @@ sh:target [
     sh:nodeKind sh:IRI ;
     sh:targetClass fpo:Velocity ;
     sh:property[
-        sh:path fpo:unit ;
+        sh:path fpo:hasUnit ;
         sh:dataType xsd:string;
         sh:minCount 1;
         sh:maxCount 1;
@@ -578,7 +624,7 @@ sh:target [
         sh:deactivated true 
     ] ;
     sh:property [
-        sh:path fpo:value ;
+        sh:path fpo:hasValue ;
         sh:minCount 1;
         sh:maxCount 1;
         sh:minInclusive 0.001;
@@ -595,7 +641,7 @@ sh:target [
     sh:nodeKind sh:IRI ;
     sh:targetClass fpo:FlowRate ;
     sh:property[
-        sh:path fpo:unit ;
+        sh:path fpo:hasUnit ;
         sh:dataType xsd:string;
         sh:minCount 1;
         sh:maxCount 1;
@@ -605,7 +651,7 @@ sh:target [
         sh:deactivated true 
     ] ;
     sh:property [
-        sh:path fpo:value ;
+        sh:path fpo:hasValue ;
         sh:minCount 1;
         sh:maxCount 1;
         sh:minInclusive 0.001;
@@ -621,7 +667,7 @@ sh:target [
     sh:nodeKind sh:IRI ;
     sh:targetClass fpo:OuterDiameter ;
     sh:property[
-        sh:path fpo:unit ;
+        sh:path fpo:hasUnit ;
         sh:dataType xsd:string;
         sh:minCount 1;
         sh:maxCount 1;
@@ -631,7 +677,7 @@ sh:target [
         sh:deactivated false 
     ] ;
     sh:property [
-        sh:path fpo:value ;
+        sh:path fpo:hasValue ;
         sh:minCount 1;
         sh:maxCount 1;
         sh:minInclusive 0.001;
@@ -647,7 +693,7 @@ sh:target [
     sh:nodeKind sh:IRI ;
     sh:targetClass fpo:Width ;
     sh:property[
-        sh:path fpo:unit ;
+        sh:path fpo:hasUnit ;
         sh:dataType xsd:string;
         sh:minCount 1;
         sh:maxCount 1;
@@ -657,7 +703,7 @@ sh:target [
         sh:deactivated false 
     ] ;
     sh:property [
-        sh:path fpo:value ;
+        sh:path fpo:hasValue ;
         sh:minCount 1;
         sh:maxCount 1;
         sh:minInclusive 0.001;
@@ -673,7 +719,7 @@ sh:target [
     sh:nodeKind sh:IRI ;
     sh:targetClass fpo:Heigth ;
     sh:property[
-        sh:path fpo:unit ;
+        sh:path fpo:hasUnit ;
         sh:dataType xsd:string;
         sh:minCount 1;
         sh:maxCount 1;
@@ -683,7 +729,7 @@ sh:target [
         sh:deactivated false 
     ] ;
     sh:property [
-        sh:path fpo:value ;
+        sh:path fpo:hasValue ;
         sh:minCount 1;
         sh:maxCount 1;
         sh:minInclusive 0.001;
@@ -699,7 +745,7 @@ sh:target [
     sh:nodeKind sh:IRI ;
     sh:targetClass fpo:Roughness ;
     sh:property[
-        sh:path fpo:unit ;
+        sh:path fpo:hasUnit ;
         sh:dataType xsd:string;
         sh:minCount 1;
         sh:maxCount 1;
@@ -709,7 +755,7 @@ sh:target [
         sh:deactivated false 
     ] ;
     sh:property [
-        sh:path fpo:value ;
+        sh:path fpo:hasValue ;
         sh:minCount 1;
         sh:maxCount 1;
         sh:minInclusive 0;
@@ -725,7 +771,7 @@ sh:target [
     sh:nodeKind sh:IRI ;
     sh:targetClass fpo:Angle ;
     sh:property[
-        sh:path fpo:unit ;
+        sh:path fpo:hasUnit ;
         sh:dataType xsd:string;
         sh:minCount 1;
         sh:maxCount 1;
@@ -735,7 +781,7 @@ sh:target [
         sh:deactivated false
     ] ;
     sh:property [
-        sh:path fpo:value ;
+        sh:path fpo:hasValue ;
         sh:minCount 1;
         sh:maxCount 1;
         sh:minInclusive 0.001;
@@ -751,7 +797,7 @@ sh:target [
     sh:nodeKind sh:IRI ;
     sh:targetClass fpo:Kv, fpo:Kvs ;
     sh:property [
-        sh:path fpo:value ;
+        sh:path fpo:hasValue ;
         sh:minCount 1;
         sh:maxCount 1;
         sh:minInclusive 0.001;
@@ -767,7 +813,7 @@ sh:target [
     sh:nodeKind sh:IRI ;
     sh:targetClass fpo:PressureCurve, fpo:PowerCurve ;
     sh:property [
-        sh:path fpo:curve ;
+        sh:path fpo:hasCurve ;
         sh:minCount 1;
         sh:maxCount 1;
         sh:dataType xsd:string ;
@@ -783,7 +829,7 @@ sh:target [
     sh:nodeKind sh:IRI ;
     sh:targetClass fso:AirTerminalType ;
     sh:property [
-        sh:path fpo:value ;
+        sh:path fpo:hasValue ;
         sh:minCount 1;
         sh:maxCount 1;
         sh:or ([sh:hasValue "inlet"][sh:hasValue "outlet"]);
@@ -883,7 +929,7 @@ sh:target [
         sh:deactivated false
     ] ; 
     sh:property [
-        sh:path fpo:designHeatingPower ;
+        sh:path fpo:hasDesignHeatingPower ;
         sh:dataType xsd:anyURI;
         sh:minCount 1;
         sh:maxCount 1;
@@ -943,7 +989,7 @@ sh:target [
         sh:deactivated false
     ] ; 
     sh:property [
-        sh:path fpo:kv ;
+        sh:path fpo:hasKv ;
         sh:dataType xsd:anyURI;
         sh:minCount 1;
         sh:maxCount 1;
@@ -952,7 +998,7 @@ sh:target [
         sh:deactivated false
     ] ;
      sh:property [
-        sh:path fpo:kvs ;
+        sh:path fpo:hasKvs ;
         sh:dataType xsd:anyURI;
         sh:minCount 1;
         sh:maxCount 1;
@@ -1003,7 +1049,7 @@ sh:target [
         sh:deactivated false
     ] ; 
     sh:property [
-        sh:path fpo:kv ;
+        sh:path fpo:hasKv ;
         sh:dataType xsd:anyURI;
         sh:minCount 1;
         sh:maxCount 1;
@@ -1012,7 +1058,7 @@ sh:target [
         sh:deactivated false
     ] ;
      sh:property [
-        sh:path fpo:kvs ;
+        sh:path fpo:hasKvs ;
         sh:dataType xsd:anyURI;
         sh:minCount 1;
         sh:maxCount 1;
@@ -1063,7 +1109,7 @@ sh:target [
         sh:deactivated false
     ] ; 
     sh:property [
-        sh:path fpo:kv ;
+        sh:path fpo:hasKv ;
         sh:dataType xsd:anyURI;
         sh:minCount 1;
         sh:maxCount 1;
@@ -1072,7 +1118,7 @@ sh:target [
         sh:deactivated false
     ] ;
      sh:property [
-        sh:path fpo:kvs ;
+        sh:path fpo:hasKvs ;
         sh:dataType xsd:anyURI;
         sh:minCount 1;
         sh:maxCount 1;
@@ -1123,7 +1169,7 @@ sh:target [
         sh:deactivated false
     ] ; 
     sh:property [
-        sh:path fpo:kv ;
+        sh:path fpo:hasKv ;
         sh:dataType xsd:anyURI;
         sh:minCount 1;
         sh:maxCount 1;
@@ -1132,7 +1178,7 @@ sh:target [
         sh:deactivated false
     ] ;
      sh:property [
-        sh:path fpo:kvs ;
+        sh:path fpo:hasKvs ;
         sh:dataType xsd:anyURI;
         sh:minCount 1;
         sh:maxCount 1;
@@ -1149,7 +1195,7 @@ sh:target [
     sh:target [
         a sh:SPARQLTarget ;
         sh:prefixes (fpo: fso: ex:) ;
-        sh:select """PREFIX fso: <http://w3id.org/fso#> PREFIX fpo: <http://w3id.org/fpo#> prefix ex: <https://example.com/ex#> 
+        sh:select """PREFIX fso: <https://w3id.org/fso#> PREFIX fpo: <https://w3id.org/fpo#> prefix ex: <https://example.com/ex#> 
         SELECT ?this WHERE {?system a fso:SupplySystem .?system fso:hasComponent ?this .?this a fso:Tee} """ ;
   ];
    sh:property[
@@ -1180,7 +1226,7 @@ sh:target [
         sh:deactivated false
     ] ; 
     sh:property [
-        sh:path fpo:materialType ;
+        sh:path fpo:hasMaterialType ;
         sh:dataType xsd:anyURI;
         sh:minCount 1;
         sh:maxCount 1;
@@ -1197,7 +1243,7 @@ sh:target [
     sh:target [
         a sh:SPARQLTarget ;
         sh:prefixes (fpo: fso: ex:) ;
-        sh:select """PREFIX fso: <http://w3id.org/fso#> PREFIX fpo: <http://w3id.org/fpo#> prefix ex: <https://example.com/ex#> 
+        sh:select """PREFIX fso: <https://w3id.org/fso#> PREFIX fpo: <https://w3id.org/fpo#> prefix ex: <https://example.com/ex#> 
         SELECT ?this WHERE {?system a fso:ReturnSystem .?system fso:hasComponent ?this .?this a fso:Tee} """ ;
   ];
    sh:property[
@@ -1236,7 +1282,7 @@ sh:target [
         sh:deactivated false
     ] ; 
     sh:property [
-        sh:path fpo:materialType ;
+        sh:path fpo:hasMaterialType ;
         sh:dataType xsd:anyURI;
         sh:minCount 1;
         sh:maxCount 1;
@@ -1253,7 +1299,7 @@ sh:target [
     sh:target [
         a sh:SPARQLTarget ;
         sh:prefixes (fpo: fso: ex:) ;
-        sh:select """PREFIX fso: <http://w3id.org/fso#> PREFIX fpo: <http://w3id.org/fpo#> prefix ex: <https://example.com/ex#> 
+        sh:select """PREFIX fso: <https://w3id.org/fso#> PREFIX fpo: <https://w3id.org/fpo#> prefix ex: <https://example.com/ex#> 
         SELECT ?this WHERE {?system a fso:SupplySystem .?system fso:hasComponent ?this .?this a fso:AirTerminal} """ ;
   ];sh:property[
         sh:path fso:hasPort ;
@@ -1283,7 +1329,7 @@ sh:target [
         sh:deactivated false
     ] ; 
     sh:property [
-        sh:path fpo:airTerminalType ;
+        sh:path fpo:hasAirTerminalType ;
         sh:dataType xsd:anyURI;
         sh:minCount 1;
         sh:maxCount 1;
@@ -1302,7 +1348,7 @@ sh:target [
     sh:target [
         a sh:SPARQLTarget ;
         sh:prefixes (fpo: fso: ex:) ;
-        sh:select """PREFIX fso: <http://w3id.org/fso#> PREFIX fpo: <http://w3id.org/fpo#> prefix ex: <https://example.com/ex#> 
+        sh:select """PREFIX fso: <https://w3id.org/fso#> PREFIX fpo: <https://w3id.org/fpo#> prefix ex: <https://example.com/ex#> 
         SELECT ?this WHERE {?system a fso:ReturnSystem .?system fso:hasComponent ?this .?this a fso:AirTerminal} """ ;
   ];sh:property[
         sh:path fso:hasPort ;
@@ -1332,12 +1378,52 @@ sh:target [
         sh:deactivated false
     ] ; 
     sh:property [
-        sh:path fpo:airTerminalType ;
+        sh:path fpo:hasAirTerminalType ;
         sh:dataType xsd:anyURI;
         sh:minCount 1;
         sh:maxCount 1;
         sh:message "AirTerminal";
         sh:message "Exactly one property of airterminal type must be present for an airterminal";
-        sh:deactivated false
+        sh:deactivated false 
     ]
      .
+
+    #AirTerminal return-side validation
+    fsosh:AirTerminalCapacityCheck
+    a sh:NodeShape;
+    sh:nodeKind sh:IRI ;
+    sh:targetClass bot:Space ;
+    sh:deactivated false ;
+    sh:sparql [
+        a sh:SPARQLConstrain ;
+        sh:message "The supply air terminal capacity shall not be lower the required supply air flow demand of the space" ;
+        sh:prefixes (fpo: fso: ex: inst: bot:) ;
+        sh:select """
+        PREFIX bot: <https://w3id.org/bot#>
+        PREFIX ex: <https://example.com/ex#>
+        PREFIX fso: <https://w3id.org/fso#>
+        PREFIX fpo: <https://w3id.org/fpo#>
+        SELECT ?this  {
+        ?this ex:designSupplyAirflowDemand ?flowDemand .
+        ?flowDemand fpo:hasValue ?flowDemandValue .
+        BIND (ROUND(?flowDemandValue) AS ?demand) .
+        
+        {
+        select ?this (ROUND(SUM(?flowCapacityValue)) AS ?capacity) WHERE {
+        ?this a bot:Space .
+        ?airTerminal a fpo:AirTerminal .
+        ?airTerminal fpo:hasAirTerminalType ?airTerminalType .
+        ?airTerminalType fpo:hasValue "inlet" .
+        ?airTerminal fso:feedsFluidTo ?this .
+        ?airTerminal fso:hasPort ?port .
+        ?port fpo:hasFlowDirection ?flowDirection .
+        ?flowDirection fpo:hasValuevalue "Out" .
+        ?port fpo:hasFlowRate ?flowCapacity .
+        ?flowCapacity	fpo:hasValue ?flowCapacityValue .
+        } GROUP BY ?this 
+    }
+    BIND (((?capacity/?demand)-1)*10 as ?oversizing) .
+    FILTER (?demand > ?capacity || ?oversizing > 10 )
+    }
+         """ ;
+    ]  .

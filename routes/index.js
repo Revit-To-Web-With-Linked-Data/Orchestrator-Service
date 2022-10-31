@@ -484,7 +484,7 @@ router.get('/flowHeadTable', (req, res, next) => {
                 for (let index in response1.data.results.bindings) {
                     flowMovingDeviceFlow.push([
                         response1.data.results.bindings[index].flowMovingDeviceType.value.replace(
-                            'http://w3id.org/fpo#',
+                            'https://w3id.org/fpo#',
                             ''
                         ),
                         response1.data.results.bindings[index].flowMovingDevice.value.replace(

@@ -1,40 +1,40 @@
 PREFIX ex: <https://example.com/ex#>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX fso: <http://w3id.org/fso#> 
-PREFIX fpo: <http://w3id.org/fpo#>
+PREFIX fso: <https://w3id.org/fso#> 
+PREFIX fpo: <https://w3id.org/fpo#>
 PREFIX fo: <http://www.w3.org/1999/XSL/Format#>
 PREFIX ec: <http://eulergui.sourceforge.net/contacts.owl.n3#>
 construct{
   ?component fso:hasPort ?port ; a ?componentType ; ex:RevitID ?revitID .
-  ?port fpo:flowType ?fluidType;
-    fpo:temperature ?temperature ;
-    fpo:velocity ?velocity;
-    fpo:flowRate ?flowRate;
+  ?port fpo:hasFlowType ?fluidType;
+    fpo:hasTemperature ?temperature ;
+    fpo:hasVelocity ?velocity;
+    fpo:hasFlowRate ?flowRate;
     fso:hasSystem ?systemType ;
-    fpo:pressureDrop ?pressureDrop ;
+    fpo:hasPressureDrop ?pressureDrop ;
     ex:hasFlowDirectionVectorZ ?flowDirectionVectorZ;
-    fpo:flowDirection ?flowDirection;
-  	fpo:width ?width ;
-    fpo:height ?height ;
-  	fpo:outerDiameter ?outerDiameter ;
-  	fpo:crossSectionalArea ?crossSectionalArea .
+    fpo:hasFlowDirection ?flowDirection;
+  	fpo:hasWidth ?width ;
+    fpo:hasHeight ?height ;
+  	fpo:hasOuterDiameter ?outerDiameter ;
+  	fpo:hasCrossSectionalArea ?crossSectionalArea .
 } 
 WHERE {
   ?system fso:hasFlow ?fluid .
   ?system a ?systemType .
-  ?fluid fpo:flowType/fpo:value ?fluidType .
-  ?fluid fpo:temperature/fpo:value ?temperature .
+  ?fluid fpo:hasFlowType/fpo:hasValue ?fluidType .
+  ?fluid fpo:hasTemperature/fpo:hasValue ?temperature .
   ?system fso:hasComponent ?component .
   ?component a ?componentType .
   ?component ex:RevitID ?revitID
   VALUES ?componentType {fso:Tee} ?component a ?componentType .
   ?component fso:hasPort ?port . 
-  ?port	fpo:flowDirection/fpo:value ?flowDirection.
-  ?port fpo:flowRate/fpo:value ?flowRate .
-  ?port fpo:velocity/fpo:value ?velocity .
-  optional {?port ex:hasFlowDirectionVectorZ/fpo:value ?flowDirectionVectorZ.}
-  optional {?port fpo:outerDiameter/fpo:value ?outerDiameter .}
-  optional {?port fpo:width/fpo:value ?width . ?port fpo:height/fpo:value ?height  .}
-  ?port fpo:crossSectionalArea/fpo:value ?crossSectionalArea 
+  ?port	fpo:hasFlowDirection/fpo:hasValue ?flowDirection.
+  ?port fpo:hasFlowRate/fpo:hasValue ?flowRate .
+  ?port fpo:hasVelocity/fpo:hasValue ?velocity .
+  optional {?port ex:hasFlowDirectionVectorZ/fpo:hasValue ?flowDirectionVectorZ.}
+  optional {?port fpo:hasOuterDiameter/fpo:hasValue ?outerDiameter .}
+  optional {?port fpo:hasWidth/fpo:hasValue ?width . ?port fpo:hasHeight/fpo:hasValue ?height  .}
+  ?port fpo:hasCrossSectionalArea/fpo:hasValue ?crossSectionalArea 
 }

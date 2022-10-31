@@ -1,20 +1,20 @@
 PREFIX ex: <https://example.com/ex#>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX fso: <http://w3id.org/fso#> 
-PREFIX fpo: <http://w3id.org/fpo#>
+PREFIX fso: <https://w3id.org/fso#> 
+PREFIX fpo: <https://w3id.org/fpo#>
 PREFIX fo: <http://www.w3.org/1999/XSL/Format#>
 PREFIX ec: <http://eulergui.sourceforge.net/contacts.owl.n3#>
 insert{
 #Adding Velocity
-  ?port fpo:velocity ?velocityID .
+  ?port fpo:hasVelocity ?velocityID .
   ?velocityID a fpo:Velocity .
-  ?velocityID fpo:value ?velocity .
-  ?velocityID fpo:unit "Meters per second" .}
+  ?velocityID fpo:hasValue ?velocity .
+  ?velocityID fpo:hasUnit "Meters per second" .}
 	WHERE {
   ?port a fso:Port .
-  ?port fpo:crossSectionalArea/fpo:value ?crossSectionalArea .
-  ?port fpo:flowRate/fpo:value ?flowRate .
+  ?port fpo:hasCrossSectionalArea/fpo:hasValue ?crossSectionalArea .
+  ?port fpo:hasFlowRate/fpo:hasValue ?flowRate .
   BIND(IRI(CONCAT("https://example.com/inst#",STRUUID())) as ?velocityID)
   BIND((?flowRate/1000)/?crossSectionalArea as ?velocity)
 }
