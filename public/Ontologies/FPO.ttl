@@ -1,0 +1,1036 @@
+@prefix : <https://w3id.org/fpo#> .
+@prefix bot: <https://w3id.org/bot#> .
+@prefix fpo: <https://w3id.org/fpo#> .
+@prefix fso: <http://w3id.org/fso#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix inst: <https://w3id.org/inst#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@base <https://w3id.org/fpo> .
+
+<https://w3id.org/fpo> rdf:type owl:Ontology ;
+                       owl:versionIRI <https://w3id.org/fpo/0.1.0> ;
+                       <http://purl.org/dc/terms/creator> "Ali Kücükavci" ,
+                                                          "Christian Anker Hviid" ,
+                                                          "Mads Holten Rasmussen" ;
+                       <http://purl.org/dc/terms/description> "Representing system components’ capacity- and size-related properties for the building design phase"@en ;
+                       <http://purl.org/dc/terms/issued> "2021-06-01T12:00:00"@en ;
+                       <http://purl.org/dc/terms/licence> <https://creativecommons.org/licenses/by/1.0/> ;
+                       <http://purl.org/dc/terms/modified> "2021-12-06T12:00:00"@en ;
+                       <http://purl.org/dc/terms/title> "The Flow Property Ontology"@en ;
+                       owl:priorVersion "https://w3id.org/fpo/0.0.1" ;
+                       owl:versionInfo "0.1.0"^^xsd:string ;
+                       <https://vocab.org/vann/preferredNamespacePrefix> "fpo"^^xsd:string ;
+                       <https://vocab.org/vann/preferredNamespaceUri> "https://w3id.org/fpo#" .
+
+#################################################################
+#    Annotation properties
+#################################################################
+
+###  http://purl.org/dc/terms/creator
+<http://purl.org/dc/terms/creator> rdf:type owl:AnnotationProperty .
+
+
+###  http://purl.org/dc/terms/description
+<http://purl.org/dc/terms/description> rdf:type owl:AnnotationProperty .
+
+
+###  http://purl.org/dc/terms/issued
+<http://purl.org/dc/terms/issued> rdf:type owl:AnnotationProperty .
+
+
+###  http://purl.org/dc/terms/licence
+<http://purl.org/dc/terms/licence> rdf:type owl:AnnotationProperty .
+
+
+###  http://purl.org/dc/terms/modified
+<http://purl.org/dc/terms/modified> rdf:type owl:AnnotationProperty .
+
+
+###  http://purl.org/dc/terms/title
+<http://purl.org/dc/terms/title> rdf:type owl:AnnotationProperty .
+
+
+###  http://www.w3.org/2002/07/owl#priorVersion
+owl:priorVersion rdf:type owl:AnnotationProperty .
+
+
+###  http://www.w3.org/2002/07/owl#versionInfo
+owl:versionInfo rdf:type owl:AnnotationProperty .
+
+
+###  http://www.w3.org/2003/06/sw-vocab-status/ns#term_status
+<http://www.w3.org/2003/06/sw-vocab-status/ns#term_status> rdf:type owl:AnnotationProperty .
+
+
+###  https://vocab.org/vann/preferredNamespacePrefix
+<https://vocab.org/vann/preferredNamespacePrefix> rdf:type owl:AnnotationProperty .
+
+
+###  https://vocab.org/vann/preferredNamespaceUri
+<https://vocab.org/vann/preferredNamespaceUri> rdf:type owl:AnnotationProperty .
+
+
+#################################################################
+#    Datatypes
+#################################################################
+
+###  http://www.w3.org/2001/XMLSchema#time
+xsd:time rdf:type rdfs:Datatype .
+
+
+#################################################################
+#    Object Properties
+#################################################################
+
+###  https://w3id.org/fpo#hasAngle
+fpo:hasAngle rdf:type owl:ObjectProperty ;
+             rdfs:subPropertyOf fpo:hasProperty ;
+             rdf:type owl:FunctionalProperty ,
+                      owl:AsymmetricProperty ,
+                      owl:IrreflexiveProperty ;
+             rdfs:range fpo:Angle ;
+             rdfs:comment "Relates an elbow to the property Angle."@en ;
+             rdfs:label "angle"@en .
+
+
+###  https://w3id.org/fpo#hasCOP
+fpo:hasCOP rdf:type owl:ObjectProperty ;
+           rdfs:subPropertyOf fpo:hasProperty ;
+           rdf:type owl:FunctionalProperty ,
+                    owl:AsymmetricProperty ,
+                    owl:IrreflexiveProperty ;
+           rdfs:range fpo:COP ;
+           rdfs:comment "Relates a heat pump to the property COP"@en ;
+           rdfs:label "cop"@en .
+
+
+###  https://w3id.org/fpo#hasCountedEfficiency
+fpo:hasCountedEfficiency rdf:type owl:ObjectProperty ;
+                         rdfs:subPropertyOf fpo:hasProperty ;
+                         rdfs:range fpo:CountedEfficiency ;
+                         rdfs:comment "Filter efficiency based the particle counts concentration before and after filter against particles with certain size distribution."@en ;
+                         rdfs:label "Counted efficiency"@en .
+
+
+###  https://w3id.org/fpo#hasCrossSectionalArea
+fpo:hasCrossSectionalArea rdf:type owl:ObjectProperty ;
+                          rdfs:subPropertyOf fpo:hasProperty ;
+                          rdf:type owl:FunctionalProperty ,
+                                   owl:AsymmetricProperty ,
+                                   owl:IrreflexiveProperty ;
+                          rdfs:range fpo:CrossSectionalArea ;
+                          rdfs:comment "Relates an interface or a component to the property Cross sectional area."@en ;
+                          rdfs:label "cross sectional area"@en .
+
+
+###  https://w3id.org/fpo#hasDamperPosition
+fpo:hasDamperPosition rdf:type owl:ObjectProperty ;
+                      rdfs:subPropertyOf fpo:hasProperty ;
+                      rdf:type owl:FunctionalProperty ,
+                               owl:AsymmetricProperty ,
+                               owl:IrreflexiveProperty ;
+                      rdfs:range fpo:DamperPosition ;
+                      rdfs:comment "Relates a damper to the property Damper position."@en ;
+                      rdfs:label "damper position"@en .
+
+
+###  https://w3id.org/fpo#hasDensity
+fpo:hasDensity rdf:type owl:ObjectProperty ;
+               rdfs:subPropertyOf fpo:hasProperty ;
+               rdf:type owl:FunctionalProperty ,
+                        owl:AsymmetricProperty ,
+                        owl:IrreflexiveProperty ;
+               rdfs:range fpo:Density ;
+               rdfs:comment "Relates a component, port, or flow to the property Density."@en ;
+               rdfs:label "density"@en .
+
+
+###  https://w3id.org/fpo#hasDesignAirFlowRate
+fpo:hasDesignAirFlowRate rdf:type owl:ObjectProperty ;
+                         rdfs:subPropertyOf fpo:hasProperty ;
+                         rdf:type owl:FunctionalProperty ,
+                                  owl:AsymmetricProperty ,
+                                  owl:IrreflexiveProperty ;
+                         rdfs:range fpo:DesignAirFlowRate ;
+                         rdfs:comment "Relates a fan to the property Design airflow rate."@en ;
+                         rdfs:label "design airflow rate"@en .
+
+
+###  https://w3id.org/fpo#hasDesignCoolingPower
+fpo:hasDesignCoolingPower rdf:type owl:ObjectProperty ;
+                          rdfs:subPropertyOf fpo:hasProperty ;
+                          rdf:type owl:FunctionalProperty ,
+                                   owl:AsymmetricProperty ,
+                                   owl:IrreflexiveProperty ;
+                          rdfs:range fpo:DesignCoolingPower ;
+                          rdfs:comment "Relates a chilled beam, a chiller, or a heat pump to the property Design cooling power."@en ;
+                          rdfs:label "design cooling power"@en .
+
+
+###  https://w3id.org/fpo#hasDesignHeatingPower
+fpo:hasDesignHeatingPower rdf:type owl:ObjectProperty ;
+                          rdfs:subPropertyOf fpo:hasProperty ;
+                          rdf:type owl:FunctionalProperty ,
+                                   owl:AsymmetricProperty ,
+                                   owl:IrreflexiveProperty ;
+                          rdfs:range fpo:DesignHeatingPower ;
+                          rdfs:comment "Relates a heat pump or a space heater to the property Design heating power."@en ;
+                          rdfs:label "design heating power"@en .
+
+
+###  https://w3id.org/fpo#hasDesignRoomTemperature
+fpo:hasDesignRoomTemperature rdf:type owl:ObjectProperty ;
+                             rdfs:subPropertyOf fpo:hasProperty ;
+                             rdfs:range fpo:DesignRoomTemperature ;
+                             rdfs:comment "Relates a space, an air terminal, a chilled beam, or a space heater to the property Design room temperature"@en ;
+                             rdfs:label "design room temperature"@en .
+
+
+###  https://w3id.org/fpo#hasDesignVolumen
+fpo:hasDesignVolumen rdf:type owl:ObjectProperty ;
+                     rdfs:subPropertyOf fpo:hasProperty ;
+                     rdf:type owl:FunctionalProperty ,
+                              owl:AsymmetricProperty ,
+                              owl:IrreflexiveProperty ;
+                     rdfs:range fpo:DesignVolumen ;
+                     rdfs:comment "Relates an storage device to the property Design volumen."@en ,
+                                  "design volumen"@en .
+
+
+###  https://w3id.org/fpo#hasEERCurve
+fpo:hasEERCurve rdf:type owl:ObjectProperty ;
+                rdfs:subPropertyOf fpo:hasProperty ;
+                rdf:type owl:FunctionalProperty ,
+                         owl:AsymmetricProperty ,
+                         owl:IrreflexiveProperty ;
+                rdfs:range fpo:EERCurve ;
+                rdfs:comment "Relates a chiller to a curve describing the relationship between flow rate on the x-axis and energy efficiency ratio (EER) on the y-axis."@en ;
+                rdfs:label "EER curve"@en .
+
+
+###  https://w3id.org/fpo#hasEfficiencyCurve
+fpo:hasEfficiencyCurve rdf:type owl:ObjectProperty ;
+                       rdfs:subPropertyOf fpo:hasProperty ;
+                       rdf:type owl:FunctionalProperty ,
+                                owl:AsymmetricProperty ,
+                                owl:IrreflexiveProperty ;
+                       rdfs:range fpo:EfficiencyCurve ;
+                       rdfs:comment "Relates a pump or fan to a curve describing the relationship between flow rate on the x-axis and total efficiency on the y-axis."@en ;
+                       rdfs:label "effeciency curve"@en .
+
+
+###  https://w3id.org/fpo#hasFlowDirection
+fpo:hasFlowDirection rdf:type owl:ObjectProperty ;
+                     rdfs:subPropertyOf fpo:hasProperty ;
+                     rdf:type owl:FunctionalProperty ,
+                              owl:AsymmetricProperty ,
+                              owl:IrreflexiveProperty ;
+                     rdfs:range fpo:FlowDirection ;
+                     rdfs:comment "Relates the component, port, or flow to the property Flow direction."@en ;
+                     rdfs:label "flow direction"@en .
+
+
+###  https://w3id.org/fpo#hasFlowRate
+fpo:hasFlowRate rdf:type owl:ObjectProperty ;
+                rdfs:subPropertyOf fpo:hasProperty ;
+                rdf:type owl:FunctionalProperty ,
+                         owl:AsymmetricProperty ,
+                         owl:IrreflexiveProperty ;
+                rdfs:range fpo:FlowRate ;
+                rdfs:comment "Relates a component, port, or flow to the property Flow rate."@en ;
+                rdfs:label "flow rate"@en .
+
+
+###  https://w3id.org/fpo#hasFlowRateCurve
+fpo:hasFlowRateCurve rdf:type owl:ObjectProperty ;
+                     rdfs:subPropertyOf fpo:hasProperty ;
+                     rdf:type owl:FunctionalProperty ,
+                              owl:AsymmetricProperty ,
+                              owl:IrreflexiveProperty ;
+                     rdfs:range fpo:FlowRateCurve ;
+                     rdfs:comment "Relates a damper to a curve describing the relationship between damper position on the x-axis and airflow ratio on the y-axis."@en ;
+                     rdfs:label "flowrate curve"@en .
+
+
+###  https://w3id.org/fpo#hasFlowType
+fpo:hasFlowType rdf:type owl:ObjectProperty ;
+                rdfs:subPropertyOf fpo:hasProperty ;
+                rdfs:range fpo:FlowType .
+
+
+###  https://w3id.org/fpo#hasFractionOfMotorHeatToAirStream
+fpo:hasFractionOfMotorHeatToAirStream rdf:type owl:ObjectProperty ;
+                                      rdfs:subPropertyOf fpo:hasProperty ;
+                                      rdf:type owl:FunctionalProperty ,
+                                               owl:AsymmetricProperty ,
+                                               owl:IrreflexiveProperty ;
+                                      rdfs:range fpo:FractionOfMotorHeatToAirStream ;
+                                      rdfs:comment "Relates a fan to the property Fraction of motor heat to air stream."@en ;
+                                      rdfs:label "fraction of motor heat to air stream"@en .
+
+
+###  https://w3id.org/fpo#hasHead
+fpo:hasHead rdf:type owl:ObjectProperty ;
+            rdfs:subPropertyOf fpo:hasProperty ;
+            rdf:type owl:FunctionalProperty ,
+                     owl:AsymmetricProperty ,
+                     owl:IrreflexiveProperty ;
+            rdfs:range fpo:Head ;
+            rdfs:comment "Relates a pump to the property Head."@en ;
+            rdfs:label "head"@en .
+
+
+###  https://w3id.org/fpo#hasHeatCapacity
+fpo:hasHeatCapacity rdf:type owl:ObjectProperty ;
+                    rdfs:subPropertyOf fpo:hasProperty ;
+                    rdf:type owl:FunctionalProperty ,
+                             owl:AsymmetricProperty ,
+                             owl:IrreflexiveProperty ;
+                    rdfs:range fpo:HeatCapacity ;
+                    rdfs:comment "Relates a component, port, or flow to the property Heat capacity."@en ;
+                    rdfs:label "heat capacity"@en .
+
+
+###  https://w3id.org/fpo#hasHeatLoss
+fpo:hasHeatLoss rdf:type owl:ObjectProperty ;
+                rdfs:subPropertyOf fpo:hasProperty ;
+                rdf:type owl:FunctionalProperty ,
+                         owl:AsymmetricProperty ,
+                         owl:IrreflexiveProperty ;
+                rdfs:range fpo:HeatLoss ;
+                rdfs:comment "Relates a component to the property Heat loss."@en ;
+                rdfs:label "heat loss"@en .
+
+
+###  https://w3id.org/fpo#hasHeight
+fpo:hasHeight rdf:type owl:ObjectProperty ;
+              rdfs:subPropertyOf fpo:hasProperty ;
+              rdf:type owl:FunctionalProperty ,
+                       owl:AsymmetricProperty ,
+                       owl:IrreflexiveProperty ;
+              rdfs:range fpo:Heigth ;
+              owl:propertyDisjointWith fpo:hasOuterDiameter ;
+              rdfs:comment "Relates a component, port or flow to the property Height."@en ;
+              rdfs:label "height"@en .
+
+
+###  https://w3id.org/fpo#hasInducedAirFlowRate
+fpo:hasInducedAirFlowRate rdf:type owl:ObjectProperty ;
+                          rdfs:subPropertyOf fpo:hasProperty ;
+                          rdf:type owl:FunctionalProperty ,
+                                   owl:AsymmetricProperty ,
+                                   owl:IrreflexiveProperty ;
+                          rdfs:range fpo:InducedAirFlowRate ;
+                          rdfs:comment "Relates a chilled beam to the property Induced airflow rate."@en ;
+                          rdfs:label "induced airflow rate"@en .
+
+
+###  https://w3id.org/fpo#hasInnerDiameter
+fpo:hasInnerDiameter rdf:type owl:ObjectProperty ;
+                     rdfs:subPropertyOf fpo:hasProperty ;
+                     rdfs:comment "Relates a component or a port to the property Inner diameter."@en ;
+                     rdfs:label "inner diameter"@en .
+
+
+###  https://w3id.org/fpo#hasInsulationThermalConductivity
+fpo:hasInsulationThermalConductivity rdf:type owl:ObjectProperty ;
+                                     rdfs:subPropertyOf fpo:hasProperty ;
+                                     rdf:type owl:FunctionalProperty ,
+                                              owl:AsymmetricProperty ,
+                                              owl:IrreflexiveProperty ;
+                                     rdfs:range fpo:InsulationThermalConductivity ;
+                                     rdfs:comment "Relates a heat exhanger, storage device, a damper, a pipe, a duct, an elbow, a tee, a reduction, or a cap to the property Insulation thermal conductivity."@en ;
+                                     rdfs:label "insulation thermal conductivity"@en .
+
+
+###  https://w3id.org/fpo#hasInsulationThickness
+fpo:hasInsulationThickness rdf:type owl:ObjectProperty ;
+                           rdfs:subPropertyOf fpo:hasProperty ;
+                           rdf:type owl:FunctionalProperty ,
+                                    owl:AsymmetricProperty ,
+                                    owl:IrreflexiveProperty ;
+                           rdfs:range fpo:InsulationThickness ;
+                           rdfs:comment "Relates a heat exhanger, storage device, a damper, a pipe, a duct, an elbow, a tee, a reduction, or a cap to the property Insulation thickness."@en ;
+                           rdfs:label "insulation thickness"@en .
+
+
+###  https://w3id.org/fpo#hasKv
+fpo:hasKv rdf:type owl:ObjectProperty ;
+          rdfs:subPropertyOf fpo:hasProperty ;
+          rdf:type owl:FunctionalProperty ,
+                   owl:AsymmetricProperty ,
+                   owl:IrreflexiveProperty ;
+          rdfs:range fpo:Kv ;
+          rdfs:comment "Relates a heat pump or a valve to the property Kv."@en ;
+          rdfs:label "kv"@en .
+
+
+###  https://w3id.org/fpo#hasKvCondenser
+fpo:hasKvCondenser rdf:type owl:ObjectProperty ;
+                   rdfs:subPropertyOf fpo:hasProperty ;
+                   rdf:type owl:FunctionalProperty ,
+                            owl:AsymmetricProperty ,
+                            owl:IrreflexiveProperty ;
+                   rdfs:range fpo:KvCondenser ;
+                   rdfs:comment "Relates heat pump to the property Kv condenser."@en ;
+                   rdfs:label "kv condenser"@en .
+
+
+###  https://w3id.org/fpo#hasKvEvaporator
+fpo:hasKvEvaporator rdf:type owl:ObjectProperty ;
+                    rdfs:subPropertyOf fpo:hasProperty ;
+                    rdf:type owl:FunctionalProperty ,
+                             owl:AsymmetricProperty ,
+                             owl:IrreflexiveProperty ;
+                    rdfs:range fpo:KvEvaporator ;
+                    rdfs:comment "Relates kv to the property Kv evaporator."@en ;
+                    rdfs:label "kv evaporator"@en .
+
+
+###  https://w3id.org/fpo#hasKvPrimary
+fpo:hasKvPrimary rdf:type owl:ObjectProperty ;
+                 rdfs:subPropertyOf fpo:hasProperty ;
+                 rdf:type owl:FunctionalProperty ,
+                          owl:AsymmetricProperty ,
+                          owl:IrreflexiveProperty ;
+                 rdfs:range fpo:KvPrimary ;
+                 rdfs:comment "Relates a heat exchanger to the property Kv primary."@en ;
+                 rdfs:label "kv primary"@en .
+
+
+###  https://w3id.org/fpo#hasKvSecondary
+fpo:hasKvSecondary rdf:type owl:ObjectProperty ;
+                   rdfs:subPropertyOf fpo:hasProperty ;
+                   rdf:type owl:FunctionalProperty ,
+                            owl:AsymmetricProperty ,
+                            owl:IrreflexiveProperty ;
+                   rdfs:range fpo:KvSecondary ;
+                   rdfs:comment "Relates a heat exhanger to the property Kv secondary."@en ;
+                   rdfs:label "kv secondary"@en .
+
+
+###  https://w3id.org/fpo#hasKvs
+fpo:hasKvs rdf:type owl:ObjectProperty ;
+           rdfs:subPropertyOf fpo:hasProperty ;
+           rdf:type owl:FunctionalProperty ,
+                    owl:AsymmetricProperty ,
+                    owl:IrreflexiveProperty ;
+           rdfs:range fpo:Kvs ;
+           rdfs:comment "Relates a valve to the property Kvs."@en ;
+           rdfs:label "kvs"@en .
+
+
+###  https://w3id.org/fpo#hasLength
+fpo:hasLength rdf:type owl:ObjectProperty ;
+              rdfs:subPropertyOf fpo:hasProperty ;
+              rdf:type owl:FunctionalProperty ,
+                       owl:AsymmetricProperty ,
+                       owl:IrreflexiveProperty ;
+              rdfs:range fpo:Length ;
+              rdfs:comment "Relates a component, port, or flow to the property Length."@en ;
+              rdfs:label "length"@en .
+
+
+###  https://w3id.org/fpo#hasMaterialClass
+fpo:hasMaterialClass rdf:type owl:ObjectProperty ;
+                     rdfs:subPropertyOf fpo:hasProperty ;
+                     rdf:type owl:FunctionalProperty ,
+                              owl:AsymmetricProperty ,
+                              owl:IrreflexiveProperty ;
+                     rdfs:range fpo:MaterialClass ;
+                     rdfs:comment "Relates a pipe, a duct, an elbow, a tee, a reduction, or a cap to the property Material class."@en ;
+                     rdfs:label "material class"@en .
+
+
+###  https://w3id.org/fpo#hasMaterialType
+fpo:hasMaterialType rdf:type owl:ObjectProperty ;
+                    rdfs:subPropertyOf fpo:hasProperty ;
+                    rdf:type owl:FunctionalProperty ,
+                             owl:AsymmetricProperty ,
+                             owl:IrreflexiveProperty ;
+                    rdfs:range fpo:MaterialType ;
+                    rdfs:comment "Relates a pipe, a duct, an elbow, a tee, a reduction, or a cap to the property Material type."@en ;
+                    rdfs:label "material type"@en .
+
+
+###  https://w3id.org/fpo#hasOuterDiameter
+fpo:hasOuterDiameter rdf:type owl:ObjectProperty ;
+                     rdfs:subPropertyOf fpo:hasProperty ;
+                     rdf:type owl:FunctionalProperty ,
+                              owl:AsymmetricProperty ,
+                              owl:IrreflexiveProperty ;
+                     rdfs:range fpo:OuterDiameter ;
+                     owl:propertyDisjointWith fpo:hasWidth ;
+                     rdfs:comment "Relates a component or a port to the property Outer diameter."@en ;
+                     rdfs:label "outer diameter"@en .
+
+
+###  https://w3id.org/fpo#hasPowerCurve
+fpo:hasPowerCurve rdf:type owl:ObjectProperty ;
+                  rdfs:subPropertyOf fpo:hasProperty ;
+                  rdf:type owl:FunctionalProperty ,
+                           owl:AsymmetricProperty ,
+                           owl:IrreflexiveProperty ;
+                  rdfs:range fpo:PowerCurve ;
+                  rdfs:comment "Relates a pump or fan to a curve describing the relationship between flow rate on the x-axis and power on the y-axis."@en ;
+                  rdfs:label "power curve"@en .
+
+
+###  https://w3id.org/fpo#hasPressureCurve
+fpo:hasPressureCurve rdf:type owl:ObjectProperty ;
+                     rdfs:subPropertyOf fpo:hasProperty ;
+                     rdf:type owl:FunctionalProperty ,
+                              owl:AsymmetricProperty ,
+                              owl:IrreflexiveProperty ;
+                     rdfs:range fpo:PressureCurve ;
+                     rdfs:comment "Relates a pump or fan to a curve describing the relationship between flow rate on the x-axis and pressure on the y-axis."@en ;
+                     rdfs:label "pressure curve"@en .
+
+
+###  https://w3id.org/fpo#hasPressureDrop
+fpo:hasPressureDrop rdf:type owl:ObjectProperty ;
+                    rdfs:subPropertyOf fpo:hasProperty ;
+                    rdf:type owl:FunctionalProperty ,
+                             owl:AsymmetricProperty ,
+                             owl:IrreflexiveProperty ;
+                    rdfs:range fpo:PressureDrop ;
+                    rdfs:comment "Relates a component, a port, or a flow to the property Pressure Drop."@en ;
+                    rdfs:label "pressure drop"@en .
+
+
+###  https://w3id.org/fpo#hasProperty
+fpo:hasProperty rdf:type owl:ObjectProperty ;
+                rdfs:subPropertyOf owl:topObjectProperty ;
+                rdfs:range fpo:Property ;
+                rdfs:comment "Relates a component or an interface to a capacity- and/or size-related property."@en ;
+                rdfs:label "has property"@en .
+
+
+###  https://w3id.org/fpo#hasRoughness
+fpo:hasRoughness rdf:type owl:ObjectProperty ;
+                 rdfs:subPropertyOf fpo:hasProperty ;
+                 rdf:type owl:FunctionalProperty ,
+                          owl:AsymmetricProperty ,
+                          owl:IrreflexiveProperty ;
+                 rdfs:range fpo:Roughness ;
+                 rdfs:comment "Relates a pipe or a duct to the property Roughness."@en ;
+                 rdfs:label "roughness"@en .
+
+
+###  https://w3id.org/fpo#hasTemperature
+fpo:hasTemperature rdf:type owl:ObjectProperty ;
+                   rdfs:subPropertyOf fpo:hasProperty ;
+                   rdf:type owl:FunctionalProperty ,
+                            owl:AsymmetricProperty ,
+                            owl:IrreflexiveProperty ;
+                   rdfs:range fpo:Temperature ;
+                   rdfs:comment "Relates a component, a port, or a flow to the property Temperature."@en ;
+                   rdfs:label "temperature"@en .
+
+
+###  https://w3id.org/fpo#hasThermalConductivity
+fpo:hasThermalConductivity rdf:type owl:ObjectProperty ;
+                           rdfs:subPropertyOf fpo:hasProperty ;
+                           rdf:type owl:FunctionalProperty ,
+                                    owl:AsymmetricProperty ,
+                                    owl:IrreflexiveProperty ;
+                           rdfs:range fpo:ThermalConductivity ;
+                           rdfs:comment "Relates a pipe, a duct, an elbow, a tee, a reduction, or a cap to the property Thermal conductivity."@en ;
+                           rdfs:label "thermal conductivity"@en .
+
+
+###  https://w3id.org/fpo#hasUAValue
+fpo:hasUAValue rdf:type owl:ObjectProperty ;
+               rdfs:subPropertyOf fpo:hasProperty ;
+               rdf:type owl:FunctionalProperty ,
+                        owl:AsymmetricProperty ,
+                        owl:IrreflexiveProperty ;
+               rdfs:range fpo:UAValue ;
+               rdfs:comment "Relates a heat exchanger to the property UA value."@en ;
+               rdfs:label "UA value"@en .
+
+
+###  https://w3id.org/fpo#hasValvePosition
+fpo:hasValvePosition rdf:type owl:ObjectProperty ;
+                     rdfs:subPropertyOf fpo:hasProperty ;
+                     rdf:type owl:FunctionalProperty ,
+                              owl:AsymmetricProperty ,
+                              owl:IrreflexiveProperty ;
+                     rdfs:range fpo:ValvePosition ;
+                     rdfs:comment "Relates valve to the property Valve position."@en ;
+                     rdfs:label "valve position"@en .
+
+
+###  https://w3id.org/fpo#hasVelocity
+fpo:hasVelocity rdf:type owl:ObjectProperty ;
+                rdfs:subPropertyOf fpo:hasProperty ;
+                rdf:type owl:FunctionalProperty ,
+                         owl:AsymmetricProperty ,
+                         owl:IrreflexiveProperty ;
+                rdfs:range fpo:Velocity ;
+                rdfs:comment "Relates a component, a port, or a flow to the property Velocity."@en ;
+                rdfs:label "velocity"@en .
+
+
+###  https://w3id.org/fpo#hasViscosity
+fpo:hasViscosity rdf:type owl:ObjectProperty ;
+                 rdfs:subPropertyOf fpo:hasProperty ;
+                 rdf:type owl:FunctionalProperty ,
+                          owl:AsymmetricProperty ,
+                          owl:IrreflexiveProperty ;
+                 rdfs:range fpo:Viscosity ;
+                 rdfs:comment "Relates a component, a port, or a flow to the property Viscosity."@en ;
+                 rdfs:label "viscosity"@en .
+
+
+###  https://w3id.org/fpo#hasVolume
+fpo:hasVolume rdf:type owl:ObjectProperty ;
+              rdfs:subPropertyOf fpo:hasProperty ;
+              rdfs:range fpo:Volume .
+
+
+###  https://w3id.org/fpo#hasWidth
+fpo:hasWidth rdf:type owl:ObjectProperty ;
+             rdfs:subPropertyOf fpo:hasProperty ;
+             rdf:type owl:FunctionalProperty ,
+                      owl:AsymmetricProperty ,
+                      owl:IrreflexiveProperty ;
+             rdfs:range fpo:Width ;
+             rdfs:comment "Relates a component, port, or flow to the property Width."@en ;
+             rdfs:label "width"@en .
+
+
+###  https://w3id.org/fpo#hasZeta
+fpo:hasZeta rdf:type owl:ObjectProperty ;
+            rdfs:subPropertyOf fpo:hasProperty ;
+            rdf:type owl:FunctionalProperty ,
+                     owl:AsymmetricProperty ,
+                     owl:IrreflexiveProperty ;
+            rdfs:range fpo:Zeta ;
+            rdfs:comment "Relates a port to the property Zeta."@en ;
+            rdfs:label "zeta"@en .
+
+
+#################################################################
+#    Data properties
+#################################################################
+
+###  https://w3id.org/fpo#hasAbbreviation
+fpo:hasAbbreviation rdf:type owl:DatatypeProperty ;
+                    rdfs:subPropertyOf owl:topDataProperty ;
+                    rdfs:domain fpo:Property ;
+                    rdfs:range xsd:string ;
+                    rdfs:comment "A shortened form of a word or phrase."@en ;
+                    rdfs:label "abbreviation"@en .
+
+
+###  https://w3id.org/fpo#hasCurve
+fpo:hasCurve rdf:type owl:DatatypeProperty ;
+             rdfs:range xsd:string ;
+             rdfs:comment "An array that contains a group of elements."@en ;
+             rdfs:label "curve"@en .
+
+
+###  https://w3id.org/fpo#hasDefaultUnit
+fpo:hasDefaultUnit rdf:type owl:DatatypeProperty ;
+                   rdfs:subPropertyOf owl:topDataProperty ;
+                   rdf:type owl:FunctionalProperty ;
+                   rdfs:domain fpo:Property ;
+                   rdfs:range xsd:string ;
+                   rdfs:comment "The default unit in which a property's value is expressed."@en ;
+                   rdfs:label "default unit"@en .
+
+
+###  https://w3id.org/fpo#hasDesignCondition
+fpo:hasDesignCondition rdf:type owl:DatatypeProperty ;
+                       rdfs:label "The state in which an property is designed for. For example, it can be summer or winter condition."@en ,
+                                  "design condition"@en .
+
+
+###  https://w3id.org/fpo#hasUnit
+fpo:hasUnit rdf:type owl:DatatypeProperty ;
+            rdfs:subPropertyOf owl:topDataProperty ;
+            rdf:type owl:FunctionalProperty ;
+            rdfs:domain fpo:Property ;
+            rdfs:range xsd:string ;
+            rdfs:comment "The unit in which a property's value is expressed."@en ;
+            rdfs:label "unit"@en .
+
+
+###  https://w3id.org/fpo#hasValue
+fpo:hasValue rdf:type owl:DatatypeProperty ;
+             rdfs:subPropertyOf owl:topDataProperty ;
+             rdf:type owl:FunctionalProperty ;
+             rdfs:domain fpo:Property ;
+             rdfs:range [ rdf:type rdfs:Datatype ;
+                          owl:unionOf ( xsd:double
+                                        xsd:string
+                                        xsd:time
+                                      )
+                        ] ;
+             rdfs:comment """A measurable quantity, that can be expressed  numeric or textual depending on the attribute.
+
+The information contained in a data field. It may represent a numeric quantity, a textual characterization, a date or time measurement, or some other state, depending on the nature of the attribute"""@en ;
+             rdfs:label "value"@en .
+
+
+#################################################################
+#    Classes
+#################################################################
+
+###  https://w3id.org/fpo#Angle
+fpo:Angle rdf:type owl:Class ;
+          rdfs:subClassOf fpo:Property ;
+          rdfs:comment "The measure of a space between two intersecting pipes of an elbow."@en ;
+          rdfs:label "Angle"@en .
+
+
+###  https://w3id.org/fpo#COP
+fpo:COP rdf:type owl:Class ;
+        rdfs:subClassOf fpo:Property ;
+        rdfs:comment "The measure of energy efficiency of a heat pumps' heating performance."@en ;
+        rdfs:label "COP"@en .
+
+
+###  https://w3id.org/fpo#CountedEfficiency
+fpo:CountedEfficiency rdf:type owl:Class ;
+                      rdfs:subClassOf fpo:Property .
+
+
+###  https://w3id.org/fpo#CrossSectionalArea
+fpo:CrossSectionalArea rdf:type owl:Class ;
+                       rdfs:subClassOf fpo:Property ;
+                       rdfs:comment "The measure of a two-dimensional shape of a component or interface."@en ;
+                       rdfs:label "Cross sectional area"@en .
+
+
+###  https://w3id.org/fpo#DamperPosition
+fpo:DamperPosition rdf:type owl:Class ;
+                   rdfs:subClassOf fpo:Property ;
+                   rdfs:comment "The measure of a dampers blade angle."@en ;
+                   rdfs:label "Damper position"@en .
+
+
+###  https://w3id.org/fpo#Density
+fpo:Density rdf:type owl:Class ;
+            rdfs:subClassOf fpo:Property ;
+            rdfs:comment "The measure of a fluids mass per unit volume."@en ;
+            rdfs:label "Density"@en .
+
+
+###  https://w3id.org/fpo#DesignAirFlowRate
+fpo:DesignAirFlowRate rdf:type owl:Class ;
+                      rdfs:subClassOf fpo:Property ;
+                      rdfs:comment "The minimum amount of air an HVAC device must satisfy."@en ;
+                      rdfs:label "Design airflow rate"@en .
+
+
+###  https://w3id.org/fpo#DesignCoolingPower
+fpo:DesignCoolingPower rdf:type owl:Class ;
+                       rdfs:subClassOf fpo:Property ;
+                       rdfs:comment "The minimum amount of cooling an HVAC device must satisfy."@en ;
+                       rdfs:label "Design cooling power"@en .
+
+
+###  https://w3id.org/fpo#DesignHeatingPower
+fpo:DesignHeatingPower rdf:type owl:Class ;
+                       rdfs:subClassOf fpo:Property ;
+                       rdfs:comment "The minimum amount of heating an HVAC device must satisfy."@en ;
+                       rdfs:label "Design heating power"@en .
+
+
+###  https://w3id.org/fpo#DesignRoomTemperature
+fpo:DesignRoomTemperature rdf:type owl:Class ;
+                          rdfs:subClassOf fpo:Property ;
+                          rdfs:comment "The maximum room temperature at which an HVAC device must satisfy."@en ;
+                          rdfs:label "Design room temperature"@en .
+
+
+###  https://w3id.org/fpo#DesignVolumen
+fpo:DesignVolumen rdf:type owl:Class ;
+                  rdfs:subClassOf fpo:Property ;
+                  rdfs:comment "The minimum amount of water storage capacity"@en ;
+                  rdfs:label "Design volumen"@en .
+
+
+###  https://w3id.org/fpo#EERCurve
+fpo:EERCurve rdf:type owl:Class ;
+             rdfs:subClassOf fpo:Property ;
+             rdfs:comment "A line graph describing the relationship between flow rate on the x-axis and energy efficiency ratio (EER) on the y-axis."@en ;
+             rdfs:label "EER curve"@en .
+
+
+###  https://w3id.org/fpo#EfficiencyCurve
+fpo:EfficiencyCurve rdf:type owl:Class ;
+                    rdfs:subClassOf fpo:Property ;
+                    rdfs:comment "A line graph describing the relationship between flow rate on the x-axis and total efficiency on the y-axis."@en ;
+                    rdfs:label "Efficiency curve"@en .
+
+
+###  https://w3id.org/fpo#FlowDirection
+fpo:FlowDirection rdf:type owl:Class ;
+                  rdfs:subClassOf fpo:Property ;
+                  rdfs:comment "The direction the fluid flows."@en ;
+                  rdfs:label "Flow direction"@en .
+
+
+###  https://w3id.org/fpo#FlowRate
+fpo:FlowRate rdf:type owl:Class ;
+             rdfs:subClassOf fpo:Property ;
+             rdfs:comment "The measure of a volumetric fluid that flows per unit."@en ;
+             rdfs:label "Flow rate"@en .
+
+
+###  https://w3id.org/fpo#FlowRateCurve
+fpo:FlowRateCurve rdf:type owl:Class ;
+                  rdfs:subClassOf fpo:Property ;
+                  rdfs:comment "A line graph describing the relationship between damper position on the x-axis and airflow ratio on the y-axis."@en ;
+                  rdfs:label "Flowrate curve"@en .
+
+
+###  https://w3id.org/fpo#FlowType
+fpo:FlowType rdf:type owl:Class ;
+             rdfs:subClassOf fpo:Property .
+
+
+###  https://w3id.org/fpo#FractionOfMotorHeatToAirStream
+fpo:FractionOfMotorHeatToAirStream rdf:type owl:Class ;
+                                   rdfs:subClassOf fpo:Property ;
+                                   rdfs:comment "The Fraction of the motor heat released into the fluid flow."@en ;
+                                   rdfs:label "Fraction of motor heat to air stream"@en .
+
+
+###  https://w3id.org/fpo#Head
+fpo:Head rdf:type owl:Class ;
+         rdfs:subClassOf fpo:Property ;
+         rdfs:comment "The pressure generated on the output side of an HVAC device."@en ;
+         rdfs:label "Head"@en .
+
+
+###  https://w3id.org/fpo#HeatCapacity
+fpo:HeatCapacity rdf:type owl:Class ;
+                 rdfs:subClassOf fpo:Property ;
+                 rdfs:comment "The ratio of heat absorbed by a material to the temperature change."@en ;
+                 rdfs:label "Heat capacity"@en .
+
+
+###  https://w3id.org/fpo#HeatLoss
+fpo:HeatLoss rdf:type owl:Class ;
+             rdfs:subClassOf fpo:Property ;
+             rdfs:comment "The total heat transfer from the inside to the outside of an HVAC device."@en ;
+             rdfs:label "Heat loss"@en .
+
+
+###  https://w3id.org/fpo#Heigth
+fpo:Heigth rdf:type owl:Class ;
+           rdfs:subClassOf fpo:Property ;
+           rdfs:comment "The measure of distance between the top and the bottom of an HVAC component or interface."@en ;
+           rdfs:label "Heigth"@en .
+
+
+###  https://w3id.org/fpo#InducedAirFlowRate
+fpo:InducedAirFlowRate rdf:type owl:Class ;
+                       rdfs:subClassOf fpo:Property ;
+                       rdfs:comment "The measure of a volumetric recircled fluid that flows per unit."@en ;
+                       rdfs:label "Induced airflow rate"@en .
+
+
+###  https://w3id.org/fpo#InsulationThermalConductivity
+fpo:InsulationThermalConductivity rdf:type owl:Class ;
+                                  rdfs:subClassOf fpo:Property ;
+                                  rdfs:comment "The rate at which heat is transferred through a unit area of insulation material by conduction."@en ;
+                                  rdfs:label "Insulation thermal conducitvity"@en .
+
+
+###  https://w3id.org/fpo#InsulationThickness
+fpo:InsulationThickness rdf:type owl:Class ;
+                        rdfs:subClassOf fpo:Property ;
+                        rdfs:comment "The thickness of an insulation."@en ;
+                        rdfs:label "Insulation thickness"@en .
+
+
+###  https://w3id.org/fpo#Kv
+fpo:Kv rdf:type owl:Class ;
+       rdfs:subClassOf fpo:Property ;
+       rdfs:comment "The amount of flow in a regulating valve at a given valve position with a pressure loss of 1 bar."@en ;
+       rdfs:label "Kv"@en .
+
+
+###  https://w3id.org/fpo#KvCondenser
+fpo:KvCondenser rdf:type owl:Class ;
+                rdfs:subClassOf fpo:Property ;
+                rdfs:comment "The amount of flow in a regulating valve of a condenser at a given valve position with a pressure loss of 1 bar."@en ;
+                rdfs:label "Kv condenser"@en .
+
+
+###  https://w3id.org/fpo#KvEvaporator
+fpo:KvEvaporator rdf:type owl:Class ;
+                 rdfs:subClassOf fpo:Property ;
+                 rdfs:comment "The amount of flow in a regulating valve of an evaporator at a given valve position with a pressure loss of 1 bar."@en ;
+                 rdfs:label "Kv evaporator"@en .
+
+
+###  https://w3id.org/fpo#KvPrimary
+fpo:KvPrimary rdf:type owl:Class ;
+              rdfs:subClassOf fpo:Property ;
+              rdfs:comment "The amount of flow in a regulating valve on the primary side at a given valve position with a pressure loss of 1 bar."@en ;
+              rdfs:label "Kv primary"@en .
+
+
+###  https://w3id.org/fpo#KvSecondary
+fpo:KvSecondary rdf:type owl:Class ;
+                rdfs:subClassOf fpo:Property ;
+                rdfs:comment "The amount of flow in a regulating valve on the secondary side at a given valve position with a pressure loss of 1 bar."@en ;
+                rdfs:label "Kv secondary"@en .
+
+
+###  https://w3id.org/fpo#Kvs
+fpo:Kvs rdf:type owl:Class ;
+        rdfs:subClassOf fpo:Property ;
+        rdfs:comment "The amount of flow in a regulating valve at a fully-open valve position and a pressure differential of 1 bar."@en ;
+        rdfs:label "Kvs"@en .
+
+
+###  https://w3id.org/fpo#Length
+fpo:Length rdf:type owl:Class ;
+           rdfs:subClassOf fpo:Property ;
+           rdfs:comment "The measure of distance from end to end of an HVAC component or interface."@en ;
+           rdfs:label "Length"@en .
+
+
+###  https://w3id.org/fpo#MaterialClass
+fpo:MaterialClass rdf:type owl:Class ;
+                  rdfs:subClassOf fpo:Property ;
+                  rdfs:comment "A classification name that specifies the type of the component."@en ;
+                  rdfs:label "Material class"@en .
+
+
+###  https://w3id.org/fpo#MaterialType
+fpo:MaterialType rdf:type owl:Class ;
+                 rdfs:subClassOf fpo:Property ;
+                 rdfs:comment "The material or materials from which an HVAC component is made or composed."@en ;
+                 rdfs:label "Material type"@en .
+
+
+###  https://w3id.org/fpo#OuterDiameter
+fpo:OuterDiameter rdf:type owl:Class ;
+                  rdfs:subClassOf fpo:Property ;
+                  rdfs:comment "The measure of the outside edges of an HVAC component or interface."@en ;
+                  rdfs:label "Outer diameter"@en .
+
+
+###  https://w3id.org/fpo#PowerCurve
+fpo:PowerCurve rdf:type owl:Class ;
+               rdfs:subClassOf fpo:Property ;
+               rdfs:comment "A line graph describing the relationship between flow rate on the x-axis and power on the y-axis."@en ;
+               rdfs:label "Power curve"@en .
+
+
+###  https://w3id.org/fpo#PressureCurve
+fpo:PressureCurve rdf:type owl:Class ;
+                  rdfs:subClassOf fpo:Property ;
+                  rdfs:comment "Describing the relationship between flow rate on the x-axis and pressure on the y-axis."@en ;
+                  rdfs:label "Pressure curve"@en .
+
+
+###  https://w3id.org/fpo#PressureDrop
+fpo:PressureDrop rdf:type owl:Class ;
+                 rdfs:subClassOf fpo:Property ;
+                 rdfs:comment "The measure of resistance to the flow in HVAC components or their interfaces."@en ;
+                 rdfs:label "Pressure drop"@en .
+
+
+###  https://w3id.org/fpo#Property
+fpo:Property rdf:type owl:Class ;
+             rdfs:subClassOf owl:Thing ;
+             rdfs:label "Property"@en .
+
+
+###  https://w3id.org/fpo#Roughness
+fpo:Roughness rdf:type owl:Class ;
+              rdfs:subClassOf fpo:Property ;
+              rdfs:comment "The measure of inner surface irregularities of an HVAC component."@en ;
+              rdfs:label "Roughness"@en .
+
+
+###  https://w3id.org/fpo#Temperature
+fpo:Temperature rdf:type owl:Class ;
+                rdfs:subClassOf fpo:Property ;
+                rdfs:comment "The measure of hotness or coldness expressed in terms of any or several scales for an fluid."@en ;
+                rdfs:label "Temperature"@en .
+
+
+###  https://w3id.org/fpo#ThermalConductivity
+fpo:ThermalConductivity rdf:type owl:Class ;
+                        rdfs:subClassOf fpo:Property ;
+                        rdfs:comment "The rate at which heat is transferred through a unit area of a material by conduction."@en ;
+                        rdfs:label "Thermal conductivity"@en .
+
+
+###  https://w3id.org/fpo#UAValue
+fpo:UAValue rdf:type owl:Class ;
+            rdfs:subClassOf fpo:Property ;
+            rdfs:comment "The measure of heat transmission through a unit cross-section area of a material."@en ;
+            rdfs:label "UA value"@en .
+
+
+###  https://w3id.org/fpo#ValvePosition
+fpo:ValvePosition rdf:type owl:Class ;
+                  rdfs:subClassOf fpo:Property ;
+                  rdfs:comment "The measure of a valve positioners angle."@en ;
+                  rdfs:label "Valve position"@en .
+
+
+###  https://w3id.org/fpo#Velocity
+fpo:Velocity rdf:type owl:Class ;
+             rdfs:subClassOf fpo:Property ;
+             rdfs:comment "The measure of a fluid volume flowing per unit time"@en ;
+             rdfs:label "Velocity"@en .
+
+
+###  https://w3id.org/fpo#Viscosity
+fpo:Viscosity rdf:type owl:Class ;
+              rdfs:subClassOf fpo:Property ;
+              rdfs:comment "The measure of a fluid's resistance to a flow."@en ;
+              rdfs:label "Viscosity"@en .
+
+
+###  https://w3id.org/fpo#Volume
+fpo:Volume rdf:type owl:Class ;
+           rdfs:subClassOf fpo:Property ;
+           rdfs:comment "A three-dimensional measure of the space occupied or displaced by an storage device."@en ;
+           rdfs:label "Volume"@en .
+
+
+###  https://w3id.org/fpo#Width
+fpo:Width rdf:type owl:Class ;
+          rdfs:subClassOf fpo:Property ;
+          rdfs:comment "The measurement of the distance from side to side of an HVAC component or interface."@en ;
+          rdfs:label "Width"@en .
+
+
+###  https://w3id.org/fpo#Zeta
+fpo:Zeta rdf:type owl:Class ;
+         rdfs:subClassOf fpo:Property ;
+         rdfs:comment "The measure of hydraulic resistance of a fitting."@en ;
+         rdfs:label "Zeta"@en .
+
+
+#################################################################
+#    General axioms
+#################################################################
+
+[ rdf:type owl:AllDisjointProperties ;
+  owl:members ( fpo:hasAbbreviation
+                fpo:hasCurve
+                fpo:hasDefaultUnit
+                fpo:hasUnit
+                fpo:hasValue
+              )
+] .
+
+
+###  Generated by the OWL API (version 4.5.9.2019-02-01T07:24:44Z) https://github.com/owlcs/owlapi

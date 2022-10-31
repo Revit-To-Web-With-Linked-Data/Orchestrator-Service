@@ -1,0 +1,1429 @@
+@prefix sh:      <http://www.w3.org/ns/shacl#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix ex:      <https://ex/> .
+@prefix fso:     <https://w3id.org/fso#> .
+@prefix fpo:     <https://w3id.org/fpo#> .
+@prefix xsd:      <http://www.w3.org/2001/XMLSchema#> .
+@prefix inst:    <https://example.com/inst#> .
+@prefix fsosh:     <http://w3id.org/fsosh#> .
+@prefix bot: <https://w3id.org/bot#>
+
+#HeatExchanger validation
+    fsosh:HeatExchanger
+    a sh:NodeShape;
+    sh:nodeKind sh:IRI ;
+    sh:targetClass fso:HeatExchanger ;
+    sh:property[
+        sh:path fso:hasPort ;
+        sh:dataType xsd:anyURI;
+        sh:minCount 4;
+        sh:message "HeatExchanger";
+        sh:message "A heat exchanger must have at least four flow ports";
+        sh:deactivated false
+    ]; 
+    sh:property [
+        sh:path fso:feedsFluidTo ;
+        sh:dataType xsd:anyURI;
+        sh:minCount 2;
+        sh:message "HeatExchanger";
+        sh:message "A heat exchanger must feed fluid to at least two components";
+        sh:deactivated false
+    ] ;
+       sh:property [
+        sh:path [sh:inversePath fso:feedsFluidTo] ;
+        sh:dataType xsd:anyURI;
+        sh:minCount 2;
+        sh:message "HeatExchanger";
+        sh:message "A heat exchanger must be fed with fluid by two components";
+        sh:deactivated false
+    ] ;
+     sh:property [
+        sh:path [sh:inversePath fso:hasComponent] ;
+        sh:dataType xsd:anyURI;
+        sh:minCount 3;
+        sh:message "HeatExchanger";
+        sh:message "A heat exchanger must be connected to at least three systems";
+        sh:deactivated false
+    ] ; 
+    sh:property [
+        sh:path fpo:hasDesignHeatingPower ;
+        sh:dataType xsd:anyURI;
+        sh:minCount 1;
+        sh:maxCount 1;
+        sh:message "HeatExchanger";
+        sh:message "Exactly one property of design heating power must be present for a heat exchanger";
+        sh:deactivated false
+    ] .
+
+    #Transition validation
+    fsosh:Transition
+    a sh:NodeShape;
+    sh:nodeKind sh:IRI ;
+    sh:targetClass fso:Transition ;
+    sh:property[
+        sh:path fso:hasPort ;
+        sh:dataType xsd:anyURI;
+        sh:minCount 2;
+        sh:maxCount 2;
+        sh:message "Transition";
+        sh:message "A transition must have exactly two flow ports";
+        sh:deactivated false
+    ]; 
+    sh:property [
+        sh:path fso:feedsFluidTo ;
+        sh:dataType xsd:anyURI;
+        sh:minCount 1;
+        sh:maxCount 1;
+        sh:message "Transition";
+        sh:message "A transition must feed fluid to exactly one component";
+        sh:deactivated false
+    ] ;
+    sh:property [
+        sh:path [sh:inversePath fso:feedsFluidTo] ;
+        sh:dataType xsd:anyURI;
+        sh:minCount 1;
+        sh:message "Transition";
+        sh:message "A transition must be fed with fluid by exactly one component";
+        sh:deactivated false
+    ] ;
+     sh:property [
+        sh:path [sh:inversePath fso:hasComponent] ;
+        sh:dataType xsd:anyURI;
+        sh:minCount 1;
+        sh:maxCount 1;
+        sh:message "Transition";
+        sh:message "A transition must be connected to exactly one system";
+        sh:deactivated false
+    ] ; 
+    sh:property [
+        sh:path fpo:hasMaterialType ;
+        sh:dataType xsd:anyURI;
+        sh:minCount 1;
+        sh:maxCount 1;
+        sh:message "Transition";
+        sh:message "Exactly one property of material type must be present for a transition";
+        sh:deactivated false
+    ] .
+
+    #Pipe validation
+    fsosh:Pipe
+    a sh:NodeShape;
+    sh:nodeKind sh:IRI ;
+    sh:targetClass fso:Pipe ;
+    sh:property[
+        sh:path fso:hasPort ;
+        sh:dataType xsd:anyURI;
+        sh:minCount 2;
+        sh:maxCount 2;
+        sh:message "Pipe";
+        sh:message "A pipe must have exactly two flow ports";
+        sh:deactivated false
+    ]; 
+    sh:property [
+        sh:path fso:feedsFluidTo ;
+        sh:dataType xsd:anyURI;
+        sh:minCount 1;
+        sh:maxCount 1;
+        sh:message "Pipe";
+        sh:message "A pipe must feed fluid to exactly one component";
+        sh:deactivated false
+    ] ;
+    sh:property [
+        sh:path [sh:inversePath fso:feedsFluidTo] ;
+        sh:dataType xsd:anyURI;
+        sh:minCount 1;
+        sh:message "Pipe";
+        sh:message "A pipe must be fed with fluid by exactly one component";
+        sh:deactivated false
+    ] ;
+    sh:property [
+        sh:path [sh:inversePath fso:hasComponent] ;
+        sh:dataType xsd:anyURI;
+        sh:minCount 1;
+        sh:maxCount 1;
+        sh:message "Pipe";
+        sh:message "A pipe must be connected to exactly one system";
+        sh:deactivated false
+    ] ; 
+    sh:property [
+        sh:path fpo:hasMaterialType ;
+        sh:dataType xsd:anyURI;
+        sh:minCount 1;
+        sh:maxCount 1;
+        sh:message "Pipe";
+        sh:message "Exactly one property of material type must be present in a pipe";
+        sh:deactivated false
+    ] ; 
+    sh:property [
+        sh:path fpo:hasLength ;
+        sh:dataType xsd:anyURI;
+        sh:minCount 1;
+        sh:maxCount 1;
+        sh:message "Pipe";
+        sh:message "Exactly one property of length must be present for a pipe";
+        sh:deactivated false
+    ]; 
+    sh:property [
+        sh:path fpo:hasRoughness ;
+        sh:dataType xsd:anyURI;
+        sh:minCount 1;
+        sh:maxCount 1;
+        sh:message "Pipe";
+        sh:message "Exactly one property of roughness type must be present for a pipe";
+        sh:deactivated false
+    ] .
+
+    #The pressure drop of a pipe
+    fsosh:PipePressureDrop
+    a sh:NodeShape;
+    sh:nodeKind sh:IRI ;
+    sh:targetClass fso:Pipe ;
+    sh:message "Pipe";
+    sh:message "The pressure drop of a pipe shall not exceed 100 Pa/m";
+    sh:deactivated true ;
+    sh:sparql  [
+        a sh:sh:SPARQLConstraint  ;
+        sh:prefixes (fpo: fso: inst:) ;
+        sh:select """PREFIX fso: <https://w3id.org/fso#> PREFIX fpo: <https://w3id.org/fpo#> PREFIX inst: <https://example.com/inst#>
+        SELECT ?this ?value
+        WHERE {
+            ?this a fso:Pipe . 
+            ?this fpo:hasLength ?length .
+            ?length fpo:hasValue ?lengthvalue .
+            ?this fso:hasPort ?port .
+            ?port fpo:hasFlowDirection ?flowDirection .
+            ?flowDirection fpo:hasValue "Out" .
+            ?port fpo:hasPressureDrop ?pressureDrop .
+            ?pressureDrop fpo:hasValue ?pressureDropValue .
+            bind ((?pressureDropValue / ?lengthvalue) as ?value) .
+            filter (?value > 100)} """ ; 
+    ] .
+
+
+    #Duct validation
+    fsosh:Duct
+    a sh:NodeShape;
+    sh:nodeKind sh:IRI ;
+    sh:targetClass fso:Duct ;
+    sh:property[
+        sh:path fso:hasPort ;
+        sh:dataType xsd:anyURI;
+        sh:minCount 2;
+        sh:maxCount 2;
+        sh:message "Duct";
+        sh:message "A duct must have exactly two flow ports";
+        sh:deactivated false
+    ]; 
+    sh:property [
+        sh:path fso:feedsFluidTo ;
+        sh:dataType xsd:anyURI;
+        sh:minCount 1;
+        sh:maxCount 1;
+        sh:message "Duct";
+        sh:message "A duct must feed fluid to exactly one component";
+        sh:deactivated false
+    ] ;
+    sh:property [
+        sh:path [sh:inversePath fso:feedsFluidTo] ;
+        sh:dataType xsd:anyURI;
+        sh:minCount 1;
+        sh:message "Duct";
+        sh:message "A duct must be fed with fluid by exactly one component";
+        sh:deactivated false
+    ] ;
+     sh:property [
+        sh:path [sh:inversePath fso:hasComponent] ;
+        sh:dataType xsd:anyURI;
+        sh:minCount 1;
+        sh:maxCount 1;
+        sh:message "Duct";
+        sh:message "A duct must be connected to exactly one system";
+        sh:deactivated false
+    ] ; 
+    sh:property [
+        sh:path fpo:hasMaterialType ;
+        sh:dataType xsd:anyURI;
+        sh:minCount 1;
+        sh:maxCount 1;
+        sh:message "Duct";
+        sh:message "Exactly one property of material type must be present in a duct";
+        sh:deactivated false
+    ] ; 
+    sh:property [
+        sh:path fpo:hasLength ;
+        sh:dataType xsd:anyURI;
+        sh:minCount 1;
+        sh:maxCount 1;
+        sh:message "Duct";
+        sh:message "Exactly one property of length type must be present in a duct";
+        sh:deactivated false
+    ]; 
+    sh:property [
+        sh:path fpo:hasRoughness ;
+        sh:dataType xsd:anyURI;
+        sh:minCount 1;
+        sh:maxCount 1;
+        sh:message "Duct";
+        sh:message "Exactly one property of roughness must be present for a duct";
+        sh:deactivated false
+    ] .
+
+    #The pressure drop of a pipe
+    fsosh:DuctPressureDrop
+    a sh:NodeShape;
+    sh:nodeKind sh:IRI ;
+    sh:targetClass fso:Duct ;
+    sh:message "Duct";
+    sh:message "The pressure drop of a duct shall not exceed 1 Pa/m";
+    sh:deactivated true ;
+    sh:sparql  [
+        a sh:sh:SPARQLConstraint  ;
+        sh:prefixes (fpo: fso: inst:) ;
+        sh:select """PREFIX fso: <https://w3id.org/fso#> PREFIX fpo: <https://w3id.org/fpo#> PREFIX inst: <https://example.com/inst#>
+        SELECT ?this ?value
+        WHERE {
+            ?this a fso:Duct . 
+            ?this fpo:hasLength ?length .
+            ?length fpo:hasValue ?lengthvalue .
+            ?this fso:hasPort ?port .
+            ?port fpo:hasFlowDirection ?flowDirection .
+            ?flowDirection fpo:hasValue "Out" .
+            ?port fpo:hasPressureDrop ?pressureDrop .
+            ?pressureDrop fpo:hasValue ?pressureDropValue .
+            bind ((?pressureDropValue / ?lengthvalue) as ?value) .
+            filter (?value > 1)} """ ; 
+    ].
+
+
+    #Transition validation
+    fsosh:Elbow
+    a sh:NodeShape;
+    sh:nodeKind sh:IRI ;
+    sh:targetClass fso:Elbow ;
+    sh:property[
+        sh:path fso:hasPort ;
+        sh:dataType xsd:anyURI;
+        sh:minCount 2;
+        sh:maxCount 2;
+        sh:message "Elbow";
+        sh:message "An elbow must have exactly two flow ports";
+        sh:deactivated false
+    ]; 
+    sh:property [
+        sh:path fso:feedsFluidTo ;
+        sh:dataType xsd:anyURI;
+        sh:minCount 1;
+        sh:maxCount 1;
+        sh:message "Elbow";
+        sh:message "An elbow must feed fluid to exactly one component";
+        sh:deactivated false
+    ] ;
+    sh:property [
+        sh:path [sh:inversePath fso:feedsFluidTo] ;
+        sh:dataType xsd:anyURI;
+        sh:minCount 1;
+        sh:maxCount 1;
+        sh:message "Elbow";
+        sh:message "An elbow must be fed with fluid by exactly one component";
+        sh:deactivated false
+    ] ;
+     sh:property [
+        sh:path [sh:inversePath fso:hasComponent] ;
+        sh:dataType xsd:anyURI;
+        sh:minCount 1;
+        sh:maxCount 1;
+        sh:message "Elbow";
+        sh:message "An elbow must be connected to exactly one system";
+        sh:deactivated false
+    ] ; 
+    sh:property [
+        sh:path fpo:hasMaterialType ;
+        sh:dataType xsd:anyURI;
+        sh:minCount 1;
+        sh:maxCount 1;
+        sh:message "Elbow";
+        sh:message "Exactly one property of material type must be present for an elbow";
+        sh:deactivated false
+    ] ;
+     sh:property [
+        sh:path fpo:hasAngle ;
+        sh:dataType xsd:anyURI;
+        sh:minCount 1;
+        sh:maxCount 1;
+        sh:message "Elbow";
+        sh:message "Exactly one property of angle must be present for an elbow";
+        sh:deactivated false
+    ].
+
+
+    #Pump validation
+    fsosh:Pump
+    a sh:NodeShape;
+    sh:nodeKind sh:IRI ;
+    sh:targetClass fso:Pump ;
+    sh:property[
+        sh:path fso:hasPort ;
+        sh:dataType xsd:anyURI;
+        sh:minCount 2;
+        sh:maxCount 2;
+        sh:message "Pump";
+        sh:message "A pump must have exactly two flow ports";
+        sh:deactivated false
+    ]; 
+    sh:property [
+        sh:path fso:feedsFluidTo ;
+        sh:dataType xsd:anyURI;
+        sh:minCount 1;
+        sh:maxCount 1;
+        sh:message "Pump";
+        sh:message "A pump must feed fluid to exactly one component";
+        sh:deactivated false
+    ] ;
+    sh:property [
+        sh:path [sh:inversePath fso:feedsFluidTo] ;
+        sh:dataType xsd:anyURI;
+        sh:minCount 1;
+        sh:maxCount 1;
+        sh:message "Pump";
+        sh:message "A pump must be fed with fluid by exactly one component";
+        sh:deactivated false
+    ] ;
+     sh:property [
+        sh:path [sh:inversePath fso:hasComponent] ;
+        sh:dataType xsd:anyURI;
+        sh:minCount 1;
+        sh:maxCount 1;
+        sh:message "Pump";
+        sh:message "A pump must be connected to exactly one system";
+        sh:deactivated false
+    ] ; 
+    sh:property [
+        sh:path fpo:hasPressureCurve ;
+        sh:dataType xsd:anyURI;
+        sh:minCount 1;
+        sh:maxCount 1;
+        sh:message "Pump";
+        sh:message "Exactly one property of pressure curve type must be present for a pump";
+        sh:deactivated false
+    ] ;
+     sh:property [
+        sh:path fpo:hasPowerCurve ;
+        sh:dataType xsd:anyURI;
+        sh:minCount 1;
+        sh:maxCount 1;
+        sh:message "Pump";
+        sh:message "Exactly one property of power curve must be present for a pump";
+        sh:deactivated false
+    ].
+
+    #Fan validation
+    fsosh:Fan
+    a sh:NodeShape;
+    sh:nodeKind sh:IRI ;
+    sh:targetClass fso:Fan ;
+    sh:property[
+        sh:path fso:hasPort ;
+        sh:dataType xsd:anyURI;
+        sh:minCount 2;
+        sh:maxCount 2;
+        sh:message "Fan";
+        sh:message "A fan must have exactly two flow ports";
+        sh:deactivated false
+    ]; 
+    sh:property [
+        sh:path fso:feedsFluidTo ;
+        sh:dataType xsd:anyURI;
+        sh:minCount 1;
+        sh:maxCount 1;
+        sh:message "Fan";
+        sh:message "A fan must feed fluid to exactly one component";
+        sh:deactivated false
+    ] ;
+    sh:property [
+        sh:path [sh:inversePath fso:feedsFluidTo] ;
+        sh:dataType xsd:anyURI;
+        sh:minCount 1;
+        sh:maxCount 1;
+        sh:message "Fan";
+        sh:message "A fan must be fed with fluid by exactly one component";
+        sh:deactivated false
+    ] ;
+     sh:property [
+        sh:path [sh:inversePath fso:hasComponent] ;
+        sh:dataType xsd:anyURI;
+        sh:minCount 1;
+        sh:maxCount 1;
+        sh:message "Fan";
+        sh:message "A fan must be connected to exactly one system";
+        sh:deactivated false
+    ] ; 
+    sh:property [
+        sh:path fpo:hasPressureCurve ;
+        sh:dataType xsd:anyURI;
+        sh:minCount 1;
+        sh:maxCount 1;
+        sh:message "Fan";
+        sh:message "Exactly one property of pressure curve type must be present for a fan";
+        sh:deactivated false
+    ] ;
+     sh:property [
+        sh:path fpo:hasPowerCurve ;
+        sh:dataType xsd:anyURI;
+        sh:minCount 1;
+        sh:maxCount 1;
+        sh:message "Fan";
+        sh:message "Exactly one property of power curve must be present for a fan";
+        sh:deactivated false
+    ].
+
+#Port validation
+    fsosh:Port-1
+    a sh:NodeShape;
+    sh:nodeKind sh:IRI ;
+    sh:targetClass fso:Port ;
+    sh:message "Port";
+    sh:message "A port must have exactly one property of outerdiameter or width and heigth";
+    sh:deactivated false;
+    sh:or ( 
+         [
+            sh:and 
+            (
+            [sh:path     fpo:hasHeight ;
+            sh:dataType xsd:anyURI ;
+            sh:minCount 1 ;
+            sh:maxCount 1 ;
+            ]
+            [sh:path     fpo:hasWidth ;
+            sh:dataType xsd:anyURI ;
+            sh:minCount 1 ;
+            sh:maxCount 1 ;
+            ]          
+            );
+         ]
+         [  
+            sh:path     fpo:hasOuterDiameter ;
+            sh:dataType xsd:anyURI ;
+            sh:minCount 1 ;
+            sh:maxCount 1 ;
+         ]
+       ) .
+
+#Port validation
+    fsosh:Port-2
+    a sh:NodeShape;
+    sh:nodeKind sh:IRI ;
+    sh:targetClass fso:Port ;
+    sh:property [
+        sh:path fpo:hasFlowDirection ;
+        sh:dataType xsd:anyURI;
+        sh:minCount 1;
+        sh:maxCount 1;
+        sh:message "Port";
+        sh:message "A port must have exactly one flow";
+        sh:deactivated false
+    ]  .
+
+
+
+#Port validation
+    fsosh:Port-3
+    a sh:NodeShape;
+    sh:nodeKind sh:IRI ;
+sh:target [
+        a sh:SPARQLTarget ;
+        sh:prefixes (fpo: fso: ex:) ;
+        sh:select """PREFIX fso: <https://w3id.org/fso#> PREFIX fpo: <https://w3id.org/fpo#> prefix ex: <http://example.org/> 
+        SELECT ?this WHERE {?this a fso:Port .?this fpo:hasFlowDirection ?flowDirection .?flowDirection fpo:hasValue "Out"} """ ;
+  ];    
+    sh:property [
+        sh:path fpo:hasPressureDrop ;
+        sh:dataType xsd:anyURI;
+        sh:minCount 1;
+        sh:maxCount 1;
+        sh:message "Port";
+        sh:message "Exactly one property of pressure drop must be present for an outlet port";
+        sh:deactivated true
+    ] ;    
+    sh:property [
+        sh:path fpo:hasFlowRate ;
+        sh:dataType xsd:anyURI;
+        sh:minCount 1;
+        sh:maxCount 1;
+        sh:message "Port";
+        sh:message "Exactly one property of flow rate must be present for an outlet port";
+        sh:deactivated true
+    ] ; 
+    sh:property [
+        sh:path fpo:hasVelocity ;
+        sh:dataType xsd:anyURI;
+        sh:minCount 1;
+        sh:maxCount 1;
+        sh:message "Port";
+        sh:message "Exactly one property of flow velocity must be present for an outlet port";
+        sh:deactivated true
+    ].
+
+#Flow validation
+    fsosh:Flow
+    a sh:NodeShape;
+    sh:nodeKind sh:IRI ;
+    sh:targetClass fso:Flow ;
+    sh:property[
+        sh:path fpo:hasTemperature ;
+        sh:dataType xsd:anyURI;
+        sh:minCount 1;
+        sh:maxCount 1;
+        sh:message "Flow";
+        sh:message "A flow must have a temperature";
+        sh:deactivated false
+    ] .
+
+
+#PressureDrop validation
+    fsosh:PressureDrop
+    a sh:NodeShape;
+    sh:nodeKind sh:IRI ;
+    sh:targetClass fpo:PressureDrop ;
+    sh:property[
+        sh:path fpo:hasUnit ;
+        sh:dataType xsd:string;
+        sh:minCount 1;
+        sh:maxCount 1;
+        sh:hasValue "Pascal"^^xsd:string ;
+        sh:message "Property";
+        sh:message "The property pressure drop must have exactly one unit and its unit must be in Pascal";
+        sh:deactivated true 
+    ] ;
+    sh:property [
+        sh:path fpo:hasValue ;
+        sh:minCount 1;
+        sh:maxCount 1;
+        sh:minInclusive 0.001;
+        sh:dataType xsd:double ;
+        sh:message "Property";
+        sh:message "The property pressure drop must have exactly one value and its value must be above 0.001";
+        sh:deactivated true 
+
+    ]; .
+
+
+#Velocity validation
+    fsosh:Velocity
+    a sh:NodeShape;
+    sh:nodeKind sh:IRI ;
+    sh:targetClass fpo:Velocity ;
+    sh:property[
+        sh:path fpo:hasUnit ;
+        sh:dataType xsd:string;
+        sh:minCount 1;
+        sh:maxCount 1;
+        sh:hasValue "Meters per second"^^xsd:string ;
+        sh:message "Property";
+        sh:message "The property velocity must have exactly one unit and its unit must be in meters per second";
+        sh:deactivated true 
+    ] ;
+    sh:property [
+        sh:path fpo:hasValue ;
+        sh:minCount 1;
+        sh:maxCount 1;
+        sh:minInclusive 0.001;
+        sh:dataType xsd:double ;
+        sh:message "Property";
+        sh:message "The property velocity must have exactly one value and its value must be above 0.001";
+        sh:deactivated true 
+    ]; .
+
+
+#FlowRate validation
+    fsosh:FlowRate
+    a sh:NodeShape;
+    sh:nodeKind sh:IRI ;
+    sh:targetClass fpo:FlowRate ;
+    sh:property[
+        sh:path fpo:hasUnit ;
+        sh:dataType xsd:string;
+        sh:minCount 1;
+        sh:maxCount 1;
+        sh:hasValue "Liters per second"^^xsd:string ;
+        sh:message "Property";
+        sh:message "The property flow rate must have exactly one unit and its unit must be in liters per second";
+        sh:deactivated true 
+    ] ;
+    sh:property [
+        sh:path fpo:hasValue ;
+        sh:minCount 1;
+        sh:maxCount 1;
+        sh:minInclusive 0.001;
+        sh:dataType xsd:double ;
+        sh:message "Property";
+        sh:message "The property flow rate must have exactly one value and its value must be above 0.001";
+        sh:deactivated true 
+    ]; .
+
+    #OuterDiameter validation
+    fsosh:OuterDiameter
+    a sh:NodeShape;
+    sh:nodeKind sh:IRI ;
+    sh:targetClass fpo:OuterDiameter ;
+    sh:property[
+        sh:path fpo:hasUnit ;
+        sh:dataType xsd:string;
+        sh:minCount 1;
+        sh:maxCount 1;
+        sh:hasValue "Meter"^^xsd:string ;
+        sh:message "Property";
+        sh:message "The property flow rate must have exactly one unit and its unit must be in meter";
+        sh:deactivated false 
+    ] ;
+    sh:property [
+        sh:path fpo:hasValue ;
+        sh:minCount 1;
+        sh:maxCount 1;
+        sh:minInclusive 0.001;
+        sh:dataType xsd:double ;
+        sh:message "Property";
+        sh:message "The property outer diameter must have exactly one value and its value must be above 0.001";
+        sh:deactivated false 
+    ]; .
+
+    #Width validation
+    fsosh:Width
+    a sh:NodeShape;
+    sh:nodeKind sh:IRI ;
+    sh:targetClass fpo:Width ;
+    sh:property[
+        sh:path fpo:hasUnit ;
+        sh:dataType xsd:string;
+        sh:minCount 1;
+        sh:maxCount 1;
+        sh:hasValue "Meter"^^xsd:string ;
+        sh:message "Property";
+        sh:message "The property width must have exactly one unit and its unit must be in meter";
+        sh:deactivated false 
+    ] ;
+    sh:property [
+        sh:path fpo:hasValue ;
+        sh:minCount 1;
+        sh:maxCount 1;
+        sh:minInclusive 0.001;
+        sh:dataType xsd:double ;
+        sh:message "Property";
+        sh:message "The property width must have exactly one value and its value must be above 0.001";
+        sh:deactivated false 
+    ]; .
+
+     #Heigth validation
+    fsosh:Heigth
+    a sh:NodeShape;
+    sh:nodeKind sh:IRI ;
+    sh:targetClass fpo:Heigth ;
+    sh:property[
+        sh:path fpo:hasUnit ;
+        sh:dataType xsd:string;
+        sh:minCount 1;
+        sh:maxCount 1;
+        sh:hasValue "Meter"^^xsd:string ;
+        sh:message "Property";
+        sh:message "The property heigth must have exactly one unit and its unit must be in meter";
+        sh:deactivated false 
+    ] ;
+    sh:property [
+        sh:path fpo:hasValue ;
+        sh:minCount 1;
+        sh:maxCount 1;
+        sh:minInclusive 0.001;
+        sh:dataType xsd:double ;
+        sh:message "Property";
+        sh:message "The property heigth must have exactly one value and its value must be above 0.001";
+        sh:deactivated false 
+    ]; .
+
+    #Roughness validation
+    fsosh:Roughness
+    a sh:NodeShape;
+    sh:nodeKind sh:IRI ;
+    sh:targetClass fpo:Roughness ;
+    sh:property[
+        sh:path fpo:hasUnit ;
+        sh:dataType xsd:string;
+        sh:minCount 1;
+        sh:maxCount 1;
+        sh:hasValue "Meter"^^xsd:string ;
+        sh:message "Property";
+        sh:message "The property roughness must have exactly one unit and its unit must be in meter";
+        sh:deactivated false 
+    ] ;
+    sh:property [
+        sh:path fpo:hasValue ;
+        sh:minCount 1;
+        sh:maxCount 1;
+        sh:minInclusive 0;
+        sh:dataType xsd:double ;
+        sh:message "Property";
+        sh:message "The property roughness must have exactly one value and its value must be above 0.001";
+        sh:deactivated false 
+    ]; .
+
+      #Angle validation
+    fsosh:Angle
+    a sh:NodeShape;
+    sh:nodeKind sh:IRI ;
+    sh:targetClass fpo:Angle ;
+    sh:property[
+        sh:path fpo:hasUnit ;
+        sh:dataType xsd:string;
+        sh:minCount 1;
+        sh:maxCount 1;
+        sh:hasValue "Degree"^^xsd:string ;
+        sh:message "Property";
+        sh:message "The property angle must have exactly one unit and its unit must be in degree";
+        sh:deactivated false
+    ] ;
+    sh:property [
+        sh:path fpo:hasValue ;
+        sh:minCount 1;
+        sh:maxCount 1;
+        sh:minInclusive 0.001;
+        sh:dataType xsd:double ;
+        sh:message "Property";
+        sh:message "The property angle must have exactly one value and its value must be above 0.001";
+        sh:deactivated false
+    ]; .
+
+      #Kv validation
+    fsosh:Kv
+    a sh:NodeShape;
+    sh:nodeKind sh:IRI ;
+    sh:targetClass fpo:Kv, fpo:Kvs ;
+    sh:property [
+        sh:path fpo:hasValue ;
+        sh:minCount 1;
+        sh:maxCount 1;
+        sh:minInclusive 0.001;
+        sh:dataType xsd:double ;
+        sh:message "Property";
+        sh:message "The property kv or kvs must have exactly one value and its value must be above 0.001";
+        sh:deactivated false
+    ]; .
+
+    #Curves validation
+    fsosh:Curves
+    a sh:NodeShape;
+    sh:nodeKind sh:IRI ;
+    sh:targetClass fpo:PressureCurve, fpo:PowerCurve ;
+    sh:property [
+        sh:path fpo:hasCurve ;
+        sh:minCount 1;
+        sh:maxCount 1;
+        sh:dataType xsd:string ;
+        sh:message "Property";
+        sh:message "The property power curve or pressure curve must have exactly one value and it must have a value";
+        sh:deactivated false
+    ]; .
+
+
+#AirTerminalType validation
+    fsosh:AirTerminalType
+    a sh:NodeShape;
+    sh:nodeKind sh:IRI ;
+    sh:targetClass fso:AirTerminalType ;
+    sh:property [
+        sh:path fpo:hasValue ;
+        sh:minCount 1;
+        sh:maxCount 1;
+        sh:or ([sh:hasValue "inlet"][sh:hasValue "outlet"]);
+        sh:dataType xsd:string ;
+        sh:message "Property";
+        sh:message "The property airterminal type must have exactly one value and its value must be above 0.001";
+        sh:deactivated false
+    ]; .
+
+
+#SupplySystem validation
+    fsosh:SupplySystem
+    a sh:NodeShape;
+    sh:nodeKind sh:IRI ;
+    sh:targetClass fso:SupplySystem;
+    sh:property[
+        sh:path fso:hasComponent ;
+        sh:dataType xsd:anyURI;
+        sh:minCount 1;
+        sh:message "System";
+        sh:message "A supplySystem must have at least one component";
+        sh:deactivated false
+    ]; 
+    sh:property [
+        sh:path fso:hasFlow ;
+        sh:dataType xsd:anyURI;
+        sh:minCount 1;
+        sh:maxCount 1;
+        sh:message "System";
+        sh:message "A supplySystem must have a flow";
+        sh:deactivated false
+    ] .
+
+#ReturnSystem validation
+    fsosh:ReturnSystem
+    a sh:NodeShape;
+    sh:nodeKind sh:IRI ;
+    sh:targetClass fso:ReturnSystem;
+    sh:property[
+        sh:path fso:hasComponent ;
+        sh:dataType xsd:anyURI;
+        sh:minCount 1;
+        sh:message "System";
+        sh:message "A ReturnSystem must have at least one component";
+        sh:deactivated false
+    ]; 
+    sh:property [
+        sh:path fso:hasFlow ;
+        sh:dataType xsd:anyURI;
+        sh:minCount 1;
+        sh:maxCount 1;
+        sh:message "System";
+        sh:message "A ReturnSystem must have a flow";
+        sh:deactivated false
+    ] .
+
+
+    #SpaceHeater validation
+    fsosh:SpaceHeater
+    a sh:NodeShape;
+    sh:nodeKind sh:IRI ;
+    sh:targetClass fso:SpaceHeater ;
+    sh:property[
+        sh:path fso:hasPort ;
+        sh:dataType xsd:anyURI;
+        sh:minCount 2;
+        sh:maxCount 2;
+        sh:message "SpaceHeater";
+        sh:message "A spaceheater must have exactly two flow ports";
+        sh:deactivated false
+    ]; 
+    sh:property [
+        sh:path fso:feedsFluidTo ;
+        sh:dataType xsd:anyURI;
+        sh:minCount 1;
+        sh:maxCount 1;
+        sh:message "SpaceHeater";
+        sh:message "A spaceheater must feed fluid to exactly one component";
+        sh:deactivated false
+    ] ;
+    sh:property [
+        sh:path [sh:inversePath fso:feedsFluidTo] ;
+        sh:dataType xsd:anyURI;
+        sh:minCount 1;
+        sh:maxCount 1;
+        sh:message "SpaceHeater";
+        sh:message "A spaceheater must be fed with fluid by exactly one component";
+        sh:deactivated false
+    ] ;
+     sh:property [
+        sh:path [sh:inversePath fso:hasComponent] ;
+        sh:dataType xsd:anyURI;
+        sh:minCount 2;
+        sh:maxCount 2;
+        sh:message "SpaceHeater";
+        sh:message "A spaceheater must be connected to exactly one system";
+        sh:deactivated false
+    ] ; 
+    sh:property [
+        sh:path fpo:hasDesignHeatingPower ;
+        sh:dataType xsd:anyURI;
+        sh:minCount 1;
+        sh:maxCount 1;
+        sh:message "SpaceHeater";
+        sh:message "Exactly one property of pressure curve must be present for a spaceheater";
+        sh:deactivated false
+    ] ;
+     sh:property [
+        sh:path fso:transfersHeatTo ;
+        sh:dataType xsd:anyURI;
+        sh:minCount 1;
+        sh:maxCount 1;
+        sh:message "SpaceHeater";
+        sh:message "Exactly one property of transfers heat to must be present for a spaceheater";
+        sh:deactivated false
+    ].
+
+    #BalacingValve validation
+    fsosh:BalancingValve
+    a sh:NodeShape;
+    sh:nodeKind sh:IRI ;
+    sh:targetClass fso:BalancingValve ;
+    sh:property[
+        sh:path fso:hasPort ;
+        sh:dataType xsd:anyURI;
+        sh:minCount 2;
+        sh:maxCount 2;
+        sh:message "BalancingValve";
+        sh:message "A balancing valve must have exactly two flow ports";
+        sh:deactivated false
+    ]; 
+    sh:property [
+        sh:path fso:feedsFluidTo ;
+        sh:dataType xsd:anyURI;
+        sh:minCount 1;
+        sh:maxCount 1;
+        sh:message "BalancingValve";
+        sh:message "A balancing valve must feed fluid to exactly one component";
+        sh:deactivated false
+    ] ;
+    sh:property [
+        sh:path [sh:inversePath fso:feedsFluidTo] ;
+        sh:dataType xsd:anyURI;
+        sh:minCount 1;
+        sh:maxCount 1;
+        sh:message "BalancingValve";
+        sh:message "A balancing valve must be fed with fluid by exactly one component";
+        sh:deactivated false
+    ] ;
+     sh:property [
+        sh:path [sh:inversePath fso:hasComponent] ;
+        sh:dataType xsd:anyURI;
+        sh:minCount 1;
+        sh:maxCount 1;
+        sh:message "BalancingValve";
+        sh:message "A balancing valve must be connected to exactly one system";
+        sh:deactivated false
+    ] ; 
+    sh:property [
+        sh:path fpo:hasKv ;
+        sh:dataType xsd:anyURI;
+        sh:minCount 1;
+        sh:maxCount 1;
+        sh:message "BalancingValve";
+        sh:message "Exactly one property of kv type must be present for a balancing valve";
+        sh:deactivated false
+    ] ;
+     sh:property [
+        sh:path fpo:hasKvs ;
+        sh:dataType xsd:anyURI;
+        sh:minCount 1;
+        sh:maxCount 1;
+        sh:message "BalancingValve";
+        sh:message "Exactly one property of kvs must be present for a balancing valve";
+        sh:deactivated false
+    ].
+
+    #BalacingDamper validation
+    fsosh:BalacingDamper
+    a sh:NodeShape;
+    sh:nodeKind sh:IRI ;
+    sh:targetClass fso:BalancingDamper ;
+    sh:property[
+        sh:path fso:hasPort ;
+        sh:dataType xsd:anyURI;
+        sh:minCount 2;
+        sh:maxCount 2;
+        sh:message "BalancingDamper";
+        sh:message "A balancing damper must have exactly two flow ports";
+        sh:deactivated false
+    ]; 
+    sh:property [
+        sh:path fso:feedsFluidTo ;
+        sh:dataType xsd:anyURI;
+        sh:minCount 1;
+        sh:maxCount 1;
+        sh:message "BalancingDamper";
+        sh:message "A balancing damper must feed fluid to exactly one component";
+        sh:deactivated false
+    ] ;
+    sh:property [
+        sh:path [sh:inversePath fso:feedsFluidTo] ;
+        sh:dataType xsd:anyURI;
+        sh:minCount 1;
+        sh:maxCount 1;
+        sh:message "BalancingDamper";
+        sh:message "A balancing damper must be fed with fluid by exactly one component";
+        sh:deactivated false
+    ] ;
+     sh:property [
+        sh:path [sh:inversePath fso:hasComponent] ;
+        sh:dataType xsd:anyURI;
+        sh:minCount 1;
+        sh:maxCount 1;
+        sh:message "BalancingDamper";
+        sh:message "A balancing damper must be connected to exactly one system";
+        sh:deactivated false
+    ] ; 
+    sh:property [
+        sh:path fpo:hasKv ;
+        sh:dataType xsd:anyURI;
+        sh:minCount 1;
+        sh:maxCount 1;
+        sh:message "BalancingDamper";
+        sh:message "Exactly one property of kv type must be present for a balancing damper";
+        sh:deactivated false
+    ] ;
+     sh:property [
+        sh:path fpo:hasKvs ;
+        sh:dataType xsd:anyURI;
+        sh:minCount 1;
+        sh:maxCount 1;
+        sh:message "BalancingDamper";
+        sh:message "Exactly one property of kvs must be present for a balancing damper";
+        sh:deactivated false
+    ].
+
+    #MotorizedValve validation
+    fsosh:MotorizedValve
+    a sh:NodeShape;
+    sh:nodeKind sh:IRI ;
+    sh:targetClass fso:MotorizedValve ;
+    sh:property[
+        sh:path fso:hasPort ;
+        sh:dataType xsd:anyURI;
+        sh:minCount 2;
+        sh:maxCount 2;
+        sh:message "MotorizedValve";
+        sh:message "A motorized valve must have exactly two flow ports";
+        sh:deactivated false
+    ]; 
+    sh:property [
+        sh:path fso:feedsFluidTo ;
+        sh:dataType xsd:anyURI;
+        sh:minCount 1;
+        sh:maxCount 1;
+        sh:message "MotorizedValve";
+        sh:message "A motorized valve must feed fluid to exactly one component";
+        sh:deactivated false
+    ] ;
+    sh:property [
+        sh:path [sh:inversePath fso:feedsFluidTo] ;
+        sh:dataType xsd:anyURI;
+        sh:minCount 1;
+        sh:maxCount 1;
+        sh:message "MotorizedValve";
+        sh:message "A motorized valve must be fed with fluid by exactly one component";
+        sh:deactivated false
+    ] ;
+     sh:property [
+        sh:path [sh:inversePath fso:hasComponent] ;
+        sh:dataType xsd:anyURI;
+        sh:minCount 1;
+        sh:maxCount 1;
+        sh:message "MotorizedValve";
+        sh:message "A motorized valve must be connected to exactly one system";
+        sh:deactivated false
+    ] ; 
+    sh:property [
+        sh:path fpo:hasKv ;
+        sh:dataType xsd:anyURI;
+        sh:minCount 1;
+        sh:maxCount 1;
+        sh:message "MotorizedValve";
+        sh:message "Exactly one property of kv type must be present for a motorized valve";
+        sh:deactivated false
+    ] ;
+     sh:property [
+        sh:path fpo:hasKvs ;
+        sh:dataType xsd:anyURI;
+        sh:minCount 1;
+        sh:maxCount 1;
+        sh:message "MotorizedValve";
+        sh:message "Exactly one property of kvs must be present for a motorized valve";
+        sh:deactivated false
+    ].
+
+    #MotorizedDamper validation
+    fsosh:MotorizedDamper
+    a sh:NodeShape;
+    sh:nodeKind sh:IRI ;
+    sh:targetClass fso:MotorizedDamper ;
+    sh:property[
+        sh:path fso:hasPort ;
+        sh:dataType xsd:anyURI;
+        sh:minCount 2;
+        sh:maxCount 2;
+        sh:message "MotorizedDamper";
+        sh:message "A motorized damper must have exactly two flow ports";
+        sh:deactivated false
+    ]; 
+    sh:property [
+        sh:path fso:feedsFluidTo ;
+        sh:dataType xsd:anyURI;
+        sh:minCount 1;
+        sh:maxCount 1;
+        sh:message "MotorizedDamper";
+        sh:message "A motorized damper must feed fluid to exactly one component";
+        sh:deactivated false
+    ] ;
+    sh:property [
+        sh:path [sh:inversePath fso:feedsFluidTo] ;
+        sh:dataType xsd:anyURI;
+        sh:minCount 1;
+        sh:maxCount 1;
+        sh:message "MotorizedDamper";
+        sh:message "A motorized damper must be fed with fluid by exactly one component";
+        sh:deactivated false
+    ] ;
+     sh:property [
+        sh:path [sh:inversePath fso:hasComponent] ;
+        sh:dataType xsd:anyURI;
+        sh:minCount 1;
+        sh:maxCount 1;
+        sh:message "MotorizedDamper";
+        sh:message "A motorized damper must be connected to exactly one system";
+        sh:deactivated false
+    ] ; 
+    sh:property [
+        sh:path fpo:hasKv ;
+        sh:dataType xsd:anyURI;
+        sh:minCount 1;
+        sh:maxCount 1;
+        sh:message "MotorizedDamper";
+        sh:message "Exactly one property of kv type must be present for a motorized damper";
+        sh:deactivated false
+    ] ;
+     sh:property [
+        sh:path fpo:hasKvs ;
+        sh:dataType xsd:anyURI;
+        sh:minCount 1;
+        sh:maxCount 1;
+        sh:message "MotorizedDamper";
+        sh:message "Exactly one property of kvs must be present for a motorized damper";
+        sh:deactivated false
+    ].
+
+
+#Tee supply-side validation
+    fsosh:TeeSupplySide
+    a sh:NodeShape;
+    sh:nodeKind sh:IRI ;
+    sh:target [
+        a sh:SPARQLTarget ;
+        sh:prefixes (fpo: fso: ex:) ;
+        sh:select """PREFIX fso: <https://w3id.org/fso#> PREFIX fpo: <https://w3id.org/fpo#> prefix ex: <https://example.com/ex#> 
+        SELECT ?this WHERE {?system a fso:SupplySystem .?system fso:hasComponent ?this .?this a fso:Tee} """ ;
+  ];
+   sh:property[
+        sh:path fso:hasPort ;
+        sh:dataType xsd:anyURI;
+        sh:minCount 3;
+        sh:maxCount 3;
+        sh:message "Tee";
+        sh:message "A tee must have exactly three flow ports";
+        sh:deactivated false
+    ]; 
+    sh:property [
+        sh:path fso:feedsFluidTo ;
+        sh:dataType xsd:anyURI;
+        sh:minCount 2;
+        sh:maxCount 2;
+        sh:message "Tee";
+        sh:message "A tee must feed fluid to exactly two components";
+        sh:deactivated false
+    ] ;
+     sh:property [
+        sh:path [sh:inversePath fso:hasComponent] ;
+        sh:dataType xsd:anyURI;
+        sh:minCount 1;
+        sh:maxCount 1;
+        sh:message "Tee";
+        sh:message "A tee must be connected to exactly one system";
+        sh:deactivated false
+    ] ; 
+    sh:property [
+        sh:path fpo:hasMaterialType ;
+        sh:dataType xsd:anyURI;
+        sh:minCount 1;
+        sh:maxCount 1;
+        sh:message "Tee";
+        sh:message "Exactly one property of material type must be present for a tee";
+        sh:deactivated false
+    ] ;
+     .
+
+#Tee return-side validation
+    fsosh:TeeReturnSide
+    a sh:NodeShape;
+    sh:nodeKind sh:IRI ;
+    sh:target [
+        a sh:SPARQLTarget ;
+        sh:prefixes (fpo: fso: ex:) ;
+        sh:select """PREFIX fso: <https://w3id.org/fso#> PREFIX fpo: <https://w3id.org/fpo#> prefix ex: <https://example.com/ex#> 
+        SELECT ?this WHERE {?system a fso:ReturnSystem .?system fso:hasComponent ?this .?this a fso:Tee} """ ;
+  ];
+   sh:property[
+        sh:path fso:hasPort ;
+        sh:dataType xsd:anyURI;
+        sh:minCount 3;
+        sh:maxCount 3;
+        sh:message "Tee";
+        sh:message "A tee must have exactly three flow ports";
+        sh:deactivated false
+    ]; 
+    sh:property [
+        sh:path fso:feedsFluidTo ;
+        sh:dataType xsd:anyURI;
+        sh:minCount 1;
+        sh:maxCount 1;
+        sh:message "Tee";
+        sh:message "A tee must feed fluid to exactly two components";
+        sh:deactivated false
+    ] ;
+    sh:property [
+        sh:path [sh:inversePath fso:feedsFluidTo] ;
+        sh:dataType xsd:anyURI;
+        sh:minCount 2;
+        sh:message "Tee";
+        sh:message "A tee must be fed with fluid by exactly two components";
+        sh:deactivated false
+    ] ;
+     sh:property [
+        sh:path [sh:inversePath fso:hasComponent] ;
+        sh:dataType xsd:anyURI;
+        sh:minCount 1;
+        sh:maxCount 1;
+        sh:message "Tee";
+        sh:message "A tee must be connected to exactly one system";
+        sh:deactivated false
+    ] ; 
+    sh:property [
+        sh:path fpo:hasMaterialType ;
+        sh:dataType xsd:anyURI;
+        sh:minCount 1;
+        sh:maxCount 1;
+        sh:message "Tee";
+        sh:message "Exactly one property of material type must be present for a tee";
+        sh:deactivated false
+    ] ;
+     .
+
+#AirTerminal supply-side validation
+    fsosh:AirTerminal-1
+    a sh:NodeShape;
+    sh:nodeKind sh:IRI ;
+    sh:target [
+        a sh:SPARQLTarget ;
+        sh:prefixes (fpo: fso: ex:) ;
+        sh:select """PREFIX fso: <https://w3id.org/fso#> PREFIX fpo: <https://w3id.org/fpo#> prefix ex: <https://example.com/ex#> 
+        SELECT ?this WHERE {?system a fso:SupplySystem .?system fso:hasComponent ?this .?this a fso:AirTerminal} """ ;
+  ];sh:property[
+        sh:path fso:hasPort ;
+        sh:dataType xsd:anyURI;
+        sh:minCount 2;
+        sh:maxCount 2;
+        sh:message "AirTerminal";
+        sh:message "An airterminal must have exactly one flow port";
+        sh:deactivated false
+    ]; 
+    sh:property [
+        sh:path [sh:inversePath fso:feedsFluidTo] ;
+        sh:dataType xsd:anyURI;
+        sh:minCount 1;
+        sh:maxCount 1;
+        sh:message "AirTerminal";
+        sh:message "An airterminal must be fed with fluid by exactly one component";
+        sh:deactivated false
+    ] ;
+     sh:property [
+        sh:path [sh:inversePath fso:hasComponent] ;
+        sh:dataType xsd:anyURI;
+        sh:minCount 1;
+        sh:maxCount 1;
+        sh:message "AirTerminal";
+        sh:message "An airterminal must be connected to exactly one system";
+        sh:deactivated false
+    ] ; 
+    sh:property [
+        sh:path fpo:hasAirTerminalType ;
+        sh:dataType xsd:anyURI;
+        sh:minCount 1;
+        sh:maxCount 1;
+        sh:message "AirTerminal";
+        sh:message "Exactly one property of airterminal type must be present for an airterminal";
+        sh:deactivated false
+    ]
+     .
+
+
+
+#AirTerminal return-side validation
+    fsosh:AirTerminal-2
+    a sh:NodeShape;
+    sh:nodeKind sh:IRI ;
+    sh:target [
+        a sh:SPARQLTarget ;
+        sh:prefixes (fpo: fso: ex:) ;
+        sh:select """PREFIX fso: <https://w3id.org/fso#> PREFIX fpo: <https://w3id.org/fpo#> prefix ex: <https://example.com/ex#> 
+        SELECT ?this WHERE {?system a fso:ReturnSystem .?system fso:hasComponent ?this .?this a fso:AirTerminal} """ ;
+  ];sh:property[
+        sh:path fso:hasPort ;
+        sh:dataType xsd:anyURI;
+        sh:minCount 2;
+        sh:maxCount 2;
+        sh:message "AirTerminal";
+        sh:message "An airterminal must have exactly one flow port";
+        sh:deactivated false
+    ]; 
+    sh:property [
+        sh:path fso:feedsFluidTo ;
+        sh:dataType xsd:anyURI;
+        sh:minCount 1;
+        sh:maxCount 1;
+        sh:message "AirTerminal";
+        sh:message "An airterminal must feed fluid to exactly one component";
+        sh:deactivated false
+    ] ;
+     sh:property [
+        sh:path [sh:inversePath fso:hasComponent] ;
+        sh:dataType xsd:anyURI;
+        sh:minCount 1;
+        sh:maxCount 1;
+        sh:message "AirTerminal";
+        sh:message "An airterminal must be connected to exactly one system";
+        sh:deactivated false
+    ] ; 
+    sh:property [
+        sh:path fpo:hasAirTerminalType ;
+        sh:dataType xsd:anyURI;
+        sh:minCount 1;
+        sh:maxCount 1;
+        sh:message "AirTerminal";
+        sh:message "Exactly one property of airterminal type must be present for an airterminal";
+        sh:deactivated false 
+    ]
+     .
+
+    #AirTerminal return-side validation
+    fsosh:AirTerminalCapacityCheck
+    a sh:NodeShape;
+    sh:nodeKind sh:IRI ;
+    sh:targetClass bot:Space ;
+    sh:deactivated false ;
+    sh:sparql [
+        a sh:SPARQLConstrain ;
+        sh:message "The supply air terminal capacity shall not be lower the required supply air flow demand of the space" ;
+        sh:prefixes (fpo: fso: ex: inst: bot:) ;
+        sh:select """
+        PREFIX bot: <https://w3id.org/bot#>
+        PREFIX ex: <https://example.com/ex#>
+        PREFIX fso: <https://w3id.org/fso#>
+        PREFIX fpo: <https://w3id.org/fpo#>
+        SELECT ?this  {
+        ?this ex:designSupplyAirflowDemand ?flowDemand .
+        ?flowDemand fpo:hasValue ?flowDemandValue .
+        BIND (ROUND(?flowDemandValue) AS ?demand) .
+        
+        {
+        select ?this (ROUND(SUM(?flowCapacityValue)) AS ?capacity) WHERE {
+        ?this a bot:Space .
+        ?airTerminal a fpo:AirTerminal .
+        ?airTerminal fpo:hasAirTerminalType ?airTerminalType .
+        ?airTerminalType fpo:hasValue "inlet" .
+        ?airTerminal fso:feedsFluidTo ?this .
+        ?airTerminal fso:hasPort ?port .
+        ?port fpo:hasFlowDirection ?flowDirection .
+        ?flowDirection fpo:hasValuevalue "Out" .
+        ?port fpo:hasFlowRate ?flowCapacity .
+        ?flowCapacity	fpo:hasValue ?flowCapacityValue .
+        } GROUP BY ?this 
+    }
+    BIND (((?capacity/?demand)-1)*10 as ?oversizing) .
+    FILTER (?demand > ?capacity || ?oversizing > 10 )
+    }
+         """ ;
+    ]  .

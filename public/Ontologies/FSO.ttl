@@ -1,0 +1,843 @@
+@prefix : <https://w3id.org/fso/0.1.0#> .
+@prefix vs: <http://www.w3.org/2003/06/sw-vocab-status/ns#> .
+@prefix bot: <https://w3id.org/bot#> .
+@prefix dbo: <http://dbpedia.org/ontology/> .
+@prefix dce: <http://purl.org/dc/elements/1.1/> .
+@prefix fso: <https://w3id.org/fso#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix vann: <http://purl.org/vocab/vann/> .
+@prefix voaf: <http://purl.org/vocommons/voaf#> .
+@prefix schema: <http://schema.org/> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@base <https://w3id.org/fso/0.1.0> .
+
+<https://w3id.org/fso/0.1.0> rdf:type owl:Ontology ;
+                             owl:versionIRI <https://w3id.org/fso/0.1.0> ;
+                             dcterms:creator "Ali Kücükavci" ,
+                                             "Mads Holten Rasmussen" ,
+                                             "Ville Kukkonen" ;
+                             dcterms:description "The Flow Systems Ontology (FSO) is an ontology for describing interconnected systems with material or energy flow connections, and their components."@en ;
+                             dcterms:issued "2020-01-01T12:00:00"^^xsd:dateTime ;
+                             dcterms:license <https://creativecommons.org/licenses/by/1.0/> ;
+                             dcterms:modified "2020-08-06T12:00:00"^^xsd:dateTime ;
+                             dcterms:title "The Flow Systems Ontology (FSO)"@en ;
+                             vann:preferredNamespacePrefix "fso" ;
+                             vann:preferredNamespaceUri fso: ;
+                             owl:priorVersion <https://w3id.org/fso/0.0.1> ;
+                             owl:versionInfo "0.1.0"^^xsd:string .
+
+#################################################################
+#    Annotation properties
+#################################################################
+
+###  http://purl.org/dc/terms/contributor
+dcterms:contributor rdf:type owl:AnnotationProperty .
+
+
+###  http://purl.org/dc/terms/creator
+dcterms:creator rdf:type owl:AnnotationProperty .
+
+
+###  http://purl.org/dc/terms/description
+dcterms:description rdf:type owl:AnnotationProperty .
+
+
+###  http://purl.org/dc/terms/issued
+dcterms:issued rdf:type owl:AnnotationProperty .
+
+
+###  http://purl.org/dc/terms/license
+dcterms:license rdf:type owl:AnnotationProperty .
+
+
+###  http://purl.org/dc/terms/modified
+dcterms:modified rdf:type owl:AnnotationProperty .
+
+
+###  http://purl.org/dc/terms/title
+dcterms:title rdf:type owl:AnnotationProperty .
+
+
+###  http://purl.org/vocab/vann/preferredNamespacePrefix
+vann:preferredNamespacePrefix rdf:type owl:AnnotationProperty .
+
+
+###  http://purl.org/vocab/vann/preferredNamespaceUri
+vann:preferredNamespaceUri rdf:type owl:AnnotationProperty .
+
+
+###  http://www.w3.org/2003/06/sw-vocab-status/ns#term_status
+vs:term_status rdf:type owl:AnnotationProperty .
+
+
+#################################################################
+#    Object Properties
+#################################################################
+
+###  https://w3id.org/fso#hasInterface
+<https://w3id.org/fso#hasInterface> rdf:type owl:ObjectProperty ;
+                                   rdfs:subPropertyOf owl:topObjectProperty ;
+                                   owl:inverseOf bot:interfaceOf ;
+                                   rdfs:domain [ rdf:type owl:Class ;
+                                                 owl:unionOf ( fso:Component
+                                                               fso:ConnectionPoint
+                                                               fso:Flow
+                                                               fso:Port
+                                                             )
+                                               ] ;
+                                   rdfs:range [ rdf:type owl:Class ;
+                                                owl:unionOf ( fso:Component
+                                                              fso:ConnectionPoint
+                                                              fso:Flow
+                                                              fso:Port
+                                                            )
+                                              ] ;
+                                   rdfs:comment "Relates a Component or a Port to an Interface."@en ;
+                                   rdfs:label "has interface"@en .
+
+
+###  https://w3id.org/bot#interfaceOf
+bot:interfaceOf rdf:type owl:ObjectProperty ;
+                rdfs:subPropertyOf owl:topObjectProperty ;
+                rdfs:domain [ rdf:type owl:Class ;
+                              owl:unionOf ( fso:Component
+                                            fso:ConnectionPoint
+                                            fso:Flow
+                                            fso:Port
+                                          )
+                            ] ;
+                rdfs:comment "Relates an Interface to a Component or a Port."@en ;
+                rdfs:label "interface of"@en .
+
+
+###  https://w3id.org/fso#connectedWith
+fso:connectedWith rdf:type owl:ObjectProperty ;
+                  rdfs:subPropertyOf owl:topObjectProperty ;
+                  rdf:type owl:SymmetricProperty ;
+                  owl:propertyChainAxiom ( fso:hasComponent
+                                           fso:connectedWith
+                                           fso:isComponentOf
+                                         ) ;
+                  rdfs:comment "A generic \"connection\" relation between things."@en ;
+                  rdfs:label "connected with"@en .
+
+
+###  https://w3id.org/fso#connectsBy
+fso:connectsBy rdf:type owl:ObjectProperty ;
+               rdfs:subPropertyOf bot:interfaceOf ;
+               rdf:type owl:FunctionalProperty ,
+                        owl:AsymmetricProperty ,
+                        owl:IrreflexiveProperty ;
+               rdfs:domain fso:ConnectionPoint ;
+               rdfs:range fso:Component ;
+               rdfs:comment "Relates a Connection point to a Component."@en ;
+               rdfs:label "connects by"@en .
+
+
+###  https://w3id.org/fso#connectsTo
+fso:connectsTo rdf:type owl:ObjectProperty ;
+               rdfs:subPropertyOf <https://w3id.org/fso#hasInterface> ;
+               rdf:type owl:FunctionalProperty ,
+                        owl:AsymmetricProperty ,
+                        owl:IrreflexiveProperty ;
+               rdfs:domain fso:ConnectionPoint ;
+               rdfs:range fso:Component ;
+               rdfs:comment "Relates a Connection point to a Component."@en ;
+               rdfs:label "connects to"@en .
+
+
+###  https://w3id.org/fso#exchangesElectricChargeWith
+fso:exchangesElectricChargeWith rdf:type owl:ObjectProperty ;
+                                rdfs:subPropertyOf fso:connectedWith ;
+                                owl:propertyChainAxiom ( fso:hasComponent
+                                                         fso:exchangesElectricChargeWith
+                                                         fso:isComponentOf
+                                                       ) ;
+                                rdfs:comment "Relation between things that exchange electric charge, i.e. have electrical current between them."@en ;
+                                rdfs:label "exchanges electric charge with"@en .
+
+
+###  https://w3id.org/fso#exchangesFluidWith
+fso:exchangesFluidWith rdf:type owl:ObjectProperty ;
+                       rdfs:subPropertyOf fso:connectedWith ;
+                       rdf:type owl:SymmetricProperty ;
+                       owl:propertyChainAxiom ( fso:hasComponent
+                                                fso:exchangesFluidWith
+                                                fso:isComponentOf
+                                              ) ;
+                       rdfs:comment "Relation between two things which have a fluid exchange connection"@en ;
+                       rdfs:label "exchanges fluid with"@en ,
+                                  "udveksler fluid med"@da .
+
+
+###  https://w3id.org/fso#exchangesHeatWith
+fso:exchangesHeatWith rdf:type owl:ObjectProperty ;
+                      rdfs:subPropertyOf fso:connectedWith ;
+                      rdf:type owl:SymmetricProperty ;
+                      owl:propertyChainAxiom ( fso:hasComponent
+                                               fso:exchangesHeatWith
+                                               fso:isComponentOf
+                                             ) ;
+                      rdfs:comment "Relation between two things which have a heat exchange connection"@en ;
+                      rdfs:label "exchanges heat with"@en ,
+                                 "udveksler varme med"@da .
+
+
+###  https://w3id.org/fso#feedsFluidTo
+fso:feedsFluidTo rdf:type owl:ObjectProperty ;
+                 rdfs:subPropertyOf fso:exchangesFluidWith ;
+                 owl:inverseOf fso:hasFluidFedBy ;
+                 owl:propertyChainAxiom ( fso:hasComponent
+                                          fso:feedsFluidTo
+                                          fso:isComponentOf
+                                        ) ;
+                 rdfs:comment "Relation from a thing feeding fluid to the thing it is feeding fluid to."@en ;
+                 rdfs:label "feeds fluid to"@en ,
+                            "føder"@da .
+
+
+###  https://w3id.org/fso#hasComponent
+fso:hasComponent rdf:type owl:ObjectProperty ;
+                 rdfs:subPropertyOf owl:topObjectProperty ;
+                 owl:inverseOf fso:isComponentOf ;
+                 rdf:type owl:AsymmetricProperty ;
+                 rdfs:domain fso:System ;
+                 owl:propertyChainAxiom ( fso:hasSubSystem
+                                          fso:hasComponent
+                                        ) ;
+                 rdfs:comment "Relates a system to a component it contains"@en ,
+                              "Relates a system to a component it contains. If system A has a subsystem B, which has a component C, then system A is said to have component C as well."@en ;
+                 rdfs:label "har komponent"@da ,
+                            "has component"@en .
+
+
+###  https://w3id.org/fso#hasConsumerComponent
+fso:hasConsumerComponent rdf:type owl:ObjectProperty ;
+                         rdfs:subPropertyOf fso:hasComponent ;
+                         owl:inverseOf fso:isConsumerComponentOf ;
+                         rdfs:comment "Relation between a fso:System and a fso:Component acting as a consumer of energy or matter from the system. For example, a faucet is a consumer for a water system and an air terminal is a consumer for a ventilation system."@en ;
+                         rdfs:label "has consumer component"@en .
+
+
+###  https://w3id.org/fso#hasFlow
+fso:hasFlow rdf:type owl:ObjectProperty ;
+            rdfs:subPropertyOf <https://w3id.org/fso#hasInterface> ;
+            owl:inverseOf fso:isFlowOf ;
+            rdfs:domain fso:Port ;
+            rdfs:range fso:Flow ;
+            rdfs:comment "Relates a Port to a Flow."@en ;
+            rdfs:label "has flow"@en .
+
+
+###  https://w3id.org/fso#hasFluidFedBy
+fso:hasFluidFedBy rdf:type owl:ObjectProperty ;
+                  rdfs:subPropertyOf fso:exchangesFluidWith ;
+                  owl:propertyChainAxiom ( fso:hasComponent
+                                           fso:hasFluidFedBy
+                                           fso:isComponentOf
+                                         ) ;
+                  rdfs:comment "Relation from a thing that is fed fluid to the thing feeding the fluid."@en ;
+                  rdfs:label "has fluid fed by"@en .
+
+
+###  https://w3id.org/fso#hasFluidReturnedBy
+fso:hasFluidReturnedBy rdf:type owl:ObjectProperty ;
+                       rdfs:subPropertyOf fso:hasFluidFedBy ;
+                       owl:inverseOf fso:returnsFluidTo ;
+                       owl:propertyChainAxiom ( fso:hasComponent
+                                                fso:hasFluidReturnedBy
+                                                fso:isComponentOf
+                                              ) ;
+                       rdfs:comment "Relation between a thing that has fluid returned to it and the thing returning the fluid."@en ;
+                       rdfs:label "has fluid returned by"@en .
+
+
+###  https://w3id.org/fso#hasFluidSuppliedBy
+fso:hasFluidSuppliedBy rdf:type owl:ObjectProperty ;
+                       rdfs:subPropertyOf fso:hasFluidFedBy ;
+                       owl:inverseOf fso:suppliesFluidTo ;
+                       owl:propertyChainAxiom ( fso:hasComponent
+                                                fso:hasFluidSuppliedBy
+                                                fso:isComponentOf
+                                              ) ;
+                       rdfs:comment "Relation between a thing that has fluid supplied to it and the thing supplying the fluid."@en ;
+                       rdfs:label "has fluid supplied by"@en .
+
+
+###  https://w3id.org/fso#hasPort
+fso:hasPort rdf:type owl:ObjectProperty ;
+            rdfs:subPropertyOf <https://w3id.org/fso#hasInterface> ;
+            owl:inverseOf fso:isPortOf ;
+            rdfs:domain fso:Component ;
+            rdfs:range fso:Port ;
+            rdfs:comment "Relates a Component to a Port."@en ;
+            rdfs:label "has port"@en .
+
+
+###  https://w3id.org/fso#hasReturnSystem
+fso:hasReturnSystem rdf:type owl:ObjectProperty ;
+                    rdfs:subPropertyOf fso:hasSubSystem ;
+                    rdf:type owl:AsymmetricProperty ;
+                    rdfs:domain fso:System ;
+                    rdfs:range fso:ReturnSystem ;
+                    rdfs:comment "Relation between a system and its return system."@en ;
+                    rdfs:label "has return system"@en .
+
+
+###  https://w3id.org/fso#hasSourceComponent
+fso:hasSourceComponent rdf:type owl:ObjectProperty ;
+                       rdfs:subPropertyOf fso:hasComponent ;
+                       owl:inverseOf fso:isSourceComponentOf ;
+                       rdfs:comment "Relation between a fso:System and a fso:Component acting as a source of energy or matter to the system. For example, a district heating heat exchanger may act as a source of heat for a building heating system, while the district heating system will see the same heat exchanger as a consumer. Similarly, an AHU may have a heating coil as a source of heat, while the heating system will consider that coil as a consumer."@en ;
+                       rdfs:label "has source component"@en .
+
+
+###  https://w3id.org/fso#hasSubSystem
+fso:hasSubSystem rdf:type owl:ObjectProperty ;
+                 rdfs:subPropertyOf owl:topObjectProperty ;
+                 owl:inverseOf fso:isSubSystemOf ;
+                 rdf:type owl:AsymmetricProperty ;
+                 rdfs:domain fso:System ;
+                 rdfs:range fso:System ;
+                 rdfs:comment "Relation between a system and its subsystem"@en ;
+                 rdfs:label "har delsystem"@da ,
+                            "has subsystem"@en .
+
+
+###  https://w3id.org/fso#hasSupplySystem
+fso:hasSupplySystem rdf:type owl:ObjectProperty ;
+                    rdfs:subPropertyOf fso:hasSubSystem ;
+                    rdf:type owl:AsymmetricProperty ;
+                    rdfs:domain fso:System ;
+                    rdfs:range fso:SupplySystem ;
+                    rdfs:comment "Relation between a system and its supply system"@en ;
+                    rdfs:label "har fremløbssystem"@da ,
+                               "has supply system"@en .
+
+
+###  https://w3id.org/fso#isComponentOf
+fso:isComponentOf rdf:type owl:ObjectProperty ;
+                  rdfs:subPropertyOf owl:topObjectProperty ;
+                  rdf:type owl:AsymmetricProperty ;
+                  rdfs:range fso:System ;
+                  owl:propertyChainAxiom ( fso:isComponentOf
+                                           fso:isSubSystemOf
+                                         ) .
+
+
+###  https://w3id.org/fso#isConsumerComponentOf
+fso:isConsumerComponentOf rdf:type owl:ObjectProperty ;
+                          rdfs:subPropertyOf fso:isComponentOf ;
+                          rdfs:label "is consumer component of"@en .
+
+
+###  https://w3id.org/fso#isFlowOf
+fso:isFlowOf rdf:type owl:ObjectProperty ;
+             rdfs:subPropertyOf bot:interfaceOf ;
+             rdfs:domain fso:Flow ;
+             rdfs:range fso:Port ;
+             rdfs:comment "Relates a Flow to a Port."@en ;
+             rdfs:label "is flow of"@en .
+
+
+###  https://w3id.org/fso#isPortOf
+fso:isPortOf rdf:type owl:ObjectProperty ;
+             rdfs:subPropertyOf bot:interfaceOf ;
+             rdfs:domain fso:Port ;
+             rdfs:range fso:Component ;
+             rdfs:comment "Relates a Port to a Component."@en ;
+             rdfs:label "is port of"@en .
+
+
+###  https://w3id.org/fso#isSourceComponentOf
+fso:isSourceComponentOf rdf:type owl:ObjectProperty ;
+                        rdfs:subPropertyOf fso:isComponentOf ;
+                        rdfs:label "is source component of"@en .
+
+
+###  https://w3id.org/fso#isSubSystemOf
+fso:isSubSystemOf rdf:type owl:ObjectProperty ;
+                  rdfs:domain fso:System ;
+                  rdfs:range fso:System .
+
+
+###  https://w3id.org/fso#returnsFluidTo
+fso:returnsFluidTo rdf:type owl:ObjectProperty ;
+                   rdfs:subPropertyOf fso:feedsFluidTo ;
+                   owl:propertyChainAxiom ( fso:hasComponent
+                                            fso:returnsFluidTo
+                                            fso:isComponentOf
+                                          ) ;
+                   rdfs:comment "Relation implying logical return flow from a thing to another."@en ;
+                   rdfs:label "returnerer fluid til"@da ,
+                              "returns fluid to"@en .
+
+
+###  https://w3id.org/fso#suppliesFluidTo
+fso:suppliesFluidTo rdf:type owl:ObjectProperty ;
+                    rdfs:subPropertyOf fso:feedsFluidTo ;
+                    owl:propertyChainAxiom ( fso:hasComponent
+                                             fso:suppliesFluidTo
+                                             fso:isComponentOf
+                                           ) ;
+                    rdfs:comment "Relation implying logical supply flow from a thing to another."@en ;
+                    rdfs:label "forsyner fluid til"@da ,
+                               "supplies fluid to"@en .
+
+
+###  https://w3id.org/fso#transfersHeatFrom
+fso:transfersHeatFrom rdf:type owl:ObjectProperty ;
+                      rdfs:subPropertyOf fso:exchangesHeatWith ;
+                      owl:inverseOf fso:transfersHeatTo ;
+                      owl:propertyChainAxiom ( fso:hasComponent
+                                               fso:transfersHeatFrom
+                                               fso:isComponentOf
+                                             ) ;
+                      rdfs:comment "Relation signifying heat exchange with intended or actual direction of heat transfer from the second entity to the first. For example, a cooling coil is intended to absorb the heat from air."@en ;
+                      rdfs:label "transfers heat from"@en .
+
+
+###  https://w3id.org/fso#transfersHeatTo
+fso:transfersHeatTo rdf:type owl:ObjectProperty ;
+                    rdfs:subPropertyOf fso:exchangesHeatWith ;
+                    owl:propertyChainAxiom ( fso:hasComponent
+                                             fso:transfersHeatTo
+                                             fso:isComponentOf
+                                           ) ;
+                    rdfs:comment "Relation signifying heat exchange with intended or actual direction of heat transfer from the first entity to the second. For example, a radiator is intended to transfer heat to the surroundings."@en ;
+                    rdfs:label "transfers heat to"@en .
+
+
+#################################################################
+#    Classes
+#################################################################
+
+###  https://w3id.org/fso#AirTerminal
+<https://w3id.org/fso#AirTerminal> rdf:type owl:Class ;
+                                  rdfs:subClassOf fso:Terminal ;
+                                  rdfs:comment "A point at which air is transferred from the distribution system(s) to one or more spaces. Air can also be transferred between adjacent spaces using air terminals."@en ;
+                                  rdfs:label "Air terminal"@en .
+
+
+###  https://w3id.org/fso#Boiler
+<https://w3id.org/fso#Boiler> rdf:type owl:Class ;
+                             rdfs:subClassOf fso:EnergyConversionDevice ;
+                             rdfs:comment "A closed, pressure-rated vessel that heats water or other fluid using a fuel source such as natural gas, heating oil, or electricity. Fluid from the vessel is then circulated out of the boiler to be used for different processes or for heating devices."@en ;
+                             rdfs:label "Boiler"@en .
+
+
+###  https://w3id.org/fso#Cap
+<https://w3id.org/fso#Cap> rdf:type owl:Class ;
+                          rdfs:subClassOf fso:Fitting ;
+                          rdfs:comment "A fitting used to close another type of fitting that has an open end."@en ;
+                          rdfs:label "Cap" .
+
+
+###  https://w3id.org/fso#ChilledBeam
+<https://w3id.org/fso#ChilledBeam> rdf:type owl:Class ;
+                                  rdfs:subClassOf fso:Terminal ;
+                                  rdfs:comment "A device used to cool air by circulating fluids such as chilled or heated water through finned tubes above an area. It can be mounted overhead near or within a ceiling. Using convection, the beam can provide sensible heating or cooling."@en ;
+                                  rdfs:label "Chilled beam"@en .
+
+
+###  https://w3id.org/fso#Chiller
+<https://w3id.org/fso#Chiller> rdf:type owl:Class ;
+                              rdfs:subClassOf fso:EnergyConversionDevice ;
+                              rdfs:comment "A device that removes heat from a liquid using a vapor-compression or absorption cycle to cool a fluid, typically water or a mix of water and glycol. As a result of the chilled fluid, indoor air is cooled and dehumidified using refrigeration devices."@en ;
+                              rdfs:label "Chiller"@en .
+
+
+###  https://w3id.org/fso#Damper
+<https://w3id.org/fso#Damper> rdf:type owl:Class ;
+                             rdfs:subClassOf fso:FlowController ;
+                             rdfs:comment "A device used to regulate, control, or direct the flow of air in ductwork by opening, closing, or partially obstructing the air."@en ;
+                             rdfs:label "Damper"@en .
+
+
+###  https://w3id.org/fso#Duct
+<https://w3id.org/fso#Duct> rdf:type owl:Class ;
+                           rdfs:subClassOf fso:Segment ;
+                           owl:disjointWith <https://w3id.org/fso#Pipe> ;
+                           rdfs:comment "A device used to join two sections of the duct network."@en ;
+                           rdfs:label "Duct"@en .
+
+
+###  https://w3id.org/fso#DuctSilencer
+<https://w3id.org/fso#DuctSilencer> rdf:type owl:Class ;
+                                   rdfs:subClassOf fso:TreatmentDevice .
+
+
+###  https://w3id.org/fso#Elbow
+<https://w3id.org/fso#Elbow> rdf:type owl:Class ;
+                            rdfs:subClassOf fso:Fitting ;
+                            rdfs:comment "A fitting that connect two segments to allow a change of direction, usually 90° or 45°."@en ;
+                            rdfs:label "Elbow"@en .
+
+
+###  https://w3id.org/fso#Fan
+<https://w3id.org/fso#Fan> rdf:type owl:Class ;
+                          rdfs:subClassOf fso:FlowMovingDevice ;
+                          owl:disjointWith <https://w3id.org/fso#Pump> ;
+                          rdfs:comment "A device that moves air through a heating, ventilation, and air-conditioning (HVAC) system. It is a device used in air handling systems to supply fresh air into a building or to exhaust air from a building."@en ;
+                          rdfs:label "Fan"@en .
+
+
+###  https://w3id.org/fso#Filter
+<https://w3id.org/fso#Filter> rdf:type owl:Class ;
+                             rdfs:subClassOf fso:TreatmentDevice .
+
+
+###  https://w3id.org/fso#HeatExchanger
+<https://w3id.org/fso#HeatExchanger> rdf:type owl:Class ;
+                                    rdfs:subClassOf fso:EnergyConversionDevice ;
+                                    rdfs:comment "A device that transfers heat between two or more fluids. The fluids may be separated by a solid wall to prevent mixing or they may be in direct contact. A heat exchanger can be used on waterside distribution systems to recover energy from a liquid to another liquid typically water-based. A heat exchanger can also be used on airside distribution systems to recover energy from a gas to a gas usually air."@en ;
+                                    rdfs:label "Heat exchanger"@en .
+
+
+###  https://w3id.org/fso#Heatpump
+<https://w3id.org/fso#Heatpump> rdf:type owl:Class ;
+                               rdfs:subClassOf fso:EnergyConversionDevice ;
+                               rdfs:comment "A device that can provide both heating and cooling. Depending on whether a space needs to be cooled or heated, it can transfer heat from an external source such as the ground, water, or outside air."@en ;
+                               rdfs:label "Heat pump"@en .
+
+
+###  https://w3id.org/fso#Pipe
+<https://w3id.org/fso#Pipe> rdf:type owl:Class ;
+                           rdfs:subClassOf fso:Segment ;
+                           rdfs:comment "A device used to join two sections of a piping network."@en ;
+                           rdfs:label "Pipe"@en .
+
+
+###  https://w3id.org/fso#Property
+<https://w3id.org/fso#Property> rdf:type owl:Class ;
+                               owl:disjointWith bot:Interface .
+
+
+###  https://w3id.org/fso#Pump
+<https://w3id.org/fso#Pump> rdf:type owl:Class ;
+                           rdfs:subClassOf fso:FlowMovingDevice ;
+                           rdfs:comment "A mechanical device that is used to move heated or cooled fluid from one location to another."@en ;
+                           rdfs:label "Pump"@en .
+
+
+###  https://w3id.org/fso#SpaceHeater
+<https://w3id.org/fso#SpaceHeater> rdf:type owl:Class ;
+                                  rdfs:subClassOf fso:Terminal ;
+                                  rdfs:comment "A device that use radiation and/or natural convection to heat a limited space or area with a heating source such as electricity, steam, or hot water."@en ;
+                                  rdfs:label "Space heater"@en .
+
+
+###  https://w3id.org/fso#Tee
+<https://w3id.org/fso#Tee> rdf:type owl:Class ;
+                          rdfs:subClassOf fso:Fitting ;
+                          rdfs:comment "A fitting with a T-shape. It has two outlets at an angle of 90° each and one main connection line. It is used to connect 3 segments. "@en ;
+                          rdfs:label "Tee"@en .
+
+
+###  https://w3id.org/fso#Transition
+<https://w3id.org/fso#Transition> rdf:type owl:Class ;
+                                 rdfs:subClassOf fso:Fitting ;
+                                 rdfs:comment "A fitting used to join segments of different sizes. "@en ;
+                                 rdfs:label "Transition"@en .
+
+
+###  https://w3id.org/fso#Valve
+<https://w3id.org/fso#Valve> rdf:type owl:Class ;
+                            rdfs:subClassOf fso:FlowController ;
+                            rdfs:comment "A device used to regulate, control, or direct the flow of a fluid in pipework by opening, closing, or partially obstructing fluid flow."@en ;
+                            rdfs:label "Valve"@en .
+
+
+###  https://w3id.org/bot#Interface
+bot:Interface rdf:type owl:Class ;
+              rdfs:subClassOf owl:Thing ;
+              rdfs:comment """A generic concept to qualify the relationship of two or more things in the world, where at least one is a building element or zone. Examples:
+    - Qualification of heat transmission between zones through one or more building elements. This includes one-dimensional (surface) heat losses from one zone to another through a single building element, a two dimensional (line) loss from one zone to another through the connection in which the two elements meet or a three dimensional (point) loss from one zone to another through the connection where three elements (typically two walls and a slab) meet. 
+    - Connection of an electric device to the electric system of a building. 
+    - A door between one room and another."""@en ,
+                           "Arayüz, iki bina parçası, iki bölge veya bir bina parçası ile bir bölgenin buluştuğu alandır. İkisi arasındaki bağlantıyı nitelendirmek için kullanılabilir. Bir kullanım durumu, bir bölge ve birkaç bölgeyi kapsayan bir duvar arasındaki ısı transfer alanının niteliği olabilir."@tr ,
+                           """Conceito genérico para qualificar a relação entre duas ou mais coisas no mundo, onde pelo menos uma é um elemento de edifício ou uma zona. Exemplos:
+- Qualificação de transmissão de calor entre zonas através de um ou mais elementos do edifício. Isto inclui perdas de calor unidimensionais (superfície) de uma zona para outra através de um único elemento do edifício, uma perda bidimensional (linha) de uma zona para outra através da conexão onde os dois elementos se encontram ou uma perda tridimensional (ponto) de uma zona para outra através da conexão onde três elementos se encontram (tipicamente duas paredes e uma laje).
+- Conexão de um equipamento eléctrico ao sistema eléctrico de um edifício.
+- Uma porta entre dois compartimentos."""@pt ,
+                           """Concepte genèric per qualificar la relació de dues o més coses del món, on almenys una d'elles és un element o zona constructiva. 
+Exemples:
+- Qualificació de la transmissió de calor entre zones a través d’un o més elements d’edificació. Això inclou pèrdues de calor (superficials) unidimensionals d'una zona a una altra mitjançant un element de construcció, una pèrdua bidireccional (en línia) d'una zona a una altra mitjançant la connexió en què es troben els dos elements, o una pèrdua tridimensional (en un punt) d’una zona a una altra mitjançant la connexió on es reuneixen tres elements (normalment dues parets i una llosa).
+- Connexió d’un dispositiu elèctric al sistema elèctric d’un edifici.
+- Una porta entre una habitació i una altra."""@ca ,
+                           """Concepto genérico para calificar la relación de dos o más cosas en el mundo, donde al menos una es un elemento o zona de construcción. 
+Ejemplos:
+- Calificación de la transmisión de calor entre zonas a través de uno o más elementos de construcción. Esto incluye pérdidas de calor unidimensionales (de superficie) de una zona a otra a través de un único elemento de construcción, una pérdida bidimensional (línea) de una zona a otra a través de la conexión en la que los dos elementos se encuentran, o una pérdida tridimensional de una zona a otra a través de la conexión donde se encuentran tres elementos (típicamente dos paredes y una losa).
+- Conexión de un dispositivo eléctrico al sistema eléctrico de un edificio.
+- Una puerta entre una habitación y otra."""@es ,
+                           """Concetto generico per caratterizzare la relazione fra due o più cose nel mondo, dove almeno una di queste è un elemento di costruzione o una zona. Esempi:
+ - La certificazione della trasmissione di calore tra zone attraverso uno o più elementi di costruzione. Questo include la dispersione termica unidimensionale (superficie) da una zona ad un'altra attraverso un singolo elemento di costruzione, un dispersione bidimensionale (linea) da una zona ad un'altra attraverso la connessione dove i due elementi si incontrano, una dispersione tridimensionale (punto) da una zona ad un'altra attraverso la connessione dove tre elementi (tipicamente due pareti e una soletta) si incontrano.
+ - Connessione di un dispositivo elettrico con un impianto elettrico di un edificio.
+ - Una porta tra una stanza e un'altra."""@it ,
+                           """Een generiek concept om een kwalificeerbare relatie te creëren tussen twee of meer dingen uit de wereld, waarbij er minstens één een gebouwelement of zone is. Voorbeelden:
+     - kwalificeren van de warmte transmissie tussen gebouw zones doorheen één of meerdere gebouwelementen. Dit omvat ééndimensionele (oppervlakte) warmteverliezen van één zone naar een andere zone doorheen een gebouwelement, tweedimensionele (lijn) verliezen van één zone naar een andere zone doorheen de connectie tussen twee gebouwelementen of driedimensionele (punt) verliezen van één zone naar een andere zone doorheen de connectie tussen drie gebouwelementen (typisch twee muren en een vloer- of dakplaat).
+     - Connectie tussen een elektrisch toestel en het elektrisch systeem van een gebouw.
+     - Een deur tussen twee ruimtes"""@nl ,
+                           "Ein allgemeines Konzept um eine qualifizierte Beziehung zwischen einem oder mehreren Dingen auf der Welt auszudrücken. Hierbei ist wenigstens eines der Dinge ein Bauteil oder eine Zone eines Gebäudes. Beispiele: - Qualifizierung des Wärmeübergangs durch ein oder mehrere Bauteile. Dies umfasst eindimensionale Wärmeübertragung (Fläche) durch ein Bauteil von einer Zone zur nächsten; zweidimensionaler Wärmeübergang (Linie) von einer Zone zur nächsten an der Kontaktstelle, an der sich diese treffen oder dreidimensional (Punkt) von einer zone zur nächsten an der drei Bauteile sich treffen  (typischerweise ist dies der Fall, wenn zwei Wände und die Decke sich treffen); - Verbindung eines elektrischen Geräts mit dem elektrischen Versorgungssystem eines Gebäudes; - Eine Tür zwischen zwei Räumen."@de ,
+                           """Et generisk koncept til at kvalificere forholdet mellem to eller flere ting i verden, hvoraf mindst den ene er en bygningsdel eller -zone. Eksempler:
+    - Kvalificering af varmeoverførsel mellem zoner gennem en eller flere bygningsdele. Dette inkluderer endimensionelle (flade) varmetab fra en zone til en anden gennem en enkelt bygningsdel, todimensionelle (linie) tab fra en zone til en anden gennem den samling, hvor de to elementer mødes, eller tredimensionelle (punkt) tab fra en zone til en anden gennem samlingen, hvor tre elementer (typisk to vægge og et dæk) mødes.
+    - Forbindelsen mellem et elektrisk device og det elektriske system i en bygning.
+    - En dør mellem et rum og et andet."""@da ,
+                           """Ett generiskt koncept som beskriver relationen mellan två eller flera saker i världen, där åtminstone den ena är ett byggdel eller en zon. Exempelvis: 
+- Beskrivning av värmeöverföring mellan zoner genom en eller flera byggdelar. Detta inkluderar endimensionella värmeförluster från en zon till en annan genom en enkel byggdels yta, tvådimensionella förluster från en zon till en annan genom linjen där zonernas respektive byggdelar möts, eller tredimentionella förluster från en zon till en annan genom en punkt där tre byggdelar (vanligtvis två väggar och en platta) möts.
+- Kopplingen mellan en elektrisk apparatur och elsystemet i en byggnad.
+- En dörr mellan ett rum och ett annat."""@sv ,
+                           """Rozhranie je obecný koncept, ktorý definuje vzťah dvoch a viac vecí vo fyzickom svete, kde aspoň jeden z nich je stavebný prvok alebo zóna. 
+Príklady:
+- koncepcia prenosu tepla mezi zónami prostredníctvom jedného alebo viacero stavebných elementov.  To obshuje plošnú tepelnú výmenu z jednej do druhej zóny cez jeden stavebný element, ĝalej to obsahuje tepelnou výmenu lineárnou väzbou, ĝalej to obsahuje tepelnú výmenu bodom v/na elemente alebo elementoch (typicky dve steny a podlaha, ĝi strop).
+- spojenie elektrického zariadenia do elektrického systému v budove. 
+- dvere medzi dvomi miestnosťami. 
+"""@sk ,
+                           """Rozhraní je obecný koncept který definuje vztah dvou a víc věcí ve fyzickém světě, kde alespoň jeden z nich je stavební element nebo zóna. 
+Příklady:
+koncepce přenosu tepla mezi zónami prostřednictvím jednoho nebo vícero stavebních elementů. To obsahuje plošnou tepelnou výměnu z jedné do druhé zóna přes jeden stavební objekt, dále to obsahuje tepelnou výměnu lineární vazbou, dále to obsahuje tepelnou výměnu bodem v/na elementu nebo elementech (typicky dvě stěny a podlaha ĝi strop). 
+        - spojení elektrického zařízení do elektrického systému v budově.
+        - dveře mezi dvěma pokoji
+"""@cs ,
+                           "Une interface correspond à la surface où se rencontrent a) deux éléments d'un bâtiment, b) deux zones ou  encore c) un élément d'un bâtiment avec une zone. Un cas d'utilisation type est constituée par la qualification de la zone de transmission de chaleur entre une zone et un mur couvrant plusieurs zones."@fr ,
+                           """Yleinen konsepti kahden tai useamman asian rajapinnan määrittämiseen, missä ainakin toinen asia on joko elementti tai vyöhyke. Esimerkkejä:
+    - Kahden vyöhykkeen välillä yhden tai useamman elementin kautta tapahtuvan lämmönsiirtymisen määrittely. Tämä sisältää yksiulotteiset (pinta) lämpöhäviöt vyöhykeeltä toiselle yhden rakennuselementin kautta, kaksiulotteiset (jana) häviöt yhdeltä vyöhykkeeltä toiselle kahden elementin yhteenliitoskohdissa, tai kolmiulotteiset (piste) häviöt yhdeltä vyöhykkeeltä toiselle kolmen elementin (yleensä kaksi seinää ja taso) yhteenliitospisteessä.
+    - Sähkölaitteen liitos rakennuksen sähköjärjestelmään.
+    - Ovi kahden huoneen välillä."""@fi ,
+                           """یک مٝهوم کلی از شرایط رابطه بین دو یا چند چیزدر دنیا، در حالی که حداقل یکی از آنها المان یا منطقه است. مثال:
+- شرایط انتقال گرما بین یک منطقه و منطقه دیگر از طریق یک یا چند المان ساختمان. این میتواند شامل انتقال/اتلاٝ گرمای یک بعدی (سطحی) از یک منطقه به منطقه‌ی دیگر از طریق یک المان ساختمان؛ یا، انتقال/اتلاٝ گرمای دو بعدی (خطی) از یک منطقه به منطقه‌ی دیگر از طریق اتصال بین دو المان ساختمان؛ و یا، انتقال/اتلاٝ گرمای سه بعدی (نقطه‌ای) از یک منطقه به منطقه‌ی دیگر از طریق برقراری اتصال بین سه المان ساختمان (معمولا دو دیوار و یک دال) باشد.
+- ارتباط یک دستگاه الکتریکی با یک سیستم الکتریکی ساختمان.
+- یک در بین یک اتاق و اتاق دیگر.
+"""@fa ,
+                           """这是一秝通用概念，用于陝定世界上两个或多个事物之间的关系，其中二者至少一个是建筑构件或区域。 比如说：
+ -通过一个或多个建筑构件或建筑区域之间的热传递。 这包括通过坕个建筑构件从一个区域到坦一区域的一维（表面）热束失，通过两个构件的相接从一个区域到坦一区域的二维（线）热束失或通过三个元素（通常是两堵墙和一个平板）的相接从一个区域到坦一个区域的三维（点）束耗。
+-将电气设备连接到建筑电气系统。
+-房间之间的门
+"""@zh-cn ;
+              rdfs:isDefinedBy bot: ;
+              rdfs:label "Arayüzey"@tr ,
+                         "Gränssnitt"@sv ,
+                         "Grænseflade"@da ,
+                         "Interfaccia"@it ,
+                         "Interface"@en ,
+                         "Interface"@fr ,
+                         "Interface"@nl ,
+                         "Interface"@pt ,
+                         "Interfaz"@es ,
+                         "Interfície"@ca ,
+                         "Rajapinta"@fi ,
+                         """Rozhranie
+"""@sk ,
+                         "Rozhraní"@cs ,
+                         "Schnittstelle"@de ,
+                         "رابط"@fa ,
+                         "界面"@zh-cn ;
+              vs:term_status "stable" .
+
+
+###  https://w3id.org/fso#BidirectionalPort
+fso:BidirectionalPort rdf:type owl:Class ;
+                      rdfs:subClassOf fso:Port ;
+                      rdfs:comment "An opening or passage of a component that directs flow of a mass or energy in and out from the component it belongs to"@en ;
+                      rdfs:label "Bidirectional port" .
+
+
+###  https://w3id.org/fso#Component
+fso:Component rdf:type owl:Class ;
+              rdfs:subClassOf owl:Thing ;
+              rdfs:comment "A component contained by a fso:System"@en ;
+              rdfs:label "Component"@en ,
+                         "Komponent"@da .
+
+
+###  https://w3id.org/fso#ConnectionPoint
+fso:ConnectionPoint rdf:type owl:Class ;
+                    rdfs:subClassOf bot:Interface ;
+                    owl:disjointWith fso:Port ;
+                    rdfs:comment "A point of interaction between segments and ports"@en ;
+                    rdfs:label "Connection point" .
+
+
+###  https://w3id.org/fso#DistributionSystem
+fso:DistributionSystem rdf:type owl:Class ;
+                       rdfs:subClassOf fso:System ;
+                       rdfs:comment "A system that distributes energy and/or mass"@en ;
+                       rdfs:label "Distribution system"@en ,
+                                  "Fordelingssystem"@da .
+
+
+###  https://w3id.org/fso#EnergyConversionDevice
+fso:EnergyConversionDevice rdf:type owl:Class ;
+                           rdfs:subClassOf fso:Component ;
+                           rdfs:comment "A device that is used to convert energy from one form to another, or move it from one system to another. Potential examples include motors and heat exhangers."@da ;
+                           rdfs:label "Energikonverteringsenhed"@da ,
+                                      "Energy conversion device"@en .
+
+
+###  https://w3id.org/fso#Fitting
+fso:Fitting rdf:type owl:Class ;
+            rdfs:subClassOf fso:Component ;
+            rdfs:comment "A component used to connect segments to each other, or to other components. For example, a junction in a pipe system."@en ;
+            rdfs:label "Fitting"@da ,
+                       "Fitting"@en .
+
+
+###  https://w3id.org/fso#Flow
+fso:Flow rdf:type owl:Class ;
+         rdfs:subClassOf bot:Interface ;
+         rdfs:comment "A fluid flowing into or out of a port to another port"@en ;
+         rdfs:label "Flow" .
+
+
+###  https://w3id.org/fso#FlowController
+fso:FlowController rdf:type owl:Class ;
+                   rdfs:subClassOf fso:Component ;
+                   rdfs:comment "A device that has the potential to control the flow in a network. For example, valves and dampers."@en ;
+                   rdfs:label "Flow controller"@en ,
+                              "Flow regulator"@da .
+
+
+###  https://w3id.org/fso#FlowMovingDevice
+fso:FlowMovingDevice rdf:type owl:Class ;
+                     rdfs:subClassOf fso:Component ;
+                     rdfs:comment "A device used to induce movement in a network. For example, pumps and fans."@en ;
+                     rdfs:label "Flow bevægende enhed"@da ,
+                                "Flow moving device"@en .
+
+
+###  https://w3id.org/fso#InletPort
+fso:InletPort rdf:type owl:Class ;
+              rdfs:subClassOf fso:Port ;
+              dcterms:description "An opening or passage of a component that directs flow of a mass or energy into the component it belongs to"@en ;
+              rdfs:label "InletPort"@en .
+
+
+###  https://w3id.org/fso#OutletPort
+fso:OutletPort rdf:type owl:Class ;
+               rdfs:subClassOf fso:Port ;
+               dcterms:description "An opening or passage of a component that directs flow of a mass or energy out from the component it belongs to"@en ;
+               rdfs:label "OutletPort"@en .
+
+
+###  https://w3id.org/fso#Port
+fso:Port rdf:type owl:Class ;
+         rdfs:subClassOf bot:Interface ;
+         dcterms:description "An opening or passage that directs flow of a mass or energy"@en ;
+         rdfs:label "Port"@en .
+
+
+###  https://w3id.org/fso#ReturnSystem
+fso:ReturnSystem rdf:type owl:Class ;
+                 rdfs:subClassOf fso:DistributionSystem ;
+                 rdfs:comment "A system that returns energy and/or mass from consumers"@en ;
+                 rdfs:label "Return system"@en ,
+                            "Retursystem"@da .
+
+
+###  https://w3id.org/fso#Segment
+fso:Segment rdf:type owl:Class ;
+            rdfs:subClassOf fso:Component ;
+            rdfs:comment "A component used to enable the passage of material or energy. For example, pipes and ducts."@en ;
+            rdfs:label "Segment"@da ,
+                       "Segment"@en .
+
+
+###  https://w3id.org/fso#StorageDevice
+fso:StorageDevice rdf:type owl:Class ;
+                  rdfs:subClassOf fso:Component ;
+                  rdfs:comment "A device used to store mass or energy. For example, a water tank or a battery."@en ;
+                  rdfs:label "Opbevaringsenhed"@da ,
+                             "Storage device"@en .
+
+
+###  https://w3id.org/fso#SupplySystem
+fso:SupplySystem rdf:type owl:Class ;
+                 rdfs:subClassOf fso:DistributionSystem ;
+                 rdfs:comment "A system that supplies energy and/or mass to consumers"@en ;
+                 rdfs:label "Forsyningssystem"@da ,
+                            "Supply system"@en .
+
+
+###  https://w3id.org/fso#System
+fso:System rdf:type owl:Class ;
+           rdfs:comment "A system is a placeholder for properties that are valid for the components of the system and hence serves as an aggregation function. Common system properties include fluid properties such as the fluid type, temperature and thermal properties."@en ;
+           rdfs:label "System"@da ,
+                      "System"@en .
+
+
+###  https://w3id.org/fso#Terminal
+fso:Terminal rdf:type owl:Class ;
+             rdfs:subClassOf fso:Component ;
+             rdfs:comment "A component used to allow material flow out of a distribution system. For example, faucets and air vents."@en ;
+             rdfs:label "Terminal"@da ,
+                        "Terminal"@en .
+
+
+###  https://w3id.org/fso#TreatmentDevice
+fso:TreatmentDevice rdf:type owl:Class ;
+                    rdfs:subClassOf fso:Component ;
+                    rdfs:comment "A device used to change the properties of material flowing through it. For example, filters."@en ;
+                    rdfs:label "Behandlingsenhed"@da ,
+                               "Treatment device"@en .
+
+
+#################################################################
+#    Individuals
+#################################################################
+
+###  https://w3id.org/fso#
+fso: rdf:type owl:NamedIndividual .
+
+
+#################################################################
+#    General axioms
+#################################################################
+
+[ rdf:type owl:AllDisjointClasses ;
+  owl:members ( <https://w3id.org/fso#AirTerminal>
+                <https://w3id.org/fso#ChilledBeam>
+                <https://w3id.org/fso#SpaceHeater>
+              )
+] .
+
+
+[ rdf:type owl:AllDisjointClasses ;
+  owl:members ( <https://w3id.org/fso#Boiler>
+                <https://w3id.org/fso#Chiller>
+                <https://w3id.org/fso#HeatExchanger>
+                <https://w3id.org/fso#Heatpump>
+              )
+] .
+
+
+[ rdf:type owl:AllDisjointClasses ;
+  owl:members ( <https://w3id.org/fso#Cap>
+                <https://w3id.org/fso#Elbow>
+                <https://w3id.org/fso#Tee>
+                <https://w3id.org/fso#Transition>
+              )
+] .
+
+
+[ rdf:type owl:AllDisjointClasses ;
+  owl:members ( fso:BidirectionalPort
+                fso:InletPort
+                fso:OutletPort
+              )
+] .
+
+
+[ rdf:type owl:AllDisjointClasses ;
+  owl:members ( fso:ConnectionPoint
+                fso:Flow
+                fso:Port
+              )
+] .
+
+
+###  Generated by the OWL API (version 4.5.9.2019-02-01T07:24:44Z) https://github.com/owlcs/owlapi

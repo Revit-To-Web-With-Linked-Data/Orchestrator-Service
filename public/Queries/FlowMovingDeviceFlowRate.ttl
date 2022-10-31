@@ -1,0 +1,48 @@
+PREFIX ex: <https://example.com/ex#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX fso: <https://w3id.org/fso#> 
+PREFIX fpo: <https://w3id.org/fpo#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX inst: <https://example.com/inst#>
+
+select ?flowMovingDeviceType ?flowMovingDevice (SUM(?flowRateValue) AS ?totalFlow)
+
+WHERE{
+  {
+  	#SupplyFans
+  	?flowMovingDevice a fso:Fan .
+    ?flowMovingDevice a ?flowMovingDeviceType .
+    ?terminal a fso:AirTerminal .
+  	?system fso:hasComponent ?terminal, ?flowMovingDevice .
+    ?flowMovingDevice fso:feedsFluidTo+ ?terminal  .
+    ?terminal fso:hasPort ?port .
+  	?port fpo:hasFlowRate ?flowRate .  
+  	?flowRate fpo:hasValue ?flowRateValue .
+  }
+  union
+   {
+  	#ReturnFans
+  	?flowMovingDevice a fso:Fan .
+    ?flowMovingDevice a ?flowMovingDeviceType .
+    ?terminal a fso:AirTerminal .
+  	?system fso:hasComponent ?terminal, ?flowMovingDevice .
+    ?terminal fso:feedsFluidTo+ ?flowMovingDevice  .
+    ?terminal fso:hasPort ?port .
+  	?port fpo:hasFlowRate ?flowRate .  
+  	?flowRate fpo:hasValue ?flowRateValue .
+  }
+  union
+  {
+    #SupplyPumps
+  	?flowMovingDevice a fso:Pump .
+    ?flowMovingDevice a ?flowMovingDeviceType .
+    ?flowMovingDevice fso:feedsFluidTo+ ?terminal .
+    VALUES ?type {fso:SpaceHeater fso:HeatExchanger} ?terminal a ?type .
+    ?system fso:hasComponent ?terminal, ?flowMovingDevice .
+    ?terminal fso:hasPort ?supplyPort .
+  	?supplyPort fso:returnsFluidTo ?anotherComponent .
+  	?supplyPort fpo:hasFlowRate ?flowRate .  
+  	?flowRate fpo:hasValue ?flowRateValue .
+  }
+  } group by ?flowMovingDevice ?flowMovingDeviceType 

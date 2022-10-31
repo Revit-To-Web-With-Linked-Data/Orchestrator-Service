@@ -1,0 +1,70 @@
+PREFIX ex: <https://example.com/ex#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX fso: <https://w3id.org/fso#> 
+PREFIX fpo: <https://w3id.org/fpo#>
+PREFIX fo: <http://www.w3.org/1999/XSL/Format#>
+PREFIX ec: <http://eulergui.sourceforge.net/contacts.owl.n3#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX inst: <https://example.com/inst#>
+
+select ?pump (Max(?sumOfSupplyPressureDrop + ?sumOfReturnPressureDrop + ?terminalPressureDropValue)*0.00010199773339984 as ?head)
+where{
+  {
+    select ?pump ?terminal ( sum(?supplyValue)  as ?sumOfSupplyPressureDrop)
+    where {
+      ?pump a fso:Pump .
+      VALUES ?terminalType {fso:HeatExchanger  fso:SpaceHeater}
+      ?terminal a ?terminalType .  
+      ?supplySystem fso:hasComponent ?pump .
+      ?supplyComponent fso:feedsFluidTo+ ?terminal . 
+      ?supplySystem fso:hasComponent ?supplyComponent .
+      ?supplySystem a fso:SupplySystem .
+      
+      #Get the pressuredrop value of each component
+      ?supplyComponent fso:hasPort ?supplyPort .
+      ?supplyPort fpo:hasFlowDirection ?flowDirection .
+      ?flowDirection fpo:hasValue "Out" .
+      ?supplyPort fpo:hasPressureDrop ?pressureDrop .
+      ?pressureDrop fpo:hasValue ?supplyValue .
+  
+      #Select only port that is part of that system
+      filter not exists {
+        ?supplyPort fso:suppliesFluidTo ?connectedPort .
+        ?connectedComponent fso:hasPort ?connectedPort .
+        ?connectedComponent fso:feedsFluidTo+ ?terminal .
+        ?connectedComponent a fso:Tee .
+      }
+    } group by ?pump ?terminal 
+  }
+  {
+    select ?pump ?terminal ?terminalPressureDropValue ?sumOfReturnPressureDrop
+    where{
+      ?terminal fso:hasPort ?port .
+      ?port fso:returnsFluidTo ?anotherPort .
+      ?port fpo:hasPressureDrop ?pressureDrop .
+      ?pressureDrop fpo:hasValue ?terminalPressureDropValue .  
+      {
+        select ?pump ?terminal ( sum(?returnValue)  as ?sumOfReturnPressureDrop)
+        where {
+          {
+            ?pump a fso:Pump .
+            VALUES ?terminalType {fso:HeatExchanger  fso:SpaceHeater}
+            ?terminal a ?terminalType .  
+            ?supplySystem fso:hasComponent ?pump .
+            ?terminal fso:feedsFluidTo+ ?returnComponent . 
+            ?returnSystem fso:hasComponent ?returnComponent .
+            ?returnSystem a fso:ReturnSystem .
+            
+            #Get the pressuredrop value of each component
+            ?returnComponent fso:hasPort ?returnPort .
+            ?returnPort fpo:hasFlowDirection ?flowDirection .
+            ?flowDirection fpo:hasValue "Out" .
+            ?returnPort fpo:hasPressureDrop ?pressureDrop .
+            ?pressureDrop fpo:hasValue ?returnValue . 
+          }
+        } group by ?pump ?terminal 
+      } 
+    }
+  }
+} group by ?pump 

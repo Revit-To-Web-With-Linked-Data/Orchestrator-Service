@@ -1,0 +1,140 @@
+@prefix sh:      <http://www.w3.org/ns/shacl#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix ex:      <https://ex/> .
+@prefix fso:     <https://w3id.org/fso#> .
+@prefix fpo:     <https://w3id.org/fpo#> .
+@prefix xsd:      <http://www.w3.org/2001/XMLSchema#> .
+@prefix inst:    <https://example.com/inst#> .
+@prefix fsosh:     <http://w3id.org/fsosh#> .
+    
+#The pressure drop of a pipe
+    fsosh:PipePressureDrop
+    a sh:NodeShape;
+    sh:nodeKind sh:IRI ;
+    sh:targetClass fso:Pipe ;
+    sh:message "Pipe";
+    sh:message "The pressure drop of a pipe shall not exceed 100 Pa/m";
+    sh:sparql  [
+        a sh:sh:SPARQLConstraint  ;
+        sh:prefixes (fpo: fso: inst:) ;
+        sh:select """PREFIX fso: <https://w3id.org/fso#> PREFIX fpo: <https://w3id.org/fpo#> PREFIX inst: <https://example.com/inst#>
+        SELECT ?this ?value
+        WHERE {
+            ?this a fso:Pipe . 
+            ?this fpo:hasLength ?length .
+            ?length fpo:hasValue ?lengthvalue .
+            ?this fso:hasPort ?port .
+            ?port fpo:hasFlowDirection ?flowDirection .
+            ?flowDirection fpo:hasValue "Out" .
+            ?port fpo:hasPressureDrop ?pressureDrop .
+            ?pressureDrop fpo:hasValue ?pressureDropValue .
+            bind ((?pressureDropValue / ?lengthvalue) as ?value) .
+            filter (?value > 100)} """ ; 
+  ] .
+
+
+#The pressure drop of a pipe
+    fsosh:DuctPressureDrop
+    a sh:NodeShape;
+    sh:nodeKind sh:IRI ;
+    sh:targetClass fso:Duct ;
+    sh:message "Duct";
+    sh:message "The pressure drop of a duct shall not exceed 1 Pa/m";
+    sh:deactivated true ;
+    sh:sparql  [
+        a sh:sh:SPARQLConstraint  ;
+        sh:prefixes (fpo: fso: inst:) ;
+        sh:select """PREFIX fso: <https://w3id.org/fso#> PREFIX fpo: <https://w3id.org/fpo#> PREFIX inst: <https://example.com/inst#>
+        SELECT ?this ?value
+        WHERE {
+            ?this a fso:Duct . 
+            ?this fpo:hasLength ?length .
+            ?length fpo:hasValue ?lengthvalue .
+            ?this fso:hasPort ?port .
+            ?port fpo:hasFlowDirection ?flowDirection .
+            ?flowDirection fpo:hasValue "Out" .
+            ?port fpo:hasPressureDrop ?pressureDrop .
+            ?pressureDrop fpo:hasValue ?pressureDropValue .
+            bind ((?pressureDropValue / ?lengthvalue) as ?value) .
+            filter (?value > 1)} """ ; 
+  ].
+
+#PressureDrop validation
+    fsosh:PressureDrop
+    a sh:NodeShape;
+    sh:nodeKind sh:IRI ;
+    sh:targetClass fpo:PressureDrop ;
+    sh:property[
+        sh:path fpo:hasUnit ;
+        sh:dataType xsd:string;
+        sh:minCount 1;
+        sh:maxCount 1;
+        sh:hasValue "Pascal"^^xsd:string ;
+        sh:message "Property";
+        sh:message "The property pressure drop must have exactly one unit and its unit must be in Pascal";
+        sh:deactivated false 
+    ] ;
+    sh:property [
+        sh:path fpo:hasValue ;
+        sh:minCount 1;
+        sh:maxCount 1;
+        sh:minInclusive 0.001;
+        sh:dataType xsd:double ;
+        sh:message "Property";
+        sh:message "The property pressure drop must have exactly one value and its value must be above 0.001";
+        sh:deactivated false 
+
+    ]; .
+
+#Velocity validation
+    fsosh:Velocity
+    a sh:NodeShape;
+    sh:nodeKind sh:IRI ;
+    sh:targetClass fpo:Velocity ;
+    sh:property[
+        sh:path fpo:hasUnit ;
+        sh:dataType xsd:string;
+        sh:minCount 1;
+        sh:maxCount 1;
+        sh:hasValue "Meters per second"^^xsd:string ;
+        sh:message "Property";
+        sh:message "The property velocity must have exactly one unit and its unit must be in meters per second";
+        sh:deactivated false 
+    ] ;
+    sh:property [
+        sh:path fpo:hasValue ;
+        sh:minCount 1;
+        sh:maxCount 1;
+        sh:minInclusive 0.001;
+        sh:dataType xsd:double ;
+        sh:message "Property";
+        sh:message "The property velocity must have exactly one value and its value must be above 0.001";
+        sh:deactivated false 
+    ]; .
+
+#FlowRate validation
+    fsosh:FlowRate
+    a sh:NodeShape;
+    sh:nodeKind sh:IRI ;
+    sh:targetClass fpo:FlowRate ;
+    sh:property[
+        sh:path fpo:hasUnit ;
+        sh:dataType xsd:string;
+        sh:minCount 1;
+        sh:maxCount 1;
+        sh:hasValue "Liters per second"^^xsd:string ;
+        sh:message "Property";
+        sh:message "The property flow rate must have exactly one unit and its unit must be in liters per second";
+        sh:deactivated false 
+    ] ;
+    sh:property [
+        sh:path fpo:hasValue ;
+        sh:minCount 1;
+        sh:maxCount 1;
+        sh:minInclusive 0.001;
+        sh:dataType xsd:double ;
+        sh:message "Property";
+        sh:message "The property flow rate must have exactly one value and its value must be above 0.001";
+        sh:deactivated false 
+    ]; .

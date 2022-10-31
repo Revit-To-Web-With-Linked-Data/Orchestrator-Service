@@ -1,0 +1,56 @@
+PREFIX ex: <https://example.com/ex#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX fso: <https://w3id.org/fso#> 
+PREFIX fpo: <https://w3id.org/fpo#>
+PREFIX fo: <http://www.w3.org/1999/XSL/Format#>
+PREFIX ec: <http://eulergui.sourceforge.net/contacts.owl.n3#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX inst: <https://example.com/inst#>
+
+select ?fan (Max(?sumOfPressureDrop)*0.00010199773339984 as ?head)
+where{
+  
+  {#Supply Fan
+ select ?fan ?terminal( sum(?returnValue)  as ?sumOfPressureDrop) 
+where {
+   ?fan a fso:Fan .
+  VALUES ?terminalType {fso:AirTerminal}
+  ?terminal a ?terminalType .  
+  ?system fso:hasComponent ?fan .
+  ?component fso:feedsFluidTo+ ?terminal . 
+  ?system fso:hasComponent ?fan, ?terminal, ?component .
+  
+  #Get the pressuredrop value of each component
+  ?component fso:hasPort ?port .
+  ?port fpo:hasFlowDirection ?flowDirection .
+  ?flowDirection fpo:hasValue "Out" .
+  ?port fpo:hasPressureDrop ?pressureDrop .  
+  ?pressureDrop fpo:hasValue ?returnValue .
+  
+  ?port fso:suppliesFluidTo ?connectedPort .
+  ?connectedComponent fso:hasPort ?connectedPort .    
+  ?system fso:hasComponent ?connectedComponent .
+      
+  } group by ?fan ?terminal}
+  union
+{
+#Return Fan do not have heat exchanger in revit for simplicity thats why we have added 5220 as value 
+ select ?fan ?terminal( sum(?returnValue)+200  as ?sumOfPressureDrop) 
+where {
+  ?fan a fso:Fan .
+  VALUES ?terminalType {fso:AirTerminal}
+  ?terminal a ?terminalType .  
+  ?system fso:hasComponent ?fan .
+  ?component ^fso:feedsFluidTo+ ?terminal . 
+  ?system fso:hasComponent ?fan, ?terminal, ?component .
+  
+  #Get the pressuredrop value of each component
+  ?component fso:hasPort ?port .
+  ?port fpo:hasFlowDirection ?flowDirection .
+  ?flowDirection fpo:hasValue "Out" .
+  ?port fpo:hasPressureDrop ?pressureDrop .  
+  ?pressureDrop fpo:hasValue ?returnValue .
+    } group by ?fan ?terminal
+  }
+  } group by ?fan 

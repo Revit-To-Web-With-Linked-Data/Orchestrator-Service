@@ -6,3 +6,7 @@ npm-debug.log
 
 # Environment Variables should NEVER be published
 .env
+
+#fuseki
+fuseki/apache-jena-fuseki-4.2.0
+apache-jena-fuseki-4.4.0
