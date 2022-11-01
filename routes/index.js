@@ -14,6 +14,11 @@ function runAsyncWrapper(callback) {
 let AllShapes = fs.readFileSync('./public/ShaclShapes/AllShapes.ttl', 'utf8');
 let HydraulicShapes = fs.readFileSync('./public/ShaclShapes/HydraulicShapes.ttl', 'utf8');
 
+let BOT = fs.readFileSync('./public/Ontologies/BOT.ttl', 'utf8');
+let FSO = fs.readFileSync('./public/Ontologies/FSO.ttl', 'utf8');
+let FPO = fs.readFileSync('./public/Ontologies/FPO.ttl', 'utf8');
+
+
 let baseUrl = 'http://localhost:3030/ny-db/query?query=';
 let baseUpdateURL = 'http://localhost:3030/ny-db/update?update=';
 let baseDataURL = 'http://localhost:3030/ny-db/data';
@@ -29,33 +34,41 @@ let FlowMovingDeviceFlowRateQuery =
 let FanPressureDrop = baseUrl + encodeURIComponent(fs.readFileSync('./public/Queries/FanPressureDrop.ttl'));
 let PumpPressureDrop = baseUrl + encodeURIComponent(fs.readFileSync('./public/Queries/PumpPressureDrop.ttl'));
 
-let TeeConstruct = baseUrl + encodeURIComponent(fs.readFileSync('./public/Queries/TeeConstruct.ttl'));
-let RestConstruct = baseUrl + encodeURIComponent(fs.readFileSync('./public/Queries/PipesAndFittingsConstruct.ttl'));
+let TeeConstruct = baseUrl + encodeURIComponent(fs.readFileSync('./public/ManuallySolvingQueries/TeeConstruct.ttl'));
+let RestConstruct =
+    baseUrl + encodeURIComponent(fs.readFileSync('./public/ManuallySolvingQueries/PipesAndFittingsConstruct.ttl'));
 
 let TeeDistributionComponents =
     baseDataURL + encodeURIComponent(fs.readFileSync('./public/jsonld/distributionComponents.json'));
 
 //Queries to solve violations to in the first validation
 let deleteSystems =
-    baseUpdateURL + encodeURIComponent(fs.readFileSync('./public/Queries/deleteSystemsWithoutComponents.ttl'));
+    baseUpdateURL +
+    encodeURIComponent(fs.readFileSync('./public/ManuallySolvingQueries/deleteSystemsWithoutComponents.ttl'));
 
-let insertEndCap = baseUpdateURL + encodeURIComponent(fs.readFileSync('./public/Queries/insertEndCap.ttl'));
+let insertEndCap =
+    baseUpdateURL + encodeURIComponent(fs.readFileSync('./public/ManuallySolvingQueries/insertEndCap.ttl'));
 
 let insertSpaceHeaterConnection =
     baseUpdateURL +
-    encodeURIComponent(fs.readFileSync('./public/Queries/insertMissingConnectionBetweenSpaceheaterAndSpace.ttl'));
+    encodeURIComponent(
+        fs.readFileSync('./public/ManuallySolvingQueries/insertMissingConnectionBetweenSpaceheaterAndSpace.ttl')
+    );
 
 let insertDiameter =
-    baseUpdateURL + encodeURIComponent(fs.readFileSync('./public/Queries/insertMissingDiameterAirTerminals.ttl'));
+    baseUpdateURL +
+    encodeURIComponent(fs.readFileSync('./public/ManuallySolvingQueries/insertMissingDiameterAirTerminals.ttl'));
 
-let insertKV = baseUpdateURL + encodeURIComponent(fs.readFileSync('./public/Queries/insertKV.ttl'));
+let insertKV = baseUpdateURL + encodeURIComponent(fs.readFileSync('./public/ManuallySolvingQueries/insertKV.ttl'));
 
 let insertRoughness =
-    baseUpdateURL + encodeURIComponent(fs.readFileSync('./public/Queries/insertRoughnessWaterbasedElbows.ttl'));
+    baseUpdateURL +
+    encodeURIComponent(fs.readFileSync('./public/ManuallySolvingQueries/insertRoughnessWaterbasedElbows.ttl'));
 
-let insertVelocity = baseUpdateURL + encodeURIComponent(fs.readFileSync('./public/Queries/insertVelocityAll.ttl'));
+let insertVelocity =
+    baseUpdateURL + encodeURIComponent(fs.readFileSync('./public/ManuallySolvingQueries/insertVelocityAll.ttl'));
 
-let autoSizePipes = baseUpdateURL + encodeURIComponent(fs.readFileSync('./public/Queries/autoSize.ttl'));
+let autoSizePipes = baseUpdateURL + encodeURIComponent(fs.readFileSync('./public/ManuallySolvingQueries/autoSize.ttl'));
 
 router.post('/solveSecondValidation', (req, res, next) => {
     axios
@@ -145,119 +158,137 @@ let sendRestToDatabase = async (res) => {
                         })
                         .then((response) => {
                             console.log(JSON.stringify(response.data));
+                            
                             axios
-                                .post('http://localhost:3030/ny-db/shacl?graph=default', HydraulicShapes, {
-                                    headers: {
-                                        'Content-Type': 'text/turtle',
-                                        Accept: 'application/ld+json',
-                                    },
-                                })
-                                .then((response) => {
-                                    //res.send(response.data)
-                                    let total = 0;
-                                    let HeatExchanger = 0;
-                                    let Tee = 0;
-                                    let Transition = 0;
-                                    let Pipe = 0;
-                                    let Duct = 0;
-                                    let Elbow = 0;
-                                    let Pump = 0;
-                                    let Fan = 0;
-                                    let Port = 0;
-                                    let Flow = 0;
-                                    let Property = 0;
-                                    let System = 0;
-                                    let SpaceHeater = 0;
-                                    let Valve = 0;
-                                    let Damper = 0;
-                                    let AirTerminal = 0;
+                                .get('http://localhost:8080/hydraulicShapes')
+                                .then((reponse) => {
+                                    axios
+                                        .post('http://localhost:3030/ny-db/shacl?graph=default', reponse.data, {
+                                            headers: {
+                                                'Content-Type': 'text/turtle',
+                                                Accept: 'application/ld+json',
+                                            },
+                                        })
+                                        .then((response) => {
+                                            //res.send(response.data)
+                                            let total = 0;
+                                            let HeatExchanger = 0;
+                                            let Tee = 0;
+                                            let Transition = 0;
+                                            let Pipe = 0;
+                                            let Duct = 0;
+                                            let Elbow = 0;
+                                            let Pump = 0;
+                                            let Fan = 0;
+                                            let Port = 0;
+                                            let Flow = 0;
+                                            let Property = 0;
+                                            let System = 0;
+                                            let SpaceHeater = 0;
+                                            let Valve = 0;
+                                            let Damper = 0;
+                                            let AirTerminal = 0;
 
-                                    for (let index in response.data['@graph']) {
-                                        if (response.data['@graph'][index].resultMessage != null) {
-                                            if (response.data['@graph'][index].resultMessage[0] == 'HeatExchanger') {
-                                                HeatExchangerCounter++;
+                                            for (let index in response.data['@graph']) {
+                                                if (response.data['@graph'][index].resultMessage != null) {
+                                                    if (
+                                                        response.data['@graph'][index].resultMessage[0] ==
+                                                        'HeatExchanger'
+                                                    ) {
+                                                        HeatExchangerCounter++;
+                                                    }
+                                                    if (
+                                                        response.data['@graph'][index].resultMessage[0] == 'Transition'
+                                                    ) {
+                                                        Transition++;
+                                                    }
+                                                    if (response.data['@graph'][index].resultMessage[0] == 'Pipe') {
+                                                        Pipe++;
+                                                    }
+                                                    if (response.data['@graph'][index].resultMessage[0] == 'Duct') {
+                                                        Duct++;
+                                                    }
+                                                    if (response.data['@graph'][index].resultMessage[0] == 'Elbow') {
+                                                        Elbow++;
+                                                    }
+                                                    if (response.data['@graph'][index].resultMessage[0] == 'Pump') {
+                                                        Pump++;
+                                                    }
+                                                    if (response.data['@graph'][index].resultMessage[0] == 'Fan') {
+                                                        Fan++;
+                                                    }
+                                                    if (response.data['@graph'][index].resultMessage[0] == 'Port') {
+                                                        Port++;
+                                                    }
+                                                    if (response.data['@graph'][index].resultMessage[0] == 'Flow') {
+                                                        Flow++;
+                                                    }
+                                                    if (response.data['@graph'][index].resultMessage[0] == 'Property') {
+                                                        Property++;
+                                                    }
+                                                    if (response.data['@graph'][index].resultMessage[0] == 'System') {
+                                                        System++;
+                                                    }
+                                                    if (
+                                                        response.data['@graph'][index].resultMessage[0] == 'SpaceHeater'
+                                                    ) {
+                                                        SpaceHeater++;
+                                                    }
+                                                    if (
+                                                        response.data['@graph'][index].resultMessage[0] ==
+                                                            'BalancingValve' ||
+                                                        response.data['@graph'][index].resultMessage[0] ==
+                                                            'MotorizedValve'
+                                                    ) {
+                                                        Valve++;
+                                                    }
+                                                    if (
+                                                        response.data['@graph'][index].resultMessage[0] ==
+                                                            'BalancingDamper' ||
+                                                        response.data['@graph'][index].resultMessage[0] ==
+                                                            'MotorizedDamper'
+                                                    ) {
+                                                        Damper++;
+                                                    }
+                                                    if (response.data['@graph'][index].resultMessage[0] == 'Tee') {
+                                                        Tee++;
+                                                    }
+                                                    if (
+                                                        response.data['@graph'][index].resultMessage[0] == 'AirTerminal'
+                                                    ) {
+                                                        AirTerminal++;
+                                                    }
+                                                    total++;
+                                                }
                                             }
-                                            if (response.data['@graph'][index].resultMessage[0] == 'Transition') {
-                                                Transition++;
-                                            }
-                                            if (response.data['@graph'][index].resultMessage[0] == 'Pipe') {
-                                                Pipe++;
-                                            }
-                                            if (response.data['@graph'][index].resultMessage[0] == 'Duct') {
-                                                Duct++;
-                                            }
-                                            if (response.data['@graph'][index].resultMessage[0] == 'Elbow') {
-                                                Elbow++;
-                                            }
-                                            if (response.data['@graph'][index].resultMessage[0] == 'Pump') {
-                                                Pump++;
-                                            }
-                                            if (response.data['@graph'][index].resultMessage[0] == 'Fan') {
-                                                Fan++;
-                                            }
-                                            if (response.data['@graph'][index].resultMessage[0] == 'Port') {
-                                                Port++;
-                                            }
-                                            if (response.data['@graph'][index].resultMessage[0] == 'Flow') {
-                                                Flow++;
-                                            }
-                                            if (response.data['@graph'][index].resultMessage[0] == 'Property') {
-                                                Property++;
-                                            }
-                                            if (response.data['@graph'][index].resultMessage[0] == 'System') {
-                                                System++;
-                                            }
-                                            if (response.data['@graph'][index].resultMessage[0] == 'SpaceHeater') {
-                                                SpaceHeater++;
-                                            }
-                                            if (
-                                                response.data['@graph'][index].resultMessage[0] == 'BalancingValve' ||
-                                                response.data['@graph'][index].resultMessage[0] == 'MotorizedValve'
-                                            ) {
-                                                Valve++;
-                                            }
-                                            if (
-                                                response.data['@graph'][index].resultMessage[0] == 'BalancingDamper' ||
-                                                response.data['@graph'][index].resultMessage[0] == 'MotorizedDamper'
-                                            ) {
-                                                Damper++;
-                                            }
-                                            if (response.data['@graph'][index].resultMessage[0] == 'Tee') {
-                                                Tee++;
-                                            }
-                                            if (response.data['@graph'][index].resultMessage[0] == 'AirTerminal') {
-                                                AirTerminal++;
-                                            }
-                                            total++;
-                                        }
-                                    }
 
-                                    let shaclObjects = {
-                                        result: [
-                                            { type: 'HeatExchanger', amount: HeatExchanger },
-                                            { type: 'Transition', amount: Transition },
-                                            { type: 'Tee', amount: Tee },
-                                            { type: 'Elbow', amount: Elbow },
-                                            { type: 'Pipe', amount: Pipe },
-                                            { type: 'Duct', amount: Duct },
-                                            { type: 'Pump', amount: Pump },
-                                            { type: 'Fan', amount: Fan },
-                                            { type: 'SpaceHeater', amount: SpaceHeater },
-                                            { type: 'AirTerminal', amount: AirTerminal },
-                                            { type: 'Valve', amount: Valve },
-                                            { type: 'Damper', amount: Damper },
-                                            { type: 'Port', amount: Port },
-                                            { type: 'Flow', amount: Flow },
-                                            { type: 'Property', amount: Property },
-                                            { type: 'System', amount: System },
-                                            { type: 'Total', amount: total },
-                                        ],
-                                    };
-                                    res.send(shaclObjects);
+                                            let shaclObjects = {
+                                                result: [
+                                                    { type: 'HeatExchanger', amount: HeatExchanger },
+                                                    { type: 'Transition', amount: Transition },
+                                                    { type: 'Tee', amount: Tee },
+                                                    { type: 'Elbow', amount: Elbow },
+                                                    { type: 'Pipe', amount: Pipe },
+                                                    { type: 'Duct', amount: Duct },
+                                                    { type: 'Pump', amount: Pump },
+                                                    { type: 'Fan', amount: Fan },
+                                                    { type: 'SpaceHeater', amount: SpaceHeater },
+                                                    { type: 'AirTerminal', amount: AirTerminal },
+                                                    { type: 'Valve', amount: Valve },
+                                                    { type: 'Damper', amount: Damper },
+                                                    { type: 'Port', amount: Port },
+                                                    { type: 'Flow', amount: Flow },
+                                                    { type: 'Property', amount: Property },
+                                                    { type: 'System', amount: System },
+                                                    { type: 'Total', amount: total },
+                                                ],
+                                            };
+                                            res.send(shaclObjects);
+                                        })
+                                        .catch((error) => {
+                                            console.log(error);
+                                        });
                                 })
-                                .catch((error) => {
-                                    console.log(error);
-                                });
                         })
                         .catch((error) => {
                             console.log(error);
@@ -708,133 +739,127 @@ router.get('/validationGraph', (req, res) => {
 
 router.get('/validationOverviewGraph', (req, res) => {
     axios
-        .post('http://localhost:3030/ny-db/shacl?graph=default', AllShapes, {
-            headers: {
-                'Content-Type': 'text/turtle',
-                Accept: 'application/ld+json',
-            },
-        })
+        .get('http://localhost:8080/allShapes', (req, res))
         .then((response) => {
-            //res.send(response.data)
-            let total = 0;
-            let HeatExchanger = 0;
-            let Tee = 0;
-            let Transition = 0;
-            let Pipe = 0;
-            let Duct = 0;
-            let Elbow = 0;
-            let Pump = 0;
-            let Fan = 0;
-            let Port = 0;
-            let Flow = 0;
-            let Property = 0;
-            let System = 0;
-            let SpaceHeater = 0;
-            let Valve = 0;
-            let Damper = 0;
-            let AirTerminal = 0;
-
-            for (let index in response.data['@graph']) {
-                if (response.data['@graph'][index].resultMessage != null) {
-                    if (response.data['@graph'][index].resultMessage[0] == 'HeatExchanger') {
-                        HeatExchangerCounter++;
+            axios
+                .post('http://localhost:3030/ny-db/shacl?graph=default', response.data, {
+                    headers: {
+                        'Content-Type': 'text/turtle',
+                        Accept: 'application/ld+json',
+                    },
+                })
+                .then((response) => {
+                    //res.send(response.data)
+                    let total = 0;
+                    let HeatExchanger = 0;
+                    let Tee = 0;
+                    let Transition = 0;
+                    let Pipe = 0;
+                    let Duct = 0;
+                    let Elbow = 0;
+                    let Pump = 0;
+                    let Fan = 0;
+                    let Port = 0;
+                    let Flow = 0;
+                    let Property = 0;
+                    let System = 0;
+                    let SpaceHeater = 0;
+                    let Valve = 0;
+                    let Damper = 0;
+                    let AirTerminal = 0;
+                    for (let index in response.data['@graph']) {
+                        if (response.data['@graph'][index].resultMessage != null) {
+                            if (response.data['@graph'][index].resultMessage[0] == 'HeatExchanger') {
+                                HeatExchangerCounter++;
+                            }
+                            if (response.data['@graph'][index].resultMessage[0] == 'Transition') {
+                                Transition++;
+                            }
+                            if (response.data['@graph'][index].resultMessage[0] == 'Pipe') {
+                                Pipe++;
+                            }
+                            if (response.data['@graph'][index].resultMessage[0] == 'Duct') {
+                                Duct++;
+                            }
+                            if (response.data['@graph'][index].resultMessage[0] == 'Elbow') {
+                                Elbow++;
+                            }
+                            if (response.data['@graph'][index].resultMessage[0] == 'Pump') {
+                                Pump++;
+                            }
+                            if (response.data['@graph'][index].resultMessage[0] == 'Fan') {
+                                Fan++;
+                            }
+                            if (response.data['@graph'][index].resultMessage[0] == 'Port') {
+                                Port++;
+                            }
+                            if (response.data['@graph'][index].resultMessage[0] == 'Flow') {
+                                Flow++;
+                            }
+                            if (response.data['@graph'][index].resultMessage[0] == 'Property') {
+                                Property++;
+                            }
+                            if (response.data['@graph'][index].resultMessage[0] == 'System') {
+                                System++;
+                            }
+                            if (response.data['@graph'][index].resultMessage[0] == 'SpaceHeater') {
+                                SpaceHeater++;
+                            }
+                            if (
+                                response.data['@graph'][index].resultMessage[0] == 'BalancingValve' ||
+                                response.data['@graph'][index].resultMessage[0] == 'MotorizedValve'
+                            ) {
+                                Valve++;
+                            }
+                            if (
+                                response.data['@graph'][index].resultMessage[0] == 'BalancingDamper' ||
+                                response.data['@graph'][index].resultMessage[0] == 'MotorizedDamper'
+                            ) {
+                                Damper++;
+                            }
+                            if (response.data['@graph'][index].resultMessage[0] == 'Tee') {
+                                Tee++;
+                            }
+                            if (response.data['@graph'][index].resultMessage[0] == 'AirTerminal') {
+                                AirTerminal++;
+                            }
+                            total++;
+                        }
                     }
-                    if (response.data['@graph'][index].resultMessage[0] == 'Transition') {
-                        Transition++;
-                    }
-                    if (response.data['@graph'][index].resultMessage[0] == 'Pipe') {
-                        Pipe++;
-                    }
-                    if (response.data['@graph'][index].resultMessage[0] == 'Duct') {
-                        Duct++;
-                    }
-                    if (response.data['@graph'][index].resultMessage[0] == 'Elbow') {
-                        Elbow++;
-                    }
-                    if (response.data['@graph'][index].resultMessage[0] == 'Pump') {
-                        Pump++;
-                    }
-                    if (response.data['@graph'][index].resultMessage[0] == 'Fan') {
-                        Fan++;
-                    }
-                    if (response.data['@graph'][index].resultMessage[0] == 'Port') {
-                        Port++;
-                    }
-                    if (response.data['@graph'][index].resultMessage[0] == 'Flow') {
-                        Flow++;
-                    }
-                    if (response.data['@graph'][index].resultMessage[0] == 'Property') {
-                        Property++;
-                    }
-                    if (response.data['@graph'][index].resultMessage[0] == 'System') {
-                        System++;
-                    }
-                    if (response.data['@graph'][index].resultMessage[0] == 'SpaceHeater') {
-                        SpaceHeater++;
-                    }
-                    if (
-                        response.data['@graph'][index].resultMessage[0] == 'BalancingValve' ||
-                        response.data['@graph'][index].resultMessage[0] == 'MotorizedValve'
-                    ) {
-                        Valve++;
-                    }
-                    if (
-                        response.data['@graph'][index].resultMessage[0] == 'BalancingDamper' ||
-                        response.data['@graph'][index].resultMessage[0] == 'MotorizedDamper'
-                    ) {
-                        Damper++;
-                    }
-                    if (response.data['@graph'][index].resultMessage[0] == 'Tee') {
-                        Tee++;
-                    }
-                    if (response.data['@graph'][index].resultMessage[0] == 'AirTerminal') {
-                        AirTerminal++;
-                    }
-                    total++;
-                }
-            }
-
-            let shaclObjects = {
-                result: [
-                    { type: 'HeatExchanger', amount: HeatExchanger },
-                    { type: 'Transition', amount: Transition },
-                    { type: 'Tee', amount: Tee },
-                    { type: 'Elbow', amount: Elbow },
-                    { type: 'Pipe', amount: Pipe },
-                    { type: 'Duct', amount: Duct },
-                    { type: 'Pump', amount: Pump },
-                    { type: 'Fan', amount: Fan },
-                    { type: 'SpaceHeater', amount: SpaceHeater },
-                    { type: 'AirTerminal', amount: AirTerminal },
-                    { type: 'Valve', amount: Valve },
-                    { type: 'Damper', amount: Damper },
-                    { type: 'Port', amount: Port },
-                    { type: 'Flow', amount: Flow },
-                    { type: 'Property', amount: Property },
-                    { type: 'System', amount: System },
-                    { type: 'Total', amount: total },
-                ],
-            };
-            res.send(shaclObjects);
+                    let shaclObjects = {
+                        result: [
+                            { type: 'HeatExchanger', amount: HeatExchanger },
+                            { type: 'Transition', amount: Transition },
+                            { type: 'Tee', amount: Tee },
+                            { type: 'Elbow', amount: Elbow },
+                            { type: 'Pipe', amount: Pipe },
+                            { type: 'Duct', amount: Duct },
+                            { type: 'Pump', amount: Pump },
+                            { type: 'Fan', amount: Fan },
+                            { type: 'SpaceHeater', amount: SpaceHeater },
+                            { type: 'AirTerminal', amount: AirTerminal },
+                            { type: 'Valve', amount: Valve },
+                            { type: 'Damper', amount: Damper },
+                            { type: 'Port', amount: Port },
+                            { type: 'Flow', amount: Flow },
+                            { type: 'Property', amount: Property },
+                            { type: 'System', amount: System },
+                            { type: 'Total', amount: total },
+                        ],
+                    };
+                    res.send(shaclObjects);
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
         })
-        .catch((error) => {
-            console.log(error);
+        .catch((err) => {
+            console.log(err);
         });
+
 });
 
-// // Add Data from Revit to Database
-// router.post('/Bot', (req, res, next) => {
-//     console.log(req.body);
-//     // axios
-//     //     .post('http://localhost:3030/ny-db/data', {
-//     //         headers: {
-//     //             'Content-Type': 'text/turtle',
-//     //         },data:res.body
-//     //     })
-//     //     .catch((err) => {
-//     //         console.log(err.response.data);
-//     //     });
-// });
+
 
 router.post('/Bot', (req, res, next) => {
     console.log(typeof req.body);
@@ -849,6 +874,53 @@ router.post('/Bot', (req, res, next) => {
         })
         .then(function (response) {
             console.log(JSON.stringify(response.data));
+
+           
+                    axios
+                        .post('http://localhost:3030/ny-db/data',BOT, {
+                            headers: {
+                                'Content-Type': 'text/turtle',
+                            },
+                            maxContentLength: Infinity,
+                            maxBodyLength: Infinity,
+                        })
+                        .then(function (response) {
+                            console.log(JSON.stringify(response.data));
+                        })
+                        .catch(function (error) {
+                            console.log(error);
+                        });
+
+                    axios
+                        .post('http://localhost:3030/ny-db/data', FSO, {
+                            headers: {
+                                'Content-Type': 'text/turtle',
+                            },
+                            maxContentLength: Infinity,
+                            maxBodyLength: Infinity,
+                        })
+                        .then(function (response) {
+                            console.log(JSON.stringify(response.data));
+                        })
+                        .catch(function (error) {
+                            console.log(error);
+                        });
+
+                    axios
+                        .post('http://localhost:3030/ny-db/data', FPO, {
+                            headers: {
+                                'Content-Type': 'text/turtle',
+                            },
+                            maxContentLength: Infinity,
+                            maxBodyLength: Infinity,
+                        })
+                        .then(function (response) {
+                            console.log(JSON.stringify(response.data));
+                        })
+                        .catch(function (error) {
+                            console.log(error);
+                        });
+                    
         })
         .catch(function (error) {
             console.log(error);
