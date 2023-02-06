@@ -10,19 +10,19 @@ inst:4fc7f11d-944c-45d6-9e1f-409b3be068c0-00198fd0 fso:transfersHeatTo ?space .
 } 
 where {
   ?space a bot:Space .
-  ?space rdfs:label "Space-M.1.41"
+  ?space rdfs:label "Pers.forb-P.0.11"
 };
 insert {
 inst:0f1ba719-f4b2-443e-b675-a3143693d51b-001988f9 fso:transfersHeatTo ?space .  
 } 
 where {
   ?space a bot:Space .
-  ?space rdfs:label "Space-M.1.101"
+  ?space rdfs:label "Garderobe-I.1.10"
 };
 insert {
 inst:0f1ba719-f4b2-443e-b675-a3143693d51b-00195061 fso:transfersHeatTo ?space .  
 } 
 where {
   ?space a bot:Space .
-  ?space rdfs:label "Space-M.1.63"
+  ?space rdfs:label "Fallesrum-I.1.05"
 };

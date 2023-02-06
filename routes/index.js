@@ -910,19 +910,19 @@ router.post('/Bot', (req, res, next) => {
         });
 });
 
-// router.post('/clearGraph', (req, res) => {
-//     axios
-//         .post('http://localhost:3030/ny-db/update', clearData, {
-//             headers: {
-//                 'Content-Type': 'application/x-www-form-urlencoded',
-//             },
-//         })
-//         .then(function (response) {
-//             console.log(JSON.stringify(response.data));
-//         })
-//         .catch(function (error) {
-//             console.log(error);
-//         });
-// });
+router.post('/clearGraph', (req, res) => {
+    axios
+        .post('http://localhost:3030/ny-db/update', clearData, {
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+        })
+        .then(function (response) {
+            console.log(JSON.stringify(response.data));
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+});
 
 module.exports = router;

@@ -11,7 +11,7 @@ PREFIX inst: <https://example.com/inst#>
 select ?fan (Max(?sumOfPressureDrop) as ?pressure)
 where{
   
-  {#Supply Fan
+  {#Supply Fan 
  select ?fan ?terminal( sum(?returnValue)  as ?sumOfPressureDrop) 
 where {
    ?fan a fso:Fan .
@@ -35,8 +35,8 @@ where {
   } group by ?fan ?terminal}
   union
 {
-#Return Fan do not have heat exchanger in revit for simplicity thats why we have added 5220 as value 
- select ?fan ?terminal( sum(?returnValue)+200  as ?sumOfPressureDrop) 
+#Return Fan
+ select ?fan ?terminal( sum(?returnValue)+300  as ?sumOfPressureDrop) 
 where {
   ?fan a fso:Fan .
   VALUES ?terminalType {fso:AirTerminal}
