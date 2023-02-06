@@ -1,0 +1,69 @@
+PREFIX ex: <https://example.com/ex#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX fso: <https://w3id.org/fso#> 
+PREFIX fpo: <https://w3id.org/fpo#>
+PREFIX fo: <http://www.w3.org/1999/XSL/Format#>
+PREFIX ec: <http://eulergui.sourceforge.net/contacts.owl.n3#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+delete {
+  ?diameter fpo:hasValue ?diameterValue .
+}
+insert{
+   ?diameter fpo:hasValue ?newSizeWithIRI .
+}
+where {
+{
+select ?this ?value ?outerDiameter ?outerDiameterValue ?pressureDropValue ?pressureDrop ?outletPort
+WHERE {
+?this a fso:Pipe . 
+?outletPort fpo:hasOuterDiameter ?outerDiameter .
+?outerDiameter fpo:hasValue ?outerDiameterValue .
+?this fpo:hasLength ?length .
+?length fpo:hasValue ?lengthvalue .
+?this fso:hasPort ?outletPort .
+?outletPort fpo:hasFlowDirection ?flowDirection .
+?flowDirection fpo:hasValue "Out" .
+?outletPort fpo:hasPressureDrop ?pressureDrop .
+?pressureDrop fpo:hasValue ?pressureDropValue .
+bind ((?pressureDropValue / ?lengthvalue) as ?value) .
+filter (?value > 100)}
+}
+
+
+  ?this fso:hasPort ?port .
+  ?port fpo:hasOuterDiameter ?diameter .
+  ?diameter fpo:hasValue ?diameterValue .
+  BIND ( 
+    IF(?diameterValue = 0.012, 0.015,
+      IF(?diameterValue = 0.015, 0.018,
+        IF(?diameterValue = 0.018, 0.020,
+          IF(?diameterValue = 0.020, 0.022, 
+            IF(?diameterValue = 0.022, 0.028,
+              IF(?diameterValue = 0.028, 0.032,
+                IF(?diameterValue = 0.032, 0.040,
+                  IF(?diameterValue = 0.040, 0.050, ?diameterValue)
+                )
+              )
+            )
+          )
+        ) 
+      )
+    )
+    AS ?newSize
+  )
+	BIND(STRDT(STR(?newSize), xsd:double) AS ?newSizeWithIRI)
+};
+
+delete {
+  ?port fpo:hasPressureDrop ?pressureDrop .
+  ?pressureDrop fpo:hasValue ?pressureDropValue
+}
+where {
+  values ?componentType {fso:Pipe fso:Elbow fso:Transition fso:Tee} ?component a ?componentType .
+  ?component fso:hasPort ?port .
+  ?port fpo:hasPressureDrop ?pressureDrop .
+  ?pressureDrop fpo:hasValue ?pressureDropValue
+}
+
+
