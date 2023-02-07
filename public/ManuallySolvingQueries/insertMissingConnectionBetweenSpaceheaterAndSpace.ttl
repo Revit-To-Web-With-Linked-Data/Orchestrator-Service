@@ -23,6 +23,5 @@ insert {
 inst:0f1ba719-f4b2-443e-b675-a3143693d51b-00195061 fso:transfersHeatTo ?space .  
 } 
 where {
-  ?space a bot:Space .
-  ?space rdfs:label "Fallesrum-I.1.05"
+  BIND (inst:adadda35-6752-439a-b878-9edbe0800853-001ed7d1 as ?space)
 };
