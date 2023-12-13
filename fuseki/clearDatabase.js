@@ -3,7 +3,7 @@ var qs = require('qs');
 var data = '';
 var config = {
     method: 'post',
-    url: 'http://localhost:3030/ny-db/update?update=clear all',
+    url: 'http://127.0.0.1:3030/ny-db/update?update=clear all',
     headers: {},
     data: data,
 };

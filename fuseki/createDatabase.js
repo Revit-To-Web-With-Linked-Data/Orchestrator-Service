@@ -60,7 +60,7 @@ let database = buildConfig(
 
 var config = {
     method: 'post',
-    url: 'http://localhost:3030/$/datasets',
+    url: 'http://127.0.0.1:3030/$/datasets',
     headers: {
         'Content-Type': 'text/turtle',
     },

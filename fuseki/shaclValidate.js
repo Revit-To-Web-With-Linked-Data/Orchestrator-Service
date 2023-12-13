@@ -63,7 +63,7 @@ var data = `@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 
 var config = {
     method: 'post',
-    url: 'http://localhost:3030/ny-db/shacl?graph=default',
+    url: 'http://127.0.0.1:3030/ny-db/shacl?graph=default',
     headers: {
         'Content-Type': 'text/turtle',
         Accept: 'application/ld+json',

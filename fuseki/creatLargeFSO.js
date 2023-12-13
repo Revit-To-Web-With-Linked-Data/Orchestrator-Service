@@ -2511,7 +2511,7 @@ a bot:Storey .
 
 var config = {
     method: 'post',
-    url: 'http://localhost:3030/test-db/data?graph=https://w3id.org/fso%23data',
+    url: 'http://127.0.0.1:3030/test-db/data?graph=https://w3id.org/fso%23data',
     headers: {
         'Content-Type': 'text/turtle',
     },
@@ -2519,8 +2519,8 @@ var config = {
 };
 
 axios(config)
-  .then(function (response) {
-        console.log("FSO triples inserted");
+    .then(function (response) {
+        console.log('FSO triples inserted');
 
         // console.log(JSON.stringify(response.data));
     })

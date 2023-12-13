@@ -2,7 +2,7 @@ var axios = require('axios');
 
 var config = {
     method: 'delete',
-    url: 'http://localhost:3030/$/datasets/myTest',
+    url: 'http://127.0.0.1:3030/$/datasets/myTest',
     headers: {},
 };
 

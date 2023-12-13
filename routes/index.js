@@ -109,7 +109,7 @@ let sendTeesToDatabase = async () => {
         .then((response) => {
             //Send tee components to hydraulic service. Perform hydraulic calculation and get the pressure drop as result.
             axios
-                .post('http://localhost:8000/pressureDropTees', response.data)
+                .post('http://127.0.0.1:8000/pressureDropTees', response.data)
                 .then((response) => {
                     //Send hydraulic results to database
                     let data = JSON.parse(response.data);
@@ -145,7 +145,7 @@ let sendRestToDatabase = async (res) => {
         .then((response) => {
             //Send tee components to hydraulic service. Perform hydraulic calculation and get the pressure drop as result.
             axios
-                .post('http://localhost:8000/pressureDropRest', response.data)
+                .post('http://127.0.0.1:8000/pressureDropRest', response.data)
                 .then((response) => {
                     //Send hydraulic results to database
                     let data = JSON.parse(response.data);
@@ -158,7 +158,7 @@ let sendRestToDatabase = async (res) => {
                         .then((response) => {
                             console.log(JSON.stringify(response.data));
 
-                            axios.get('http://localhost:8080/hydraulicShapes').then((reponse) => {
+                            axios.get('http://127.0.0.1:8080/hydraulicShapes').then((reponse) => {
                                 axios
                                     .post('http://localhost:3030/ny-db/shacl?graph=default', reponse.data, {
                                         headers: {
@@ -727,7 +727,7 @@ router.get('/validationGraph', (req, res) => {
 
 router.get('/validationOverviewGraph', (req, res) => {
     axios
-        .get('http://localhost:8080/allShapes', (req, res))
+        .get('http://127.0.0.1:8080/allShapes', (req, res))
         .then((response) => {
             axios
                 .post('http://localhost:3030/ny-db/shacl?graph=default', response.data, {
